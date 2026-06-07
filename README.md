@@ -9,8 +9,6 @@ document units**: official SEC filing sections, company IR releases, and macro
 time-series observations. Those documents become the raw material for downstream
 LLM feature extraction and PPO/RL portfolio experiments.
 
-![FinPortfolio IR UI montage](docs/assets/finportfolio_ui_montage.png)
-
 ## What This Project Does
 
 | Layer | What it does | Why it matters |
