@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+.env
+*.log
+
+data/user_settings/
+data/logs/
+data/search_index/*.sqlite
+data/live_ir/
+
+# Full corpus artifacts are reproducible but too large for a normal GitHub repo.
+data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl
+data/processed_documents/sec_dow30_ppo_2010_2023_1740_sections_documents.jsonl
+data/processed_documents/sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl
+data/raw_documents/sec_dow30_ppo_2010_2023_1740_sections.jsonl
+data/raw_documents/sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections.jsonl
+data/exports/**/retrieved_contexts.jsonl
+data/exports/**/rl_panel_*.csv
+

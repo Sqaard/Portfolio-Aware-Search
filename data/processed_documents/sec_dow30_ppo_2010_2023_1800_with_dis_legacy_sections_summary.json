@@ -1,0 +1,53 @@
+{
+  "inputs": [
+    "data\\processed_documents\\sec_dow30_ppo_2010_2023_1740_sections_documents.jsonl",
+    "data\\processed_documents\\sec_dis_legacy_2010_2019_60_sections_documents.jsonl"
+  ],
+  "input_counts": {
+    "data\\processed_documents\\sec_dow30_ppo_2010_2023_1740_sections_documents.jsonl": 6824,
+    "data\\processed_documents\\sec_dis_legacy_2010_2019_60_sections_documents.jsonl": 230
+  },
+  "output": "data\\processed_documents\\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl",
+  "key": "doc_id",
+  "output_rows": 7011,
+  "duplicate_rows_dropped": 43,
+  "split_counts": {
+    "test": 1254,
+    "train": 5757
+  },
+  "source_type_counts": {
+    "sec_filing_section": 6356,
+    "sec_filing_exhibit": 655
+  },
+  "ticker_counts": {
+    "AAPL": 290,
+    "AMGN": 280,
+    "AMZN": 255,
+    "AXP": 233,
+    "BA": 226,
+    "CAT": 205,
+    "CRM": 279,
+    "CSCO": 261,
+    "CVX": 223,
+    "DIS": 438,
+    "GS": 238,
+    "HD": 249,
+    "HON": 219,
+    "IBM": 161,
+    "INTC": 196,
+    "JNJ": 224,
+    "JPM": 231,
+    "KO": 258,
+    "MCD": 208,
+    "MMM": 247,
+    "MRK": 221,
+    "MSFT": 255,
+    "NKE": 209,
+    "PG": 220,
+    "TRV": 255,
+    "UNH": 245,
+    "V": 204,
+    "VZ": 214,
+    "WMT": 267
+  }
+}

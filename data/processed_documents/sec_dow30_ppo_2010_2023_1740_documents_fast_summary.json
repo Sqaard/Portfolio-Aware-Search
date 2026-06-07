@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-05-13T05:31:09Z",
+  "input_raw": "data\\raw_documents\\sec_dow30_ppo_2010_2023_1740.jsonl",
+  "output_processed": "data\\processed_documents\\sec_dow30_ppo_2010_2023_1740_documents.jsonl",
+  "input_rows": 1740,
+  "processed_rows": 1740,
+  "skipped_rows": 0,
+  "split_counts": {
+    "test": 348,
+    "train": 1392
+  },
+  "source_type_counts": {
+    "sec_filing": 1740
+  },
+  "form_counts": {
+    "8-K": 635,
+    "10-K": 361,
+    "10-Q": 744
+  },
+  "ticker_counts": {
+    "AAPL": 60,
+    "AMGN": 60,
+    "AMZN": 60,
+    "AXP": 60,
+    "BA": 60,
+    "CAT": 60,
+    "CRM": 60,
+    "CSCO": 60,
+    "CVX": 60,
+    "DIS": 60,
+    "GS": 60,
+    "HD": 60,
+    "HON": 60,
+    "IBM": 60,
+    "INTC": 60,
+    "JNJ": 60,
+    "JPM": 60,
+    "KO": 60,
+    "MCD": 60,
+    "MMM": 60,
+    "MRK": 60,
+    "MSFT": 60,
+    "NKE": 60,
+    "PG": 60,
+    "TRV": 60,
+    "UNH": 60,
+    "V": 60,
+    "VZ": 60,
+    "WMT": 60
+  },
+  "section_counts": {
+    "": 1740
+  },
+  "exhibit_rows": 0,
+  "errors": [],
+  "error_count": 0
+}

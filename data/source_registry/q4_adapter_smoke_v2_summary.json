@@ -1,0 +1,44 @@
+{
+  "created_at": "2026-05-13T12:37:42Z",
+  "config": {
+    "start_year": 2021,
+    "end_year": 2021,
+    "max_archive_pages_per_source": 4,
+    "max_detail_candidates_per_source": 12,
+    "max_documents_per_source": 3,
+    "min_body_words": 100,
+    "q4_page_size": 20,
+    "rss_item_limit": 200,
+    "wp_page_size": 50,
+    "wp_max_pages_per_year": 2
+  },
+  "source_rows_checked": 11,
+  "documents_written": 18,
+  "detail_candidates_checked": 48,
+  "accepted_by_ticker": {
+    "AXP": 6,
+    "CRM": 6,
+    "CSCO": 6
+  },
+  "accepted_by_source_type": {
+    "company_press_release": 9,
+    "company_earnings_release": 9
+  },
+  "reject_reasons": {
+    "published_at_outside_range": 18,
+    "missing_published_at": 3,
+    "duplicate_doc_id": 9
+  },
+  "vendor_queue_rows": 11,
+  "vendor_profiles": {
+    "cloudflare_challenge": 4,
+    "static_html_or_custom": 2,
+    "q4_or_q4_like": 5
+  },
+  "vendor_priorities": {
+    "medium_browser_or_alternate_endpoint": 2,
+    "medium_source_specific_adapter": 2,
+    "low_already_has_generic_yield": 6,
+    "high_vendor_api_adapter": 1
+  }
+}

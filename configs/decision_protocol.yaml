@@ -1,0 +1,6 @@
+protocol_id: pre_open_et_v1
+decision_timezone: America/New_York
+default_decision_time: "09:30:00"
+retrieval_cutoff_rule: available_at_lte_decision_time
+after_hours_policy: after-hours documents roll into the next eligible pre-open decision window
+unsafe_timestamp_policy: exclude documents with missing or non-timezone-aware timestamps

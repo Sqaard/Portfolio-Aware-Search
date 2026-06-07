@@ -1,0 +1,314 @@
+{
+  "rows": 87,
+  "checked_at": "2026-05-13T11:27:59Z",
+  "output_csv": "FinPortfolio_IR\\data\\source_registry\\official_company_source_urls_historical_direct_sample_2026-05-13.csv",
+  "by_grade": {
+    "weak_historical_hint": 9,
+    "js_or_vendor_api_unknown": 32,
+    "blocked_or_failed": 19,
+    "no_2010_2021_evidence": 18,
+    "confirmed_historical_fulltext": 7,
+    "historical_index_likely": 1,
+    "partial_historical_index": 1
+  },
+  "by_ticker_best_grade": {
+    "AAPL": "js_or_vendor_api_unknown",
+    "AMGN": "weak_historical_hint",
+    "AMZN": "no_2010_2021_evidence",
+    "AXP": "js_or_vendor_api_unknown",
+    "BA": "js_or_vendor_api_unknown",
+    "CAT": "blocked_or_failed",
+    "CRM": "js_or_vendor_api_unknown",
+    "CSCO": "js_or_vendor_api_unknown",
+    "CVX": "blocked_or_failed",
+    "DIS": "js_or_vendor_api_unknown",
+    "GS": "no_2010_2021_evidence",
+    "HD": "confirmed_historical_fulltext",
+    "HON": "confirmed_historical_fulltext",
+    "IBM": "js_or_vendor_api_unknown",
+    "INTC": "js_or_vendor_api_unknown",
+    "JNJ": "no_2010_2021_evidence",
+    "JPM": "js_or_vendor_api_unknown",
+    "KO": "js_or_vendor_api_unknown",
+    "MCD": "js_or_vendor_api_unknown",
+    "MMM": "confirmed_historical_fulltext",
+    "MRK": "historical_index_likely",
+    "MSFT": "no_2010_2021_evidence",
+    "NKE": "no_2010_2021_evidence",
+    "PG": "js_or_vendor_api_unknown",
+    "TRV": "js_or_vendor_api_unknown",
+    "UNH": "partial_historical_index",
+    "V": "no_2010_2021_evidence",
+    "VZ": "confirmed_historical_fulltext",
+    "WMT": "confirmed_historical_fulltext"
+  },
+  "tickers_confirmed": [
+    "HD",
+    "HON",
+    "MMM",
+    "VZ",
+    "WMT"
+  ],
+  "tickers_likely_or_partial": [
+    "MRK",
+    "UNH"
+  ],
+  "tickers_unknown_or_bad": [
+    "AAPL",
+    "AMGN",
+    "AMZN",
+    "AXP",
+    "BA",
+    "CAT",
+    "CRM",
+    "CSCO",
+    "CVX",
+    "DIS",
+    "GS",
+    "IBM",
+    "INTC",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MCD",
+    "MSFT",
+    "NKE",
+    "PG",
+    "TRV",
+    "V"
+  ],
+  "best_source_by_ticker": {
+    "AAPL": {
+      "source_type": "earnings_results_archive",
+      "url": "https://investor.apple.com/investor-relations/default.aspx",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "AMGN": {
+      "source_type": "company_news_archive",
+      "url": "https://www.amgen.com/newsroom/press-releases",
+      "historical_coverage_grade": "weak_historical_hint",
+      "train_year_hints_2010_2021": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021",
+      "sample_1_url": "",
+      "historical_coverage_note": "Only weak train-period hints, no good detail link found."
+    },
+    "AMZN": {
+      "source_type": "company_news_archive",
+      "url": "https://www.aboutamazon.com/news/company-news",
+      "historical_coverage_grade": "no_2010_2021_evidence",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "No train-window evidence found by direct HTML scan."
+    },
+    "AXP": {
+      "source_type": "company_news_archive",
+      "url": "https://about.americanexpress.com/newsroom/default.aspx",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "BA": {
+      "source_type": "earnings_results_archive",
+      "url": "https://investors.boeing.com/investors/financial-reports/default.aspx",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "CAT": {
+      "source_type": "company_news_archive",
+      "url": "https://www.caterpillar.com/en/news/corporate-press-releases.html",
+      "historical_coverage_grade": "blocked_or_failed",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Current fetch failed/forbidden; cannot validate history from this URL."
+    },
+    "CRM": {
+      "source_type": "investor_relations",
+      "url": "https://investor.salesforce.com/overview/default.aspx",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "CSCO": {
+      "source_type": "company_news_archive",
+      "url": "https://newsroom.cisco.com/c/r/newsroom/en/us/press-releases.html",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "https://newsroom.cisco.com/c/r/newsroom/en/us/a/y2023/m09/pr-sep21.html",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "CVX": {
+      "source_type": "company_news_archive",
+      "url": "https://chevroncorp.gcs-web.com/news-releases",
+      "historical_coverage_grade": "blocked_or_failed",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Current fetch failed/forbidden; cannot validate history from this URL."
+    },
+    "DIS": {
+      "source_type": "earnings_results_archive",
+      "url": "https://thewaltdisneycompany.com/investor-relations/#financials",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "GS": {
+      "source_type": "company_news_archive",
+      "url": "https://www.goldmansachs.com/pressroom",
+      "historical_coverage_grade": "no_2010_2021_evidence",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "No train-window evidence found by direct HTML scan."
+    },
+    "HD": {
+      "source_type": "company_news_archive",
+      "url": "https://corporate.homedepot.com/page/newsroom",
+      "historical_coverage_grade": "confirmed_historical_fulltext",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "https://ir.homedepot.com/news-releases/2023",
+      "historical_coverage_note": "At least one 2010-2021 detail page was fetched and looks like full text."
+    },
+    "HON": {
+      "source_type": "company_news_archive",
+      "url": "https://www.honeywell.com/us/en/news",
+      "historical_coverage_grade": "confirmed_historical_fulltext",
+      "train_year_hints_2010_2021": "2021",
+      "sample_1_url": "https://www.honeywell.com/us/en/news/2021/11/methane-what-is-it-and-why-is-it-bad",
+      "historical_coverage_note": "At least one 2010-2021 detail page was fetched and looks like full text."
+    },
+    "IBM": {
+      "source_type": "investor_relations",
+      "url": "https://www.ibm.com/investor",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "INTC": {
+      "source_type": "earnings_results_archive",
+      "url": "https://www.intc.com/news-events/press-releases?category=financial",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "JNJ": {
+      "source_type": "company_news_archive",
+      "url": "https://www.jnj.com/media-center/press-releases",
+      "historical_coverage_grade": "no_2010_2021_evidence",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "No train-window evidence found by direct HTML scan."
+    },
+    "JPM": {
+      "source_type": "earnings_results_archive",
+      "url": "https://www.jpmorganchase.com/ir/quarterly-earnings",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "KO": {
+      "source_type": "earnings_results_archive",
+      "url": "https://investors.coca-colacompany.com/news-events/press-releases?category=financial",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "MCD": {
+      "source_type": "company_news_archive",
+      "url": "https://corporate.mcdonalds.com/corpmcd/en-us/CorpNewsroom.html",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "MMM": {
+      "source_type": "earnings_results_archive",
+      "url": "https://investors.3m.com/financials/quarterly-earnings",
+      "historical_coverage_grade": "confirmed_historical_fulltext",
+      "train_year_hints_2010_2021": "2020|2021",
+      "sample_1_url": "https://investors.3m.com/news-events/press-releases/detail/84/3m-reports-fourth-quarter-and-full-year-2021-results",
+      "historical_coverage_note": "At least one 2010-2021 detail page was fetched and looks like full text."
+    },
+    "MRK": {
+      "source_type": "earnings_results_archive",
+      "url": "https://www.merck.com/investor-relations/",
+      "historical_coverage_grade": "historical_index_likely",
+      "train_year_hints_2010_2021": "2015|2016|2017|2018|2019|2020|2021",
+      "sample_1_url": "https://www.merck.com/wp-content/uploads/sites/124/2023/12/2023-Sustainability-Bond-Report-Final.pdf",
+      "historical_coverage_note": "Index exposes broad 2010-2021 link/year evidence; detail crawler still needs validation."
+    },
+    "MSFT": {
+      "source_type": "company_news_archive",
+      "url": "https://news.microsoft.com/source/",
+      "historical_coverage_grade": "no_2010_2021_evidence",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "No train-window evidence found by direct HTML scan."
+    },
+    "NKE": {
+      "source_type": "company_news_archive",
+      "url": "https://news.nike.com/",
+      "historical_coverage_grade": "no_2010_2021_evidence",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "No train-window evidence found by direct HTML scan."
+    },
+    "PG": {
+      "source_type": "earnings_results_archive",
+      "url": "https://www.pginvestor.com/news/default.aspx?category=financial",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "TRV": {
+      "source_type": "company_news_archive",
+      "url": "https://investor.travelers.com/newsroom/newsroom-overview/default.aspx",
+      "historical_coverage_grade": "js_or_vendor_api_unknown",
+      "train_year_hints_2010_2021": "2010|2018",
+      "sample_1_url": "",
+      "historical_coverage_note": "Likely archive behind JS/Q4/vendor API; direct HTML does not prove historical coverage."
+    },
+    "UNH": {
+      "source_type": "earnings_results_archive",
+      "url": "https://www.unitedhealthgroup.com/investors/financial-reports.html",
+      "historical_coverage_grade": "partial_historical_index",
+      "train_year_hints_2010_2021": "2020|2021",
+      "sample_1_url": "https://www.unitedhealthgroup.com/content/dam/UHG/PDF/investors/2022/UNH-Q2-2021-Form-8-K.pdf",
+      "historical_coverage_note": "Some 2010-2021 archive evidence exists, but coverage may be incomplete."
+    },
+    "V": {
+      "source_type": "company_news_archive",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom.html",
+      "historical_coverage_grade": "no_2010_2021_evidence",
+      "train_year_hints_2010_2021": "",
+      "sample_1_url": "",
+      "historical_coverage_note": "No train-window evidence found by direct HTML scan."
+    },
+    "VZ": {
+      "source_type": "earnings_results_archive",
+      "url": "https://www.verizon.com/about/investors/quarterly-reports",
+      "historical_coverage_grade": "confirmed_historical_fulltext",
+      "train_year_hints_2010_2021": "2018|2019|2020|2021",
+      "sample_1_url": "https://www.verizon.com/about/investors/quarterly-reports/1q-2021-earnings-conference-call-webcast",
+      "historical_coverage_note": "At least one 2010-2021 detail page was fetched and looks like full text."
+    },
+    "WMT": {
+      "source_type": "earnings_results_archive",
+      "url": "https://stock.walmart.com/financial-information/financial-results",
+      "historical_coverage_grade": "confirmed_historical_fulltext",
+      "train_year_hints_2010_2021": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021",
+      "sample_1_url": "https://corporate.walmart.com/newsroom/2015/11/17/walmart-reports-q3-fy-16-eps-of-1-03-walmart-u-s-added-2-7-billion-in-sales-comp-sales-of-1-5",
+      "historical_coverage_note": "At least one 2010-2021 detail page was fetched and looks like full text."
+    }
+  }
+}

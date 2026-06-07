@@ -1,0 +1,26 @@
+query_id,query,intent,expected_ticker,source_scope,description
+web_apple_filings,Apple filings,company_filings,AAPL,sec_filings,Company-name query should retrieve recent Apple SEC filing groups.
+web_apple_risk,Apple risk factors,company_risk,AAPL,sec_filings,Company-name query should surface Item 1A and risk-related Apple evidence.
+web_apple_guidance,Apple earnings guidance,company_events,AAPL,company_ir,Apple query should surface earnings releases and guidance-like evidence.
+web_microsoft_margins,Microsoft cloud margins,company_fundamentals,MSFT,sec_filings,Company-name query should retrieve Microsoft margin and cloud-related filings.
+web_jpm_filings,JPM filings,company_filings,JPM,sec_filings,Ticker query should retrieve latest JPMorgan filings first.
+web_jpm_credit,JPMorgan credit risk,company_risk,JPM,sec_filings,Company-name query should retrieve JPMorgan credit and risk evidence.
+web_mmm_filings,3M filings,company_filings,MMM,sec_filings,Ticker-like company query should group 3M SEC filings.
+web_mmm_litigation,3M litigation risk,company_risk,MMM,sec_filings,Company query should surface legal or litigation risk documents.
+web_home_depot_8k,Home Depot 8-K,company_events,HD,sec_filings,Company-name query should retrieve Home Depot current-report groups.
+web_chevron_energy,Chevron energy demand,company_macro,CVX,sec_filings,Energy company query should mix company evidence with demand terms.
+web_visa_spending,Visa consumer spending,company_macro,V,company_ir,Payments query should retrieve demand and consumer-spending evidence.
+web_boeing_supply_chain,Boeing supply chain risk,company_risk,BA,sec_filings,Industrial company query should retrieve supply-chain and risk evidence.
+web_yield_curve,yield curve recession risk,macro_credit,MARKET,macro,Macro query should retrieve yield-curve documents.
+web_10y_2y_spread,10 year 2 year treasury spread,macro_rates,MARKET,macro,Specific macro query should retrieve the 10Y minus 2Y spread series.
+web_vix,VIX market volatility,macro_volatility,MARKET,macro,Volatility query should retrieve CBOE VIX releases.
+web_high_yield_spread,high yield credit spread,macro_credit,MARKET,macro,Credit query should retrieve ICE BofA high-yield spread releases.
+web_wti_oil,WTI crude oil price,macro_energy,MARKET,macro,Energy macro query should retrieve WTI oil releases.
+web_unemployment,unemployment macro demand,macro_growth,MARKET,macro,Labor-market query should retrieve employment and demand evidence.
+web_inflation,inflation CPI pressure,macro_inflation,MARKET,macro,Inflation query should retrieve price-pressure macro evidence.
+web_portfolio_rates,portfolio rates risk,portfolio_macro,MARKET,macro,Portfolio-level query should retrieve rate-pressure evidence.
+web_it_real_yields,Information Technology real yields,portfolio_sector,MARKET,macro,Sector macro query should retrieve rate evidence relevant to growth stocks.
+web_banks_credit_cycle,banks credit cycle,portfolio_sector,JPM,sec_filings,Bank-sector query should retrieve financial and credit-cycle evidence.
+web_consumer_demand,consumer demand risk,portfolio_macro,MARKET,macro,Demand query should retrieve consumer-sensitive macro or company evidence.
+web_earnings_risk,earnings risk appetite,portfolio_macro,MARKET,macro,Market query should retrieve risk-appetite and earnings-related evidence.
+web_apple_10q,Apple Inc 10-Q,company_filings,AAPL,sec_filings,Full company-name filing query should retrieve Apple 10-Q groups.

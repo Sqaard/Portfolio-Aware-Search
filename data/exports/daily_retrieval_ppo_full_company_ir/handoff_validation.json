@@ -1,0 +1,54 @@
+{
+  "contexts": {
+    "status": "passed",
+    "row_count": 28493,
+    "unique_doc_count": 3456,
+    "query_count": 15253,
+    "portfolio_count": 30,
+    "method_counts": {
+      "full_hybrid_diversified": 28493
+    },
+    "scope_counts": {
+      "sector": 16550,
+      "stock": 11943
+    },
+    "covered_holdings": {
+      "AAPL": 412,
+      "AMGN": 412,
+      "AMZN": 411,
+      "AXP": 412,
+      "BA": 411,
+      "CAT": 411,
+      "CRM": 413,
+      "CSCO": 411,
+      "CVX": 413,
+      "DIS": 413,
+      "GS": 412,
+      "HD": 409,
+      "HON": 413,
+      "IBM": 412,
+      "INTC": 413,
+      "JNJ": 412,
+      "JPM": 412,
+      "KO": 410,
+      "MCD": 412,
+      "MMM": 411,
+      "MRK": 410,
+      "MSFT": 411,
+      "NKE": 413,
+      "PG": 413,
+      "TRV": 412,
+      "UNH": 413,
+      "V": 412,
+      "VZ": 413,
+      "WMT": 411
+    },
+    "duplicate_cluster_count": 3456,
+    "duplicate_context_cluster_rows": 25037,
+    "final_score_min": 0.161459,
+    "final_score_max": 0.988931,
+    "issue_count": 0,
+    "hard_issue_count": 0,
+    "issues": []
+  }
+}

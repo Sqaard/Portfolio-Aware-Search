@@ -1,0 +1,37 @@
+{
+  "input_rows": 203,
+  "unique_rows": 139,
+  "deduped_rows_removed": 64,
+  "tickers": 29,
+  "by_source_type": {
+    "company_earnings_archive": 29,
+    "company_ir_hub": 14,
+    "company_press_release_archive": 38,
+    "company_sec_filings_hub": 7,
+    "company_financial_report_archive": 20,
+    "company_presentation_archive": 27,
+    "company_news_archive": 4
+  },
+  "by_crawler_grade": {
+    "browser_or_api_needed": 30,
+    "crawler_ready": 101,
+    "blocked_or_forbidden": 5,
+    "fail": 3
+  },
+  "by_review_likely_value": {
+    "medium_browser_or_vendor": 17,
+    "medium_vendor_or_browser": 6,
+    "high_static_or_wp_candidate": 15,
+    "high_static_candidate": 30,
+    "medium_duplicate_sec": 7,
+    "low_recheck": 10,
+    "high_q4_feed": 39,
+    "medium_static_duplicate": 8,
+    "low_blocked_unless_feed": 6,
+    "medium_static_candidate": 1
+  },
+  "outputs": {
+    "unified_sources_csv": "data\\source_registry\\official_company_sources_unified_2026-05-13.csv",
+    "summary_json": "data\\source_registry\\official_company_sources_unified_2026-05-13_summary.json"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "contexts": "data\\exports\\daily_retrieval_ppo_full_company_ir\\retrieved_contexts.jsonl",
+  "doc_features": "data\\exports\\daily_retrieval_ppo_full_company_ir\\codex_rule_text_features_macro_rules\\doc_text_features_codex_rule.csv",
+  "mistral_comparison": "",
+  "context_rows": 28493,
+  "feature_rows": 28493,
+  "source_type_count": 8,
+  "source_family_count": 3,
+  "llm_eval_seed_rows": 122,
+  "outputs": {
+    "source_quality_by_source_type": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\source_quality_by_source_type.csv",
+    "source_quality_by_source_family": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\source_quality_by_source_family.csv",
+    "source_quality_by_source": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\source_quality_by_source.csv",
+    "source_quality_by_source_registry_id": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\source_quality_by_source_registry_id.csv",
+    "mistral_vs_codex_by_source_type": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\mistral_vs_codex_by_source_type.csv",
+    "source_quality_llm_eval_seed": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\source_quality_llm_eval_seed.jsonl",
+    "markdown": "data\\exports\\daily_retrieval_ppo_full_company_ir\\source_quality_audit_macro_rules\\SOURCE_QUALITY_AUDIT.md"
+  }
+}

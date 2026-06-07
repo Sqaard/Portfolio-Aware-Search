@@ -1,0 +1,84 @@
+{
+  "rows": 87,
+  "tickers": 29,
+  "by_likely_value": {
+    "high_static_or_wp_candidate": 23,
+    "medium_vendor_or_browser": 21,
+    "medium_duplicate_sec": 1,
+    "low_recheck": 7,
+    "low_blocked_unless_feed": 18,
+    "high_q4_feed": 15,
+    "medium_static_candidate": 2
+  },
+  "by_http_status": {
+    "200": 58,
+    "403": 22,
+    "no_response": 4,
+    "404": 3
+  },
+  "by_vendor_profile": {
+    "static_html_or_custom": 21,
+    "q4_or_q4_like": 21,
+    "cloudflare_challenge": 19,
+    "fetch_problem": 7,
+    "gcs_web": 5,
+    "quotemedia": 10,
+    "wordpress": 4
+  },
+  "new_vs_previous_review": {
+    "no": 62,
+    "yes": 25
+  },
+  "source_types": {
+    "company_news_archive": 6,
+    "investor_relations_hub": 11,
+    "sec_filings_archive": 1,
+    "earnings_results_archive": 18,
+    "investor_presentations_archive": 22,
+    "ir_press_releases_archive": 17,
+    "annual_reports_archive": 2,
+    "financial_reports_archive": 6,
+    "events_archive": 1,
+    "investor_reports_hub": 1,
+    "investor_resources_archive": 1,
+    "archive_hub": 1
+  },
+  "tickers_with_high_sources": [
+    "AAPL",
+    "AXP",
+    "BA",
+    "CAT",
+    "CRM",
+    "CSCO",
+    "DIS",
+    "GS",
+    "HD",
+    "IBM",
+    "INTC",
+    "MCD",
+    "MRK",
+    "MSFT",
+    "TRV",
+    "UNH",
+    "V",
+    "VZ"
+  ],
+  "tickers_without_high_sources": [
+    "AMGN",
+    "AMZN",
+    "CVX",
+    "HON",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MMM",
+    "NKE",
+    "PG",
+    "WMT"
+  ],
+  "outputs": {
+    "review_csv": "data\\source_registry\\deep_research_report_10_official_ir_sources_review_2026-05-13.csv",
+    "summary_json": "data\\source_registry\\deep_research_report_10_official_ir_sources_review_2026-05-13_summary.json",
+    "normalized_csv": "data\\source_registry\\deep_research_report_10_official_ir_sources.csv"
+  }
+}

@@ -1,0 +1,1563 @@
+[
+  {
+    "kind": "raw_docs",
+    "name": "SEC 300 filings raw",
+    "path": "data/raw_documents/sec_dow30_2010_2023_300.jsonl",
+    "exists": true,
+    "size_mb": 2.6,
+    "meta": {
+      "rows": 300,
+      "bad": 0,
+      "tickers": 30,
+      "top_tickers": {
+        "AAPL": 10,
+        "AMGN": 10,
+        "AMZN": 10,
+        "AXP": 10,
+        "BA": 10
+      },
+      "years": {
+        "2010": 43,
+        "2011": 21,
+        "2012": 8,
+        "2013": 22,
+        "2014": 9,
+        "2015": 15,
+        "2016": 17,
+        "2017": 15,
+        "2018": 16,
+        "2019": 12,
+        "2020": 18,
+        "2021": 74,
+        "2022": 7,
+        "2023": 23
+      },
+      "source_types": {
+        "sec_filing": 300
+      },
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "raw_docs",
+    "name": "SEC legacy 245 filings raw",
+    "path": "data/raw_documents/sec_dow30_filings_2010_2023.jsonl",
+    "exists": true,
+    "size_mb": 1.77,
+    "meta": {
+      "rows": 245,
+      "bad": 0,
+      "tickers": 30,
+      "top_tickers": {
+        "AAPL": 10,
+        "AMGN": 10,
+        "AMZN": 10,
+        "AXP": 10,
+        "BA": 10
+      },
+      "years": {
+        "2010": 23,
+        "2011": 21,
+        "2012": 8,
+        "2013": 16,
+        "2014": 8,
+        "2015": 15,
+        "2016": 17,
+        "2017": 8,
+        "2018": 16,
+        "2019": 12,
+        "2020": 17,
+        "2021": 54,
+        "2023": 30
+      },
+      "source_types": {
+        "sec_filing": 245
+      },
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "processed_docs",
+    "name": "SEC full sections processed",
+    "path": "data/processed_documents/sec_dow30_2010_2023_300_sections_documents.jsonl",
+    "exists": true,
+    "size_mb": 30.8,
+    "meta": {
+      "rows": 1032,
+      "bad": 0,
+      "tickers": 30,
+      "top_tickers": {
+        "AAPL": 47,
+        "SHW": 46,
+        "WMT": 46,
+        "TRV": 44,
+        "UNH": 44
+      },
+      "years": {
+        "2010": 142,
+        "2011": 55,
+        "2012": 19,
+        "2013": 77,
+        "2014": 30,
+        "2015": 51,
+        "2016": 59,
+        "2017": 58,
+        "2018": 56,
+        "2019": 44,
+        "2020": 70,
+        "2021": 256,
+        "2022": 32,
+        "2023": 83
+      },
+      "source_types": {
+        "sec_filing_section": 818,
+        "sec_filing_exhibit": 214
+      },
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "raw_docs",
+    "name": "Company official Q4/API detail docs",
+    "path": "data/raw_documents/company_archive_unified_detail_discovery_2010_2023_documents.jsonl",
+    "exists": true,
+    "size_mb": 10.36,
+    "meta": {
+      "rows": 924,
+      "bad": 0,
+      "tickers": 11,
+      "top_tickers": {
+        "V": 138,
+        "TRV": 117,
+        "CAT": 106,
+        "DIS": 98,
+        "AXP": 80
+      },
+      "years": {
+        "2015": 7,
+        "2016": 11,
+        "2017": 19,
+        "2018": 30,
+        "2019": 77,
+        "2020": 86,
+        "2021": 111,
+        "2022": 207,
+        "2023": 376
+      },
+      "source_types": {
+        "company_earnings_release": 439,
+        "company_official_archive": 249,
+        "company_press_release": 236
+      },
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "source_registry",
+    "name": "Unified company source URLs",
+    "path": "data/source_registry/official_company_sources_unified_2026-05-13.csv",
+    "exists": true,
+    "size_mb": 0.09,
+    "meta": {
+      "rows": 139,
+      "cols": 20,
+      "tickers": 29,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "source_registry",
+    "name": "Company detail manifest",
+    "path": "data/source_registry/company_archive_unified_detail_discovery_2010_2023_detail_manifest.csv",
+    "exists": true,
+    "size_mb": 3.75,
+    "meta": {
+      "rows": 3643,
+      "cols": 21,
+      "tickers": 24,
+      "dates": 821,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "source_registry",
+    "name": "Company vendor queue",
+    "path": "data/source_registry/company_archive_unified_detail_discovery_2010_2023_vendor_queue.csv",
+    "exists": true,
+    "size_mb": 0.02,
+    "meta": {
+      "rows": 58,
+      "cols": 12,
+      "tickers": 20,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "raw_docs",
+    "name": "Macro raw official_macro_2010_2023.jsonl",
+    "path": "data\\raw_documents\\official_macro_2010_2023.jsonl",
+    "exists": true,
+    "size_mb": 34.61,
+    "meta": {
+      "rows": 18240,
+      "bad": 0,
+      "tickers": 1,
+      "top_tickers": {
+        "MARKET": 18240
+      },
+      "years": {
+        "2010": 1324,
+        "2011": 1331,
+        "2012": 1319,
+        "2013": 1326,
+        "2014": 1326,
+        "2015": 1329,
+        "2016": 1331,
+        "2017": 1323,
+        "2018": 1315,
+        "2019": 1323,
+        "2020": 1330,
+        "2021": 1328,
+        "2022": 1331,
+        "2023": 385,
+        "2024": 263,
+        "2025": 261,
+        "2026": 95
+      },
+      "source_types": {
+        "official_macro_release": 18240
+      },
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "processed_docs",
+    "name": "Macro processed official_macro_2010_2023_documents.jsonl",
+    "path": "data\\processed_documents\\official_macro_2010_2023_documents.jsonl",
+    "exists": true,
+    "size_mb": 37.64,
+    "meta": {
+      "rows": 18240,
+      "bad": 0,
+      "tickers": 1,
+      "top_tickers": {
+        "MARKET": 18240
+      },
+      "years": {
+        "2010": 1324,
+        "2011": 1331,
+        "2012": 1319,
+        "2013": 1326,
+        "2014": 1326,
+        "2015": 1329,
+        "2016": 1331,
+        "2017": 1323,
+        "2018": 1315,
+        "2019": 1323,
+        "2020": 1330,
+        "2021": 1328,
+        "2022": 1331,
+        "2023": 385,
+        "2024": 263,
+        "2025": 261,
+        "2026": 95
+      },
+      "source_types": {
+        "official_macro_release": 18240
+      },
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export retrieved_contexts_daily.jsonl",
+    "path": "data/exports/daily_retrieval_ppo_full_dis_legacy/retrieved_contexts_daily.jsonl",
+    "exists": false,
+    "size_mb": null,
+    "meta": null,
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export manifest_daily.json",
+    "path": "data/exports/daily_retrieval_ppo_full_dis_legacy/manifest_daily.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "output": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\retrieved_contexts.jsonl",
+      "document_inputs": [
+        "data\\processed_documents\\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl",
+        "data\\processed_documents\\official_macro_2010_2023_documents.jsonl"
+      ],
+      "document_count": 25251,
+      "base_panel": {
+        "path": "..\\processed_final_fixed_external_lagclean_full.csv",
+        "row_count": 96019,
+        "date_column": "date",
+        "ticker_column": "tic",
+        "date_min": "2010-01-04",
+        "date_max": "2023-02-28",
+        "trading_date_count": 3311
+      },
+      "base_panel_date_range": {
+        "start": "2010-01-04",
+        "end": "2023-02-28"
+      },
+      "base_panel_trading_calendar": {
+        "count": 3311,
+        "first": "2010-01-04",
+        "last": "2023-02-28"
+      },
+      "decision_time_policy": "market_open",
+      "decision_timezone": "America/New_York",
+      "active_universe_by_date": {
+        "date_count": 3311,
+        "min_count": 29,
+        "max_count": 29
+      },
+      "parameters": {
+        "portfolio_top_k_per_day": 5,
+        "ticker_top_k_per_day": 1,
+        "ticker_date_stride": 8,
+        "lookback_days": 365,
+        "max_contexts_total": 30000,
+        "method": "full_hybrid_diversified"
+      },
+      "row_count": 28493,
+      "retrieval_layer_counts": {
+        "portfolio": 16550,
+        "stock": 11943
+      },
+      "query_intent_counts": {
+        "rates_policy": 1192,
+        "market_volatility": 1,
+        "inflation_pressure": 114,
+        "macro_growth": 15534,
+        "earnings_guidance": 3097,
+        "company_risk": 7989,
+        "legal_regulatory": 566
+      },
+      "source_type_counts": {
+        "official_macro_release": 16550,
+        "sec_filing_exhibit": 3210,
+        "sec_filing_section": 8733
+      },
+      "split_counts": {
+        "train": 25447,
+        "test": 3046
+      },
+      "document_split_counts": {
+        "train": 25447,
+        "test": 3046
+      },
+      "age_bucket_counts": {
+        "0_1d": 1240,
+        "2_7d": 1915,
+        "8_30d": 3632,
+        "31_90d": 8487,
+        "over_90d": 13219
+      },
+      "unique_doc_ids": 2141,
+      "unique_decision_dates": 3310,
+      "unique_tickers": 29,
+      "sparse_query_cache_entries": 30,
+      "strict_leakage_rows": 0,
+      "missing_active_ticker_dates": 0
+    },
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export codex_teacher_seed.jsonl",
+    "path": "data/exports/daily_retrieval_ppo_full_dis_legacy/codex_rule_text_features/codex_teacher_seed.jsonl",
+    "exists": true,
+    "size_mb": 0.72,
+    "meta": {
+      "rows": 300,
+      "bad": 0,
+      "tickers": 0,
+      "top_tickers": {},
+      "years": {
+        "2010": 17,
+        "2011": 30,
+        "2012": 26,
+        "2013": 4,
+        "2014": 34,
+        "2015": 4,
+        "2016": 54,
+        "2017": 5,
+        "2018": 9,
+        "2019": 6,
+        "2020": 92,
+        "2021": 10,
+        "2022": 7,
+        "2023": 2
+      },
+      "source_types": {
+        "sec_filing_section": 266,
+        "sec_filing_exhibit": 30,
+        "official_macro_release": 4
+      },
+      "splits": {
+        "train": 286,
+        "test": 14
+      },
+      "layers": {
+        "stock": 296,
+        "portfolio": 4
+      }
+    },
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export rl_panel_codex_rule_text_features.csv",
+    "path": "data/exports/daily_retrieval_ppo_full_dis_legacy/codex_rule_text_features/rl_panel_codex_rule_text_features.csv",
+    "exists": false,
+    "size_mb": null,
+    "meta": null,
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export daily_stock_text_features.csv",
+    "path": "data/exports/daily_retrieval_ppo_full_dis_legacy/codex_rule_text_features/daily_stock_text_features.csv",
+    "exists": false,
+    "size_mb": null,
+    "meta": null,
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export daily_portfolio_text_features.csv",
+    "path": "data/exports/daily_retrieval_ppo_full_dis_legacy/codex_rule_text_features/daily_portfolio_text_features.csv",
+    "exists": false,
+    "size_mb": null,
+    "meta": null,
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export mistral_predictions.jsonl",
+    "path": "data/exports/mistral_vs_codex_seed/mistral_predictions.jsonl",
+    "exists": true,
+    "size_mb": 0.38,
+    "meta": {
+      "rows": 300,
+      "bad": 0,
+      "tickers": 0,
+      "top_tickers": {},
+      "years": {},
+      "source_types": {},
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export comparison_rows.csv",
+    "path": "data/exports/mistral_vs_codex_seed/comparison_rows.csv",
+    "exists": true,
+    "size_mb": 0.13,
+    "meta": {
+      "rows": 300,
+      "cols": 34,
+      "tickers": 0,
+      "dates": 0,
+      "splits": {
+        "train": 286,
+        "test": 14
+      },
+      "layers": {
+        "stock": 296,
+        "portfolio": 4
+      }
+    },
+    "note": ""
+  },
+  {
+    "kind": "export",
+    "name": "Export comparison_summary.json",
+    "path": "data/exports/mistral_vs_codex_seed/comparison_summary.json",
+    "exists": true,
+    "size_mb": 0.01,
+    "meta": {
+      "prediction_rows": 300,
+      "comparison_rows": 300,
+      "successful_rows": 300,
+      "failed_rows": 0,
+      "impact_direction_accuracy": 0.703333,
+      "signal_precision": 0.692389,
+      "signal_recall": 0.457456,
+      "signal_f1": 0.525803,
+      "numeric_mae": {
+        "risk_intensity": 0.15,
+        "uncertainty_intensity": 0.26125,
+        "sentiment_proxy": 0.685905,
+        "portfolio_action_relevance": 0.28325
+      },
+      "document_split_counts": {
+        "train": 286,
+        "test": 14
+      },
+      "regime_counts": {
+        "china_oil_growth_scare": 31,
+        "taper_low_volatility": 39,
+        "inflation_bear_market": 4,
+        "post_gfc_recovery": 20,
+        "trade_war_late_cycle": 10,
+        "eurozone_us_debt_volatility": 55,
+        "tax_reform_late_cycle": 36,
+        "reopening_inflation": 78,
+        "early_fed_pivot_to_tightening": 5,
+        "aggressive_fed_tightening": 3,
+        "pre_banking_stress_oos": 2,
+        "covid_crash": 17
+      },
+      "by_group": {
+        "document_split": {
+          "test": {
+            "rows": 14,
+            "successful_rows": 14,
+            "impact_direction_accuracy": 0.642857,
+            "signal_f1": 0.645692,
+            "risk_mae": 0.242857,
+            "action_relevance_mae": 0.228393
+          },
+          "train": {
+            "rows": 286,
+            "successful_rows": 286,
+            "impact_direction_accuracy": 0.706294,
+            "signal_f1": 0.519934,
+            "risk_mae": 0.145455,
+            "action_relevance_mae": 0.285935
+          }
+        },
+        "retrieval_layer": {
+          "portfolio": {
+            "rows": 4,
+            "successful_rows": 4,
+            "impact_direction_accuracy": 0.0,
+            "signal_f1": 0.916667,
+            "risk_mae": 0.55,
+            "action_relevance_mae": 0.190625
+          },
+          "stock": {
+            "rows": 296,
+            "successful_rows": 296,
+            "impact_direction_accuracy": 0.712838,
+            "signal_f1": 0.520521,
+            "risk_mae": 0.144595,
+            "action_relevance_mae": 0.284502
+          }
+        },
+        "source_type": {
+          "official_macro_release": {
+            "rows": 4,
+            "successful_rows": 4,
+            "impact_direction_accuracy": 0.0,
+            "signal_f1": 0.916667,
+            "risk_mae": 0.55,
+            "action_relevance_mae": 0.190625
+          },
+          "sec_filing_exhibit": {
+            "rows": 30,
+            "successful_rows": 30,
+            "impact_direction_accuracy": 0.7,
+            "signal_f1": 0.508572,
+            "risk_mae": 0.21,
+            "action_relevance_mae": 0.178833
+          },
+          "sec_filing_section": {
+            "rows": 266,
+            "successful_rows": 266,
+            "impact_direction_accuracy": 0.714286,
+            "signal_f1": 0.521869,
+            "risk_mae": 0.137218,
+            "action_relevance_mae": 0.296419
+          }
+        },
+        "query_intent_primary": {
+          "company_risk": {
+            "rows": 253,
+            "successful_rows": 253,
+            "impact_direction_accuracy": 0.72332,
+            "signal_f1": 0.52128,
+            "risk_mae": 0.122925,
+            "action_relevance_mae": 0.29251
+          },
+          "earnings_guidance": {
+            "rows": 28,
+            "successful_rows": 28,
+            "impact_direction_accuracy": 0.714286,
+            "signal_f1": 0.534694,
+            "risk_mae": 0.203571,
+            "action_relevance_mae": 0.161429
+          },
+          "inflation_pressure": {
+            "rows": 2,
+            "successful_rows": 2,
+            "impact_direction_accuracy": 0.0,
+            "signal_f1": 0.642857,
+            "risk_mae": 0.6,
+            "action_relevance_mae": 0.32625
+          },
+          "legal_regulatory": {
+            "rows": 13,
+            "successful_rows": 13,
+            "impact_direction_accuracy": 0.615385,
+            "signal_f1": 0.533333,
+            "risk_mae": 0.346154,
+            "action_relevance_mae": 0.375962
+          },
+          "macro_growth": {
+            "rows": 1,
+            "successful_rows": 1,
+            "impact_direction_accuracy": 0.0,
+            "signal_f1": 1.0,
+            "risk_mae": 0.3,
+            "action_relevance_mae": 0.1675
+          },
+          "market_volatility": {
+            "rows": 1,
+            "successful_rows": 1,
+            "impact_direction_accuracy": 0.0,
+            "signal_f1": 1.0,
+            "risk_mae": 0.7,
+            "action_relevance_mae": 0.0675
+          },
+          "rates_policy": {
+            "rows": 2,
+            "successful_rows": 2,
+            "impact_direction_accuracy": 0.0,
+            "signal_f1": 0.333334,
+            "risk_mae": 0.75,
+            "action_relevance_mae": 0.3375
+          }
+        },
+        "regime": {
+          "aggressive_fed_tightening": {
+            "rows": 3,
+            "successful_rows": 3,
+            "impact_direction_accuracy": 0.666667,
+            "signal_f1": 0.642857,
+            "risk_mae": 0.3,
+            "action_relevance_mae": 0.053333
+          },
+          "china_oil_growth_scare": {
+            "rows": 31,
+            "successful_rows": 31,
+            "impact_direction_accuracy": 0.516129,
+            "signal_f1": 0.507465,
+            "risk_mae": 0.129032,
+            "action_relevance_mae": 0.443468
+          },
+          "covid_crash": {
+            "rows": 17,
+            "successful_rows": 17,
+            "impact_direction_accuracy": 0.294118,
+            "signal_f1": 0.302521,
+            "risk_mae": 0.182353,
+            "action_relevance_mae": 0.527941
+          },
+          "early_fed_pivot_to_tightening": {
+            "rows": 5,
+            "successful_rows": 5,
+            "impact_direction_accuracy": 0.6,
+            "signal_f1": 0.626667,
+            "risk_mae": 0.34,
+            "action_relevance_mae": 0.24
+          },
+          "eurozone_us_debt_volatility": {
+            "rows": 55,
+            "successful_rows": 55,
+            "impact_direction_accuracy": 0.854545,
+            "signal_f1": 0.664845,
+            "risk_mae": 0.169091,
+            "action_relevance_mae": 0.195182
+          },
+          "inflation_bear_market": {
+            "rows": 4,
+            "successful_rows": 4,
+            "impact_direction_accuracy": 0.5,
+            "signal_f1": 0.727778,
+            "risk_mae": 0.2,
+            "action_relevance_mae": 0.429375
+          },
+          "post_gfc_recovery": {
+            "rows": 20,
+            "successful_rows": 20,
+            "impact_direction_accuracy": 0.7,
+            "signal_f1": 0.461508,
+            "risk_mae": 0.2175,
+            "action_relevance_mae": 0.21275
+          },
+          "pre_banking_stress_oos": {
+            "rows": 2,
+            "successful_rows": 2,
+            "impact_direction_accuracy": 1.0,
+            "signal_f1": 0.533334,
+            "risk_mae": 0.0,
+            "action_relevance_mae": 0.06
+          },
+          "reopening_inflation": {
+            "rows": 78,
+            "successful_rows": 78,
+            "impact_direction_accuracy": 0.846154,
+            "signal_f1": 0.478165,
+            "risk_mae": 0.114744,
+            "action_relevance_mae": 0.208462
+          },
+          "taper_low_volatility": {
+            "rows": 39,
+            "successful_rows": 39,
+            "impact_direction_accuracy": 0.897436,
+            "signal_f1": 0.637699,
+            "risk_mae": 0.189744,
+            "action_relevance_mae": 0.180641
+          },
+          "tax_reform_late_cycle": {
+            "rows": 36,
+            "successful_rows": 36,
+            "impact_direction_accuracy": 0.361111,
+            "signal_f1": 0.422787,
+            "risk_mae": 0.051389,
+            "action_relevance_mae": 0.516875
+          },
+          "trade_war_late_cycle": {
+            "rows": 10,
+            "successful_rows": 10,
+            "impact_direction_accuracy": 0.6,
+            "signal_f1": 0.464286,
+            "risk_mae": 0.265,
+            "action_relevance_mae": 0.21525
+          }
+        }
+      },
+      "status": "completed",
+      "seed_path": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\codex_rule_text_features\\codex_teacher_seed.jsonl",
+      "model": "mistral-small-latest",
+      "base_url": "https://api.mistral.ai/v1/chat/completions",
+      "outputs": {
+        "predictions": "data\\exports\\mistral_vs_codex_seed\\mistral_predictions.jsonl",
+        "comparison_rows": "data\\exports\\mistral_vs_codex_seed\\comparison_rows.csv",
+        "summary": "data\\exports\\mistral_vs_codex_seed\\comparison_summary.json",
+        "failed_rows": "data\\exports\\mistral_vs_codex_seed\\failed_rows.jsonl"
+      }
+    },
+    "note": ""
+  },
+  {
+    "kind": "annotation",
+    "name": "Annotation annotation_pool_batch_sample.csv",
+    "path": "data\\annotations\\annotation_pool_batch_sample.csv",
+    "exists": true,
+    "size_mb": 0.03,
+    "meta": {
+      "rows": 46,
+      "cols": 21,
+      "tickers": 4,
+      "dates": 10,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "annotation",
+    "name": "Annotation bootstrap_from_pool_issues.csv",
+    "path": "data\\annotations\\bootstrap_from_pool_issues.csv",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "rows": 21,
+      "cols": 5,
+      "tickers": 0,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "annotation",
+    "name": "Annotation bootstrap_from_pool_qrels.csv",
+    "path": "data\\annotations\\bootstrap_from_pool_qrels.csv",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "rows": 25,
+      "cols": 6,
+      "tickers": 0,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "annotation",
+    "name": "Annotation bootstrap_sample_qrels.csv",
+    "path": "data\\annotations\\bootstrap_sample_qrels.csv",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "rows": 40,
+      "cols": 3,
+      "tickers": 0,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "annotation",
+    "name": "Annotation human_qrels_template.csv",
+    "path": "data\\annotations\\human_qrels_template.csv",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "rows": 0,
+      "cols": 6,
+      "tickers": 0,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "annotation",
+    "name": "Annotation sample_qrels.csv",
+    "path": "data\\annotations\\sample_qrels.csv",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "rows": 40,
+      "cols": 3,
+      "tickers": 0,
+      "dates": 0,
+      "splits": {},
+      "layers": {}
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest manifest_daily.json",
+    "path": "data\\exports\\daily_retrieval_ppo\\manifest_daily.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "output": "data\\exports\\daily_retrieval_ppo\\retrieved_contexts.jsonl",
+      "document_inputs": [
+        "data\\processed_documents\\sec_dow30_2010_2023_300_sections_documents.jsonl",
+        "data\\processed_documents\\official_macro_2010_2023_documents.jsonl"
+      ],
+      "document_count": 19272,
+      "base_panel": {
+        "path": "..\\processed_final_fixed_external_lagclean_full.csv",
+        "row_count": 96019,
+        "date_column": "date",
+        "ticker_column": "tic",
+        "date_min": "2010-01-04",
+        "date_max": "2023-02-28",
+        "trading_date_count": 3311
+      },
+      "base_panel_date_range": {
+        "start": "2010-01-04",
+        "end": "2023-02-28"
+      },
+      "base_panel_trading_calendar": {
+        "count": 3311,
+        "first": "2010-01-04",
+        "last": "2023-02-28"
+      },
+      "decision_time_policy": "market_open",
+      "decision_timezone": "America/New_York",
+      "active_universe_by_date": {
+        "date_count": 3311,
+        "min_count": 29,
+        "max_count": 29
+      },
+      "parameters": {
+        "portfolio_top_k_per_day": 5,
+        "ticker_top_k_per_day": 1,
+        "ticker_date_stride": 5,
+        "lookback_days": 365,
+        "max_contexts_total": 30000,
+        "method": "full_hybrid_diversified"
+      },
+      "row_count": 27016,
+      "retrieval_layer_counts": {
+        "portfolio": 16550,
+        "stock": 10466
+      },
+      "query_intent_counts": {
+        "rates_policy": 548,
+        "market_volatility": 61,
+        "inflation_pressure": 205,
+        "macro_growth": 16456,
+        "company_risk": 5587,
+        "legal_regulatory": 1218,
+        "earnings_guidance": 2941
+      },
+      "source_type_counts": {
+        "official_macro_release": 16550,
+        "sec_filing_section": 9269,
+        "sec_filing_exhibit": 1197
+      },
+      "split_counts": {
+        "train": 23599,
+        "test": 3417
+      },
+      "document_split_counts": {
+        "train": 23599,
+        "test": 3417
+      },
+      "age_bucket_counts": {
+        "0_1d": 316,
+        "2_7d": 1611,
+        "8_30d": 5220,
+        "31_90d": 8232,
+        "over_90d": 11637
+      },
+      "unique_doc_ids": 634,
+      "unique_decision_dates": 3310,
+      "unique_tickers": 28,
+      "sparse_query_cache_entries": 29,
+      "strict_leakage_rows": 0,
+      "missing_active_ticker_dates": 0
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest rl_panel_codex_rule_text_features_manifest.json",
+    "path": "data\\exports\\daily_retrieval_ppo\\rl_panel_codex_rule_text_features_manifest.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "base_panel": "..\\processed_final_fixed_external_lagclean_full.csv",
+      "stock_features": "data\\exports\\daily_retrieval_ppo\\codex_rule_text_features\\daily_stock_text_features_codex_rule.csv",
+      "portfolio_features": "data\\exports\\daily_retrieval_ppo\\codex_rule_text_features\\daily_portfolio_text_features_codex_rule.csv",
+      "output": "data\\exports\\daily_retrieval_ppo\\rl_panel_codex_rule_text_features.csv",
+      "base_rows": 96019,
+      "unique_dates": 3311,
+      "unique_tickers": 29,
+      "stock_feature_rows": 10466,
+      "portfolio_feature_rows": 3310,
+      "stock_matched_rows": 10466,
+      "portfolio_matched_rows": 95990,
+      "stock_coverage_rate": 0.108999,
+      "portfolio_coverage_rate": 0.999698,
+      "train_end": "2021-10-01"
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest manifest_daily.json",
+    "path": "data\\exports\\daily_retrieval_ppo_full\\manifest_daily.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "output": "data\\exports\\daily_retrieval_ppo_full\\retrieved_contexts.jsonl",
+      "document_inputs": [
+        "data\\processed_documents\\sec_dow30_ppo_2010_2023_1740_sections_documents.jsonl",
+        "data\\processed_documents\\official_macro_2010_2023_documents.jsonl"
+      ],
+      "document_count": 25064,
+      "base_panel": {
+        "path": "..\\processed_final_fixed_external_lagclean_full.csv",
+        "row_count": 96019,
+        "date_column": "date",
+        "ticker_column": "tic",
+        "date_min": "2010-01-04",
+        "date_max": "2023-02-28",
+        "trading_date_count": 3311
+      },
+      "base_panel_date_range": {
+        "start": "2010-01-04",
+        "end": "2023-02-28"
+      },
+      "base_panel_trading_calendar": {
+        "count": 3311,
+        "first": "2010-01-04",
+        "last": "2023-02-28"
+      },
+      "decision_time_policy": "market_open",
+      "decision_timezone": "America/New_York",
+      "active_universe_by_date": {
+        "date_count": 3311,
+        "min_count": 29,
+        "max_count": 29
+      },
+      "parameters": {
+        "portfolio_top_k_per_day": 5,
+        "ticker_top_k_per_day": 1,
+        "ticker_date_stride": 8,
+        "lookback_days": 365,
+        "max_contexts_total": 30000,
+        "method": "full_hybrid_diversified"
+      },
+      "row_count": 28204,
+      "retrieval_layer_counts": {
+        "portfolio": 16550,
+        "stock": 11654
+      },
+      "query_intent_counts": {
+        "rates_policy": 1011,
+        "market_volatility": 1,
+        "inflation_pressure": 1,
+        "macro_growth": 15537,
+        "earnings_guidance": 3500,
+        "company_risk": 7619,
+        "legal_regulatory": 535
+      },
+      "source_type_counts": {
+        "official_macro_release": 16550,
+        "sec_filing_exhibit": 3770,
+        "sec_filing_section": 7884
+      },
+      "split_counts": {
+        "train": 25158,
+        "test": 3046
+      },
+      "document_split_counts": {
+        "train": 25158,
+        "test": 3046
+      },
+      "age_bucket_counts": {
+        "0_1d": 1229,
+        "2_7d": 1877,
+        "8_30d": 3566,
+        "31_90d": 8420,
+        "over_90d": 13112
+      },
+      "unique_doc_ids": 2086,
+      "unique_decision_dates": 3310,
+      "unique_tickers": 29,
+      "sparse_query_cache_entries": 30,
+      "strict_leakage_rows": 0,
+      "missing_active_ticker_dates": 0
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest rl_panel_codex_rule_text_features_manifest.json",
+    "path": "data\\exports\\daily_retrieval_ppo_full\\rl_panel_codex_rule_text_features_manifest.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "base_panel": "..\\processed_final_fixed_external_lagclean_full.csv",
+      "stock_features": "data\\exports\\daily_retrieval_ppo_full\\codex_rule_text_features\\daily_stock_text_features_codex_rule.csv",
+      "portfolio_features": "data\\exports\\daily_retrieval_ppo_full\\codex_rule_text_features\\daily_portfolio_text_features_codex_rule.csv",
+      "output": "data\\exports\\daily_retrieval_ppo_full\\rl_panel_codex_rule_text_features.csv",
+      "base_rows": 96019,
+      "unique_dates": 3311,
+      "unique_tickers": 29,
+      "stock_feature_rows": 11654,
+      "portfolio_feature_rows": 3310,
+      "stock_matched_rows": 11654,
+      "portfolio_matched_rows": 95990,
+      "stock_coverage_rate": 0.121372,
+      "portfolio_coverage_rate": 0.999698,
+      "train_end": "2021-10-01",
+      "dropped_constant_text_columns": [
+        "portfolio_signal_capital_return_count",
+        "portfolio_signal_capital_return_flag",
+        "portfolio_signal_company_risk_count",
+        "portfolio_signal_company_risk_flag",
+        "portfolio_signal_earnings_guidance_count",
+        "portfolio_signal_earnings_guidance_flag",
+        "portfolio_signal_housing_count",
+        "portfolio_signal_housing_flag",
+        "portfolio_signal_legal_regulatory_count",
+        "portfolio_signal_legal_regulatory_flag",
+        "portfolio_signal_margin_pressure_count",
+        "portfolio_signal_margin_pressure_flag",
+        "portfolio_signal_mna_count",
+        "portfolio_signal_mna_flag",
+        "portfolio_signal_supply_chain_count",
+        "portfolio_signal_supply_chain_flag"
+      ]
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest manifest_daily.json",
+    "path": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\manifest_daily.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "output": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\retrieved_contexts.jsonl",
+      "document_inputs": [
+        "data\\processed_documents\\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl",
+        "data\\processed_documents\\official_macro_2010_2023_documents.jsonl"
+      ],
+      "document_count": 25251,
+      "base_panel": {
+        "path": "..\\processed_final_fixed_external_lagclean_full.csv",
+        "row_count": 96019,
+        "date_column": "date",
+        "ticker_column": "tic",
+        "date_min": "2010-01-04",
+        "date_max": "2023-02-28",
+        "trading_date_count": 3311
+      },
+      "base_panel_date_range": {
+        "start": "2010-01-04",
+        "end": "2023-02-28"
+      },
+      "base_panel_trading_calendar": {
+        "count": 3311,
+        "first": "2010-01-04",
+        "last": "2023-02-28"
+      },
+      "decision_time_policy": "market_open",
+      "decision_timezone": "America/New_York",
+      "active_universe_by_date": {
+        "date_count": 3311,
+        "min_count": 29,
+        "max_count": 29
+      },
+      "parameters": {
+        "portfolio_top_k_per_day": 5,
+        "ticker_top_k_per_day": 1,
+        "ticker_date_stride": 8,
+        "lookback_days": 365,
+        "max_contexts_total": 30000,
+        "method": "full_hybrid_diversified"
+      },
+      "row_count": 28493,
+      "retrieval_layer_counts": {
+        "portfolio": 16550,
+        "stock": 11943
+      },
+      "query_intent_counts": {
+        "rates_policy": 1192,
+        "market_volatility": 1,
+        "inflation_pressure": 114,
+        "macro_growth": 15534,
+        "earnings_guidance": 3097,
+        "company_risk": 7989,
+        "legal_regulatory": 566
+      },
+      "source_type_counts": {
+        "official_macro_release": 16550,
+        "sec_filing_exhibit": 3210,
+        "sec_filing_section": 8733
+      },
+      "split_counts": {
+        "train": 25447,
+        "test": 3046
+      },
+      "document_split_counts": {
+        "train": 25447,
+        "test": 3046
+      },
+      "age_bucket_counts": {
+        "0_1d": 1240,
+        "2_7d": 1915,
+        "8_30d": 3632,
+        "31_90d": 8487,
+        "over_90d": 13219
+      },
+      "unique_doc_ids": 2141,
+      "unique_decision_dates": 3310,
+      "unique_tickers": 29,
+      "sparse_query_cache_entries": 30,
+      "strict_leakage_rows": 0,
+      "missing_active_ticker_dates": 0
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest rl_panel_codex_rule_text_features_manifest.json",
+    "path": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\rl_panel_codex_rule_text_features_manifest.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "base_panel": "..\\processed_final_fixed_external_lagclean_full.csv",
+      "stock_features": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\codex_rule_text_features\\daily_stock_text_features_codex_rule.csv",
+      "portfolio_features": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\codex_rule_text_features\\daily_portfolio_text_features_codex_rule.csv",
+      "output": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\rl_panel_codex_rule_text_features.csv",
+      "base_rows": 96019,
+      "unique_dates": 3311,
+      "unique_tickers": 29,
+      "stock_feature_rows": 11943,
+      "portfolio_feature_rows": 3310,
+      "stock_matched_rows": 11943,
+      "portfolio_matched_rows": 95990,
+      "stock_coverage_rate": 0.124382,
+      "portfolio_coverage_rate": 0.999698,
+      "train_end": "2021-10-01",
+      "dropped_constant_text_columns": [
+        "portfolio_signal_capital_return_count",
+        "portfolio_signal_capital_return_flag",
+        "portfolio_signal_company_risk_count",
+        "portfolio_signal_company_risk_flag",
+        "portfolio_signal_earnings_guidance_count",
+        "portfolio_signal_earnings_guidance_flag",
+        "portfolio_signal_housing_count",
+        "portfolio_signal_housing_flag",
+        "portfolio_signal_legal_regulatory_count",
+        "portfolio_signal_legal_regulatory_flag",
+        "portfolio_signal_margin_pressure_count",
+        "portfolio_signal_margin_pressure_flag",
+        "portfolio_signal_mna_count",
+        "portfolio_signal_mna_flag",
+        "portfolio_signal_supply_chain_count",
+        "portfolio_signal_supply_chain_flag"
+      ]
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest manifest_daily.json",
+    "path": "data\\exports\\daily_retrieval_sample\\manifest_daily.json",
+    "exists": true,
+    "size_mb": 0.0,
+    "meta": {
+      "output": "data\\exports\\daily_retrieval_sample\\retrieved_contexts.jsonl",
+      "document_inputs": [
+        "data\\processed_documents\\sec_dow30_2010_2023_300_sections_documents.jsonl",
+        "data\\processed_documents\\official_macro_2010_2023_documents.jsonl"
+      ],
+      "document_count": 19272,
+      "base_panel": {
+        "path": "..\\Supportive_project_FinGPT_as_feature_engine\\examples\\sample_base_macro_panel.csv",
+        "row_count": 4,
+        "date_column": "date",
+        "ticker_column": "tic",
+        "date_min": "2022-03-15",
+        "date_max": "2022-03-15",
+        "trading_date_count": 1
+      },
+      "base_panel_date_range": {
+        "start": "2022-03-15",
+        "end": "2022-03-15"
+      },
+      "base_panel_trading_calendar": {
+        "count": 1,
+        "first": "2022-03-15",
+        "last": "2022-03-15"
+      },
+      "decision_time_policy": "market_open",
+      "decision_timezone": "America/New_York",
+      "active_universe_by_date": {
+        "date_count": 1,
+        "min_count": 4,
+        "max_count": 4
+      },
+      "parameters": {
+        "portfolio_top_k_per_day": 5,
+        "ticker_top_k_per_day": 2,
+        "lookback_days": 365,
+        "max_contexts_total": 0,
+        "method": "full_hybrid_diversified"
+      },
+      "row_count": 13,
+      "retrieval_layer_counts": {
+        "portfolio": 5,
+        "stock": 8
+      },
+      "query_intent_counts": {
+        "macro_growth": 5,
+        "earnings_guidance": 4,
+        "company_risk": 4
+      },
+      "source_type_counts": {
+        "official_macro_release": 5,
+        "sec_filing_exhibit": 2,
+        "sec_filing_section": 6
+      },
+      "split_counts": {
+        "test": 13
+      },
+      "document_split_counts": {
+        "test": 13
+      },
+      "age_bucket_counts": {
+        "2_7d": 2,
+        "31_90d": 2,
+        "over_90d": 9
+      },
+      "unique_doc_ids": 13,
+      "unique_decision_dates": 1,
+      "unique_tickers": 4,
+      "strict_leakage_rows": 0,
+      "missing_active_ticker_dates": 0
+    },
+    "note": ""
+  },
+  {
+    "kind": "export_manifest",
+    "name": "Manifest huawei_ppo_screening_manifest.json",
+    "path": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\ppo_ablation_package\\huawei_screening_seed42\\huawei_ppo_screening_manifest.json",
+    "exists": true,
+    "size_mb": 0.01,
+    "meta": {
+      "created_at_utc": "2026-05-13T14:04:58.674258+00:00",
+      "created_by": "features/prepare_huawei_ppo_screening_package.py",
+      "dataset": {
+        "copy_name": "rl_panel_codex_rule_text_features.csv",
+        "finportfolio_ir_relative_path": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\rl_panel_codex_rule_text_features.csv",
+        "local_source_path": "C:\\Users\\ivanp\\OneDrive\\Рабочий стол\\доки+черчи\\ITMO\\2_sem\\FinRL_Tsinghua\\FinPortfolio_IR\\data\\exports\\daily_retrieval_ppo_full_dis_legacy\\rl_panel_codex_rule_text_features.csv",
+        "test_end_inclusive": "2023-03-01",
+        "test_start_inclusive": "2021-10-01",
+        "train_end_exclusive": "2021-10-01"
+      },
+      "description": "One-seed PPO screening package for base_macro vs two selected FinIR/FinGPT text feature sets.",
+      "expected_outputs_per_experiment": [
+        "walk_forward_results.csv",
+        "unique_run_level_results.csv",
+        "walk_forward_daily_test_returns.csv",
+        "walk_forward_test_actions.csv",
+        "walk_forward_test_observations.csv",
+        "benchmark_suite_daily.csv",
+        "artifact_index.json",
+        "run_manifest.json"
+      ],
+      "experiments": [
+        {
+          "base_feature_columns": [
+            "daily_return",
+            "atr_rel",
+            "macd",
+            "rsi_30",
+            "cci_30",
+            "dx_30",
+            "volume_ratio",
+            "obv_pct_change",
+            "turbulence",
+            "10Y_Yield",
+            "VIX",
+            "SP500_Trend"
+          ],
+          "feature_columns": [
+            "daily_return",
+            "atr_rel",
+            "macd",
+            "rsi_30",
+            "cci_30",
+            "dx_30",
+            "volume_ratio",
+            "obv_pct_change",
+            "turbulence",
+            "10Y_Yield",
+            "VIX",
+            "SP500_Trend"
+          ],
+          "feature_count": 12,
+          "name": "base_macro",
+          "notebook": "notebooks/run_ppo_base_macro_seed42.ipynb",
+          "output_dir": "outputs/base_macro_seed42",
+          "purpose": "baseline",
+          "seed": 42,
+          "selection_rule": "",
+          "source_feature_spec": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\ppo_ablation_package\\feature_sets\\base_macro.json",
+          "text_feature_columns": [],
+          "text_feature_count": 0
+        },
+        {
+          "base_feature_columns": [
+            "daily_return",
+            "atr_rel",
+            "macd",
+            "rsi_30",
+            "cci_30",
+            "dx_30",
+            "volume_ratio",
+            "obv_pct_change",
+            "turbulence",
+            "10Y_Yield",
+            "VIX",
+            "SP500_Trend"
+          ],
+          "feature_columns": [
+            "daily_return",
+            "atr_rel",
+            "macd",
+            "rsi_30",
+            "cci_30",
+            "dx_30",
+            "volume_ratio",
+            "obv_pct_change",
+            "turbulence",
+            "10Y_Yield",
+            "VIX",
+            "SP500_Trend",
+            "portfolio_signal_credit_count",
+            "stock_signal_earnings_guidance_count",
+            "stock_text_avg_sentiment_proxy",
+            "stock_signal_margin_pressure_count",
+            "stock_signal_labor_growth_count",
+            "stock_signal_company_risk_count",
+            "stock_text_avg_uncertainty"
+          ],
+          "feature_count": 19,
+          "name": "base_macro_plus_text_lean_v1",
+          "notebook": "notebooks/run_ppo_base_macro_plus_text_lean_v1_seed42.ipynb",
+          "output_dir": "outputs/base_macro_plus_text_lean_v1_seed42",
+          "purpose": "one_seed_text_screen",
+          "seed": 42,
+          "selection_rule": "Train-only screen over forward volatility/drawdown/risk targets; redundant text features removed at Spearman |rho| >= 0.95.",
+          "source_feature_spec": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\ppo_ablation_package\\pre_ppo_diagnostics\\feature_set_base_macro_plus_text_lean_v1.json",
+          "text_feature_columns": [
+            "portfolio_signal_credit_count",
+            "stock_signal_earnings_guidance_count",
+            "stock_text_avg_sentiment_proxy",
+            "stock_signal_margin_pressure_count",
+            "stock_signal_labor_growth_count",
+            "stock_signal_company_risk_count",
+            "stock_text_avg_uncertainty"
+          ],
+          "text_feature_count": 7
+        },
+        {
+          "base_feature_columns": [
+            "daily_return",
+            "atr_rel",
+            "macd",
+            "rsi_30",
+            "cci_30",
+            "dx_30",
+            "volume_ratio",
+            "obv_pct_change",
+            "turbulence",
+            "10Y_Yield",
+            "VIX",
+            "SP500_Trend"
+          ],
+          "feature_columns": [
+            "daily_return",
+            "atr_rel",
+            "macd",
+            "rsi_30",
+            "cci_30",
+            "dx_30",
+            "volume_ratio",
+            "obv_pct_change",
+            "turbulence",
+            "10Y_Yield",
+            "VIX",
+            "SP500_Trend",
+            "portfolio_signal_consumer_demand_count",
+            "portfolio_signal_labor_growth_count",
+            "portfolio_signal_credit_count",
+            "portfolio_signal_macro_rates_count",
+            "portfolio_text_max_event_severity",
+            "portfolio_text_avg_sentiment_proxy",
+            "portfolio_text_avg_risk_intensity",
+            "portfolio_text_avg_uncertainty",
+            "portfolio_text_avg_action_relevance",
+            "stock_text_avg_risk_intensity",
+            "stock_text_avg_action_relevance",
+            "stock_text_avg_uncertainty",
+            "stock_signal_labor_growth_count",
+            "stock_text_avg_sentiment_proxy"
+          ],
+          "feature_count": 26,
+          "name": "base_macro_plus_text_action_primitive_v1",
+          "notebook": "notebooks/run_ppo_base_macro_plus_text_action_primitive_v1_seed42.ipynb",
+          "output_dir": "outputs/base_macro_plus_text_action_primitive_v1_seed42",
+          "purpose": "one_seed_text_screen",
+          "seed": 42,
+          "selection_rule": "Text features screened against teacher stock actions, latent action codes, and behavior primitives using train-before-2021-10-01 / OOS-after split.",
+          "source_feature_spec": "data\\exports\\daily_retrieval_ppo_full_dis_legacy\\ppo_ablation_package\\pre_ppo_diagnostics\\action_primitive_text_diagnostics\\feature_set_base_macro_plus_text_action_primitive_v1.json",
+          "text_feature_columns": [
+            "portfolio_signal_consumer_demand_count",
+            "portfolio_signal_labor_growth_count",
+            "portfolio_signal_credit_count",
+            "portfolio_signal_macro_rates_count",
+            "portfolio_text_max_event_severity",
+            "portfolio_text_avg_sentiment_proxy",
+            "portfolio_text_avg_risk_intensity",
+            "portfolio_text_avg_uncertainty",
+            "portfolio_text_avg_action_relevance",
+            "stock_text_avg_risk_intensity",
+            "stock_text_avg_action_relevance",
+            "stock_text_avg_uncertainty",
+            "stock_signal_labor_growth_count",
+            "stock_text_avg_sentiment_proxy"
+          ],
+          "text_feature_count": 14
+        }
+      ],
+      "name": "huawei_ppo_text_screening_seed42",
+      "post_run_outputs": [
+        "ppo_ablation_results.csv",
+        "ppo_ablation_daily_returns_combined.csv",
+        "ppo_ablation_comparison.md"
+      ],
+      "ppo_runner": {
+        "ablation_root_hint": "Ablation Ladder v2",
+        "python_env_hint": "tensorflow",
+        "runner_kwargs": {
+          "action_regularization": {
+            "concentration_penalty": 0.0,
+            "enabled": true,
+            "kl_to_previous_penalty": 0.0,
+            "max_weight_penalty": 0.0,
+            "normalize_penalties": true,
+            "smoothness_penalty": 0.03,
+            "train_only": true,
+            "turnover_penalty": 0.01
+          },
+          "base_config_name": "custom_custom",
+          "candidate_feature_families": [],
+          "checkpoint_freq": 4096,
+          "checkpoint_selection_rule": "checkpoint_robust_score",
+          "domain_reward_scaling": {},
+          "dropout_p": 0.1,
+          "es_mode": "relaxed",
+          "eval_freq": 8192,
+          "max_folds": null,
+          "seeds": [
+            42
+          ],
+          "total_timesteps": 200000,
+          "verbose": 0
+        }
+      },
+      "screening_gate": {
+        "baseline": "base_macro",
+        "promote_to_three_seeds_if": [
+          "daily_sharpe_ann_delta_vs_base > 0",
+          "daily_cumulative_return_delta_vs_base > 0",
+          "daily_max_drawdown no worse than base by more than 3 percentage points",
+          "daily_turnover_mean no more than 25 percent above base"
+        ]
+      }
+    },
+    "note": ""
+  }
+]

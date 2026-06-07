@@ -1,0 +1,52 @@
+{
+  "input_series": [
+    "DGS10",
+    "DGS2",
+    "T10Y2Y",
+    "VIXCLS",
+    "BAMLH0A0HYM2",
+    "DCOILWTICO",
+    "FEDFUNDS",
+    "CPIAUCSL",
+    "UNRATE",
+    "PAYEMS",
+    "INDPRO",
+    "HOUST"
+  ],
+  "raw_rows": 18240,
+  "processed_rows": 18240,
+  "start_date": "2010-01-01",
+  "end_date": "2023-03-01",
+  "series_counts": {
+    "DCOILWTICO": 3307,
+    "DGS10": 3292,
+    "DGS2": 3292,
+    "T10Y2Y": 3292,
+    "VIXCLS": 3319,
+    "FEDFUNDS": 159,
+    "PAYEMS": 159,
+    "UNRATE": 159,
+    "CPIAUCSL": 159,
+    "HOUST": 159,
+    "INDPRO": 159,
+    "BAMLH0A0HYM2": 784
+  },
+  "family_counts": {
+    "energy": 3307,
+    "rates": 6743,
+    "credit": 4076,
+    "market_volatility": 3319,
+    "labor": 318,
+    "inflation": 159,
+    "housing": 159,
+    "growth": 159
+  },
+  "split_counts": {
+    "train": 15574,
+    "test": 2666
+  },
+  "errors": [],
+  "error_count": 0,
+  "raw_output": "data\\raw_documents\\official_macro_2010_2023.jsonl",
+  "processed_output": "data\\processed_documents\\official_macro_2010_2023_documents.jsonl"
+}

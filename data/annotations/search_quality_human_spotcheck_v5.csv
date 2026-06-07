@@ -1,0 +1,4 @@
+spotcheck_id,query_id,doc_id,human_relevance,label_source,annotator,notes,title
+manual_v5_0001,web_microsoft_margins,sec_msft_8k_000119312519196501__exhibit_99_1,2,human_spotcheck_v5,user_chat,"Useful but not the strongest possible match, human spot-check label from chat.",MICROSOFT CORP 8-K filing filed 2019-07-18 - Exhibit 99.1 Earnings Release / Investor Material
+manual_v5_0002,web_apple_risk,sec_aapl_10q_000119312514024487__part1_item_1_financial_statements,2,human_spotcheck_v5,user_chat,"Useful but not the strongest possible match, human spot-check label from chat.",Apple Inc. 10-Q filing filed 2014-01-28 - Item 1 Financial Statements
+manual_v5_0003,web_mmm_litigation,sec_mmm_8k_000110465919023560__exhibit_99,1,human_spotcheck_v5,user_chat,"Weak fallback only, human spot-check label from chat.",3M CO 8-K filing filed 2019-04-25 - Exhibit 99 Earnings Release / Investor Material

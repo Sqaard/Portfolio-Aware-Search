@@ -1,0 +1,11 @@
+query_id,doc_id,rank,score,method
+sample_portfolio_001_2022-03-15,doc_000008,1,0.807386,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000001,2,0.669898,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000013,3,0.653431,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000002,4,0.608622,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000014,5,0.59693,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000023,6,0.589497,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000021,7,0.557638,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000003,8,0.549766,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000020,9,0.548031,full_hybrid_diversified
+sample_portfolio_001_2022-03-15,doc_000006,10,0.308907,full_hybrid_diversified

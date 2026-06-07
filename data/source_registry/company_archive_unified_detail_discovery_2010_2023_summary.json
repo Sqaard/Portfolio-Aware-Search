@@ -1,0 +1,65 @@
+{
+  "documents_written": 924,
+  "source_rows_checked": 93,
+  "detail_candidates_checked": 3643,
+  "vendor_queue_rows": 58,
+  "documents_by_ticker": {
+    "AMZN": 36,
+    "AXP": 80,
+    "BA": 80,
+    "CAT": 106,
+    "CRM": 80,
+    "CSCO": 80,
+    "DIS": 98,
+    "JNJ": 29,
+    "NKE": 80,
+    "TRV": 117,
+    "V": 138
+  },
+  "documents_by_year": {
+    "2015": 7,
+    "2016": 11,
+    "2017": 19,
+    "2018": 30,
+    "2019": 77,
+    "2020": 86,
+    "2021": 111,
+    "2022": 207,
+    "2023": 376
+  },
+  "documents_by_source_type": {
+    "company_earnings_release": 439,
+    "company_official_archive": 249,
+    "company_press_release": 236
+  },
+  "detail_acceptance": {
+    "yes|": 2407,
+    "no|body_too_short": 850,
+    "no|archive_or_index_page": 32,
+    "no|missing_published_at": 191,
+    "no|published_at_outside_range": 126,
+    "no|pdf_detail_not_supported_in_this_pass": 24,
+    "no|http_status_403": 4,
+    "no|http_status_404": 1,
+    "no|ReadTimeout: HTTPSConnectionPool(host='www.ibm.com', port=443): Read timed out. (read timeout=3)": 1,
+    "no|ReadTimeout: HTTPSConnectionPool(host='www.unitedhealthgroup.com', port=443): Read timed out. (read timeout=3)": 2,
+    "no|ReadTimeout: HTTPSConnectionPool(host='www.verizon.com', port=443): Read timed out. (read timeout=3)": 3,
+    "no|ReadTimeout: HTTPSConnectionPool(host='stock.walmart.com', port=443): Read timed out. (read timeout=3)": 2
+  },
+  "source_rows_by_pass": {
+    "q4_fast": 39,
+    "static_smoke": 54
+  },
+  "vendor_rows_by_pass": {
+    "q4_fast": 4,
+    "static_smoke": 54
+  },
+  "note": "Unified detail discovery output. Q4/API feed produced accepted documents; static smoke produced adapter backlog/rejection evidence, not accepted docs.",
+  "outputs": {
+    "documents": "data\\raw_documents\\company_archive_unified_detail_discovery_2010_2023_documents.jsonl",
+    "detail_manifest": "data\\source_registry\\company_archive_unified_detail_discovery_2010_2023_detail_manifest.csv",
+    "source_manifest": "data\\source_registry\\company_archive_unified_detail_discovery_2010_2023_source_manifest.csv",
+    "vendor_queue": "data\\source_registry\\company_archive_unified_detail_discovery_2010_2023_vendor_queue.csv",
+    "summary": "data\\source_registry\\company_archive_unified_detail_discovery_2010_2023_summary.json"
+  }
+}

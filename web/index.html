@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FinPortfolio IR</title>
+  <link rel="stylesheet" href="/styles.css?v=document-summary-1">
+</head>
+<body>
+  <canvas id="cosmicBackdrop" class="cosmic-backdrop" aria-hidden="true"></canvas>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Portfolio-aware financial evidence search</h1>
+      </div>
+      <button id="settingsButton" class="icon-button" title="Here's your portfolio and favorite sites." aria-label="Open settings: portfolio and favorite sites">
+        <span aria-hidden="true">&#9881;</span>
+      </button>
+    </header>
+
+    <section class="search-strip" aria-label="Search">
+      <button id="myVibeButton" class="vibe-button" type="button">My Vibe</button>
+      <button id="myHomeButton" class="home-button hidden" type="button">My Home</button>
+      <form id="searchForm" class="search-form">
+        <div class="animated-search-shell">
+          <input id="searchInput" type="search" autocomplete="off" placeholder="" aria-label="Search financial evidence">
+          <div id="searchPlaceholderRotator" class="search-placeholder-rotator" aria-hidden="true">
+            <span>JPMorgan Chase filings</span>
+          </div>
+          <div id="searchSuggestions" class="search-suggestions hidden" role="listbox" aria-label="Search suggestions"></div>
+        </div>
+        <button type="submit">Search</button>
+      </form>
+    </section>
+    <div id="queryIntentBar" class="query-intent-bar hidden" aria-live="polite"></div>
+
+    <section id="dashboardView" class="main-grid">
+      <div class="left-flow">
+        <div id="homePanels" class="home-panels view-card">
+          <details class="panel central-panel macro-translation-panel">
+            <summary class="section-heading macro-translation-summary">
+              <span>Macro Translation To The US Portfolio</span>
+              <div id="macroToneMeter" class="macro-tone-meter" aria-label="Macro tone summary"></div>
+              <div class="tone-legend" aria-label="Tone legend">
+                <span class="tone-dot positive"></span><small>positive</small>
+                <span class="tone-dot neutral"></span><small>neutral</small>
+                <span class="tone-dot negative"></span><small>negative</small>
+              </div>
+            </summary>
+            <div id="translationCards" class="card-stack"></div>
+          </details>
+
+          <details class="panel chart-lab-panel" aria-label="Analyst Charts">
+            <summary class="section-heading chart-lab-summary">
+              <span>Analyst Charts</span>
+              <small>fact checks, margins, debt, payout</small>
+            </summary>
+            <div class="chart-lab-controls">
+              <label>
+                Ticker
+                <select id="chartLabTicker"></select>
+              </label>
+              <label>
+                Chart
+                <select id="chartLabChart"></select>
+              </label>
+              <label>
+                Window
+                <select id="chartLabWindow"></select>
+              </label>
+              <button id="buildChartLab" class="subtle-button chart-build-button" type="button">Build Chart</button>
+            </div>
+            <div id="chartLabCanvas" class="chart-lab-canvas">
+              <div class="chart-lab-empty">
+                <strong>Pick a story to audit.</strong>
+                <span>Build fundamental charts from filings and macro data only when needed.</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <section id="searchPanel" class="panel search-panel hidden view-card">
+          <div class="section-heading">
+            <span>Search Results</span>
+            <small id="resultCount">loading corpus</small>
+          </div>
+          <div id="searchResults" class="results-list"></div>
+          <div id="resultPager" class="pager hidden"></div>
+        </section>
+      </div>
+
+      <aside id="portfolioPanel" class="panel portfolio-panel hidden" aria-hidden="true">
+        <div class="section-heading">
+          <div>
+            <span>Portfolio Summary</span>
+            <small>My Portfolio</small>
+          </div>
+          <button id="collapsePortfolio" class="icon-button collapse-button" type="button" aria-expanded="true" aria-label="Collapse portfolio summary">−</button>
+        </div>
+        <div id="portfolioPanelBody" class="portfolio-panel-body">
+          <div id="portfolioSummary"></div>
+          <div id="portfolioSignalSummary" class="portfolio-signal-summary"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="myVibeView" class="vibe-view hidden">
+      <div class="vibe-mode-tabs" role="tablist" aria-label="My Vibe modes">
+        <button id="portfolioAnalysisTab" class="vibe-mode-tab active" type="button" data-vibe-mode="portfolio">Portfolio analysis</button>
+        <button id="favoriteWebsitesTab" class="vibe-mode-tab" type="button" data-vibe-mode="favorites">Favorite Websites</button>
+      </div>
+
+      <section id="portfolioAnalysisMode" class="vibe-mode-grid">
+        <div class="panel portfolio-analysis-left">
+          <div class="section-heading">
+            <span>Portfolio Summary</span>
+            <small>analysis base</small>
+          </div>
+          <div id="portfolioSummaryVibe"></div>
+          <div id="portfolioSignalSummaryVibe" class="portfolio-signal-summary"></div>
+        </div>
+        <div class="panel portfolio-ticker-analysis-panel">
+          <div class="section-heading">
+            <span>Portfolio Ticker Analysis</span>
+            <small>LLM + Analyst Charts</small>
+          </div>
+          <div class="portfolio-analysis-controls">
+            <label>
+              Holding
+              <select id="portfolioAnalysisTicker"></select>
+            </label>
+            <button id="runPortfolioAnalysis" class="primary-mini-button" type="button">Analyze ticker</button>
+          </div>
+          <div id="portfolioTickerAnalysis" class="portfolio-ticker-analysis-empty">
+            Select a portfolio holding to build document-linked LLM analysis.
+          </div>
+        </div>
+      </section>
+
+      <section id="favoriteWebsitesMode" class="vibe-favorites-grid hidden">
+        <div class="panel vibe-sites-panel">
+          <div class="section-heading">
+            <span>Favorite Websites</span>
+            <small>cached latest feed</small>
+          </div>
+          <div id="vibeSites" class="site-list"></div>
+        </div>
+        <div class="panel vibe-posts-panel">
+          <div class="section-heading">
+            <span>Posts</span>
+            <small id="vibePostStatus">select a site</small>
+          </div>
+          <div id="vibePosts" class="results-list"></div>
+        </div>
+        <div class="panel vibe-analysis-panel">
+          <div class="section-heading">
+            <span>Portfolio Impact Analysis</span>
+            <small>full text hidden</small>
+          </div>
+          <div class="llm-status-card">
+            <strong id="vibeLlmStatus">Local fallback is active</strong>
+            <small>LLM settings live in Settings. Full post text stays hidden in the interface.</small>
+          </div>
+          <div id="vibeAnalysis" class="analysis-box hidden"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="settingsTitle">Settings</h2>
+        <button id="closeSettings" class="icon-button" aria-label="Close settings">&times;</button>
+      </div>
+      <section class="settings-section">
+        <h3>
+          <span class="settings-icon settings-icon-svg" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M8 7V5.8C8 4.8 8.8 4 9.8 4h4.4c1 0 1.8.8 1.8 1.8V7" />
+              <path d="M5.4 7h13.2c1 0 1.9.8 1.9 1.9v8.7c0 1-.8 1.9-1.9 1.9H5.4c-1 0-1.9-.8-1.9-1.9V8.9c0-1 .8-1.9 1.9-1.9Z" />
+              <path d="M8.1 13.8l2.2-2.2 2.4 2.1 3.5-4.1" />
+            </svg>
+          </span>
+          My Portfolio
+        </h3>
+        <div id="portfolioRows" class="portfolio-rows"></div>
+        <button id="addPortfolioRow" class="subtle-button" type="button">Add position</button>
+      </section>
+      <section class="settings-section">
+        <h3>
+          <span class="settings-icon settings-icon-svg" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <circle cx="11.2" cy="11.2" r="7.2" />
+              <path d="M4 11.2h14.4" />
+              <path d="M11.2 4c1.8 2 2.6 4.4 2.6 7.2s-.8 5.2-2.6 7.2" />
+              <path d="M11.2 4c-1.8 2-2.6 4.4-2.6 7.2s.8 5.2 2.6 7.2" />
+              <path d="M18 15.2l.7 1.6 1.7.2-1.2 1.2.3 1.7-1.5-.8-1.5.8.3-1.7-1.2-1.2 1.7-.2.7-1.6Z" />
+            </svg>
+          </span>
+          Favorite Websites
+        </h3>
+        <div id="favoriteRows" class="favorite-rows"></div>
+        <div class="favorite-add">
+          <input id="favoriteInput" type="url" placeholder="https://example.com">
+          <button id="addFavorite" class="subtle-button" type="button">Add site</button>
+        </div>
+        <small id="favoriteStatus" class="settings-status"></small>
+      </section>
+      <section class="settings-section">
+        <h3>
+          <span class="settings-icon settings-icon-svg" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3.5v3" />
+              <path d="M12 17.5v3" />
+              <path d="M4.5 12h3" />
+              <path d="M16.5 12h3" />
+              <path d="M8 8l-1.8-1.8" />
+              <path d="M16 8l1.8-1.8" />
+              <path d="M8 16l-1.8 1.8" />
+              <path d="M16 16l1.8 1.8" />
+              <path d="M9.2 9.2h5.6v5.6H9.2z" />
+              <path d="M10.8 12h2.4" />
+            </svg>
+          </span>
+          LLM Analysis
+        </h3>
+        <label class="api-key-label">
+          API key
+          <input id="llmApiKey" type="password" autocomplete="off" placeholder="Optional, session-only">
+        </label>
+        <div class="llm-config-grid">
+          <label>
+            Provider
+            <select id="llmProvider"></select>
+          </label>
+          <label>
+            Model
+            <input id="llmModel" type="text" autocomplete="off" placeholder="deepseek-chat">
+          </label>
+          <label>
+            API endpoint
+            <input id="llmBaseUrl" type="url" autocomplete="off" placeholder="https://api.deepseek.com/chat/completions">
+          </label>
+        </div>
+        <div class="llm-key-row">
+          <button id="saveLlmKey" class="subtle-button" type="button">Save key for this session</button>
+          <button id="clearLlmKey" class="subtle-button" type="button">Clear</button>
+          <small id="llmKeyStatus">No session key</small>
+        </div>
+      </section>
+      <div class="modal-actions">
+        <button id="saveSettings" class="primary-button" type="button">Save Settings</button>
+        <small id="settingsStatus" class="settings-status"></small>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js?v=portfolio-analysis-fast-1"></script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+{
+  "rows": 87,
+  "checked_at": "2026-05-13T10:03:26Z",
+  "input_path": "C:\\Users\\ivanp\\OneDrive\\Документы\\xwechat_files\\wxid_3slml1yu50ju12_2539\\msg\\file\\2026-05\\official_source_urls.csv",
+  "output_csv": "FinPortfolio_IR\\data\\source_registry\\official_company_source_urls_historical_coverage_2010_2021_2026-05-13.csv",
+  "by_historical_coverage_grade": {
+    "historical_index_likely": 10,
+    "partial_historical_fulltext": 2,
+    "insufficient_historical_evidence": 4,
+    "confirmed_historical_fulltext": 11,
+    "js_unknown_historical": 14,
+    "fetch_failed_check_manual": 46
+  },
+  "by_ticker_best_grade": {
+    "AAPL": "partial_historical_fulltext",
+    "AMGN": "confirmed_historical_fulltext",
+    "AMZN": "historical_index_likely",
+    "AXP": "js_unknown_historical",
+    "BA": "historical_index_likely",
+    "CAT": "confirmed_historical_fulltext",
+    "CRM": "historical_index_likely",
+    "CSCO": "historical_index_likely",
+    "CVX": "historical_index_likely",
+    "DIS": "confirmed_historical_fulltext",
+    "GS": "confirmed_historical_fulltext",
+    "HD": "confirmed_historical_fulltext",
+    "HON": "confirmed_historical_fulltext",
+    "IBM": "historical_index_likely",
+    "INTC": "fetch_failed_check_manual",
+    "JNJ": "fetch_failed_check_manual",
+    "JPM": "fetch_failed_check_manual",
+    "KO": "fetch_failed_check_manual",
+    "MCD": "fetch_failed_check_manual",
+    "MMM": "fetch_failed_check_manual",
+    "MRK": "fetch_failed_check_manual",
+    "MSFT": "fetch_failed_check_manual",
+    "NKE": "fetch_failed_check_manual",
+    "PG": "fetch_failed_check_manual",
+    "TRV": "fetch_failed_check_manual",
+    "UNH": "fetch_failed_check_manual",
+    "V": "fetch_failed_check_manual",
+    "VZ": "fetch_failed_check_manual",
+    "WMT": "fetch_failed_check_manual"
+  },
+  "tickers_confirmed_or_partial": [
+    "AAPL",
+    "AMGN",
+    "CAT",
+    "DIS",
+    "GS",
+    "HD",
+    "HON"
+  ],
+  "tickers_no_confirmed_historical_source": [
+    "AMZN",
+    "AXP",
+    "BA",
+    "CRM",
+    "CSCO",
+    "CVX",
+    "IBM",
+    "INTC",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MCD",
+    "MMM",
+    "MRK",
+    "MSFT",
+    "NKE",
+    "PG",
+    "TRV",
+    "UNH",
+    "V",
+    "VZ",
+    "WMT"
+  ],
+  "best_source_by_ticker": {
+    "AAPL": {
+      "source_type": "investor_relations",
+      "url": "https://investor.apple.com/",
+      "grade": "partial_historical_fulltext",
+      "sample_url": "https://www.apple.com/newsroom/2020/02/investor-update-on-quarterly-guidance/"
+    },
+    "AMGN": {
+      "source_type": "company_news_archive",
+      "url": "https://www.amgen.com/newsroom/press-releases",
+      "grade": "confirmed_historical_fulltext",
+      "sample_url": "https://www.amgen.com/newsroom/company-statements/amgen-response-in-support-of-the-2018-aha-acc-cholesterol-clinical-practice-guidelines"
+    },
+    "AMZN": {
+      "source_type": "earnings_results_archive",
+      "url": "https://ir.aboutamazon.com/quarterly-results/default.aspx",
+      "grade": "historical_index_likely",
+      "sample_url": ""
+    },
+    "AXP": {
+      "source_type": "press_releases_archive",
+      "url": "https://ir.americanexpress.com/News/default.aspx",
+      "grade": "js_unknown_historical",
+      "sample_url": ""
+    },
+    "BA": {
+      "source_type": "company_news_archive",
+      "url": "https://boeing.mediaroom.com/news-releases-statements",
+      "grade": "historical_index_likely",
+      "sample_url": ""
+    },
+    "CAT": {
+      "source_type": "press_releases_archive",
+      "url": "https://investors.caterpillar.com/news/default.aspx",
+      "grade": "confirmed_historical_fulltext",
+      "sample_url": "https://www.caterpillar.com/en/news/corporate-press-releases/h/caterpillar-highlights-innovative-solutions-for-its-customers-at-bauma-2013.html"
+    },
+    "CRM": {
+      "source_type": "earnings_results_archive",
+      "url": "https://investor.salesforce.com/financials/quarterly-results/default.aspx",
+      "grade": "historical_index_likely",
+      "sample_url": ""
+    },
+    "CSCO": {
+      "source_type": "earnings_results_archive",
+      "url": "https://investor.cisco.com/financials/quarterly-results/default.aspx",
+      "grade": "historical_index_likely",
+      "sample_url": ""
+    },
+    "CVX": {
+      "source_type": "company_news_archive",
+      "url": "https://chevroncorp.gcs-web.com/news-releases",
+      "grade": "historical_index_likely",
+      "sample_url": ""
+    },
+    "DIS": {
+      "source_type": "company_news_archive",
+      "url": "https://thewaltdisneycompany.com/news/",
+      "grade": "confirmed_historical_fulltext",
+      "sample_url": "https://thewaltdisneycompany.com/news/disney-conservation-fund-celebrates-its-2019-heroes/"
+    },
+    "GS": {
+      "source_type": "company_news_archive",
+      "url": "https://www.goldmansachs.com/pressroom",
+      "grade": "confirmed_historical_fulltext",
+      "sample_url": "https://www.goldmansachs.com/pressroom/announcements/2010/letter-harpers-content"
+    },
+    "HD": {
+      "source_type": "press_releases_archive",
+      "url": "https://ir.homedepot.com/news-releases",
+      "grade": "confirmed_historical_fulltext",
+      "sample_url": "https://ir.homedepot.com/news-releases/2019"
+    },
+    "HON": {
+      "source_type": "earnings_results_archive",
+      "url": "https://honeywell.gcs-web.com/financial-information/quarterly-results",
+      "grade": "confirmed_historical_fulltext",
+      "sample_url": "https://honeywell.gcs-web.com/news-releases/news-release-details/honeywell-reports-full-year-2015-sales-386-billion-earnings-10"
+    },
+    "IBM": {
+      "source_type": "company_news_archive",
+      "url": "https://newsroom.ibm.com/announcements",
+      "grade": "historical_index_likely",
+      "sample_url": ""
+    },
+    "INTC": {
+      "source_type": "company_news_archive",
+      "url": "https://www.intel.com/content/www/us/en/newsroom/home.html",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "JNJ": {
+      "source_type": "company_news_archive",
+      "url": "https://www.jnj.com/media-center/press-releases",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "JPM": {
+      "source_type": "company_news_archive",
+      "url": "https://www.jpmorganchase.com/newsroom/press-releases",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "KO": {
+      "source_type": "company_news_archive",
+      "url": "https://www.coca-colacompany.com/media-center",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "MCD": {
+      "source_type": "company_news_archive",
+      "url": "https://corporate.mcdonalds.com/corpmcd/en-us/CorpNewsroom.html",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "MMM": {
+      "source_type": "company_news_archive",
+      "url": "https://news.3m.com/press-releases",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "MRK": {
+      "source_type": "company_news_archive",
+      "url": "https://www.merck.com/media/news/",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "MSFT": {
+      "source_type": "company_news_archive",
+      "url": "https://news.microsoft.com/source/",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "NKE": {
+      "source_type": "company_news_archive",
+      "url": "https://news.nike.com/",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "PG": {
+      "source_type": "company_news_archive",
+      "url": "https://news.pg.com/news-releases",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "TRV": {
+      "source_type": "press_releases_archive",
+      "url": "https://investor.travelers.com/newsroom/press-releases/default.aspx",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "UNH": {
+      "source_type": "press_releases_archive",
+      "url": "https://www.unitedhealthgroup.com/newsroom/press-releases.html",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "V": {
+      "source_type": "company_news_archive",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom.html",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "VZ": {
+      "source_type": "company_news_archive",
+      "url": "https://www.verizon.com/about/news",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    },
+    "WMT": {
+      "source_type": "company_news_archive",
+      "url": "https://corporate.walmart.com/news",
+      "grade": "fetch_failed_check_manual",
+      "sample_url": ""
+    }
+  }
+}

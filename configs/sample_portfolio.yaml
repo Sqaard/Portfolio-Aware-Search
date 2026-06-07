@@ -1,0 +1,6 @@
+portfolio_id: sample_portfolio_001
+holdings:
+  AAPL: 0.12
+  MSFT: 0.10
+  JPM: 0.07
+  UNH: 0.06

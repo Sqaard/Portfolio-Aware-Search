@@ -1,0 +1,90 @@
+retrieval:
+  top_k: 10
+  decision_timezone: "America/New_York"
+  recency_lambda: 0.10
+  body_excerpt_chars: 1200
+
+ranking_weights:
+  sparse: 0.40
+  dense: 0.00
+  entity: 0.20
+  portfolio_exposure: 0.25
+  recency: 0.10
+  event_importance: 0.05
+  source_credibility: 0.00
+
+diversification:
+  enabled: true
+  enabled_methods:
+    - full_hybrid_diversified
+  max_per_duplicate_cluster: 1
+  max_per_holding: 4
+  min_market_evidence: 1
+  min_sector_evidence: 1
+
+ranking_methods:
+  bm25_only:
+    sparse: 1.00
+    dense: 0.00
+    entity: 0.00
+    portfolio_exposure: 0.00
+    recency: 0.00
+    event_importance: 0.00
+    source_credibility: 0.00
+  bm25_entity:
+    sparse: 0.75
+    dense: 0.00
+    entity: 0.25
+    portfolio_exposure: 0.00
+    recency: 0.00
+    event_importance: 0.00
+    source_credibility: 0.00
+  bm25_entity_portfolio:
+    sparse: 0.55
+    dense: 0.00
+    entity: 0.20
+    portfolio_exposure: 0.25
+    recency: 0.00
+    event_importance: 0.00
+    source_credibility: 0.00
+  full_hybrid:
+    sparse: 0.40
+    dense: 0.00
+    entity: 0.20
+    portfolio_exposure: 0.25
+    recency: 0.10
+    event_importance: 0.05
+    source_credibility: 0.00
+  full_hybrid_diversified:
+    weights:
+      sparse: 0.35
+      dense: 0.00
+      entity: 0.20
+      portfolio_exposure: 0.25
+      recency: 0.10
+      event_importance: 0.05
+      source_credibility: 0.05
+    diversification: true
+
+event_keywords:
+  - earnings
+  - guidance
+  - revenue
+  - profit warning
+  - lawsuit
+  - investigation
+  - downgrade
+  - upgrade
+  - merger
+  - acquisition
+  - bankruptcy
+  - Fed
+  - interest rates
+  - inflation
+  - recession
+  - credit risk
+  - regulation
+  - supply chain
+  - deposits
+  - cloud
+  - healthcare utilization

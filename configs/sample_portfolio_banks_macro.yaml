@@ -1,0 +1,6 @@
+portfolio_id: sample_portfolio_banks_macro
+holdings:
+  JPM: 0.20
+  MSFT: 0.06
+  AAPL: 0.04
+  UNH: 0.02

@@ -1,0 +1,12 @@
+[project]
+name = "finportfolio-ir"
+version = "0.1.0"
+description = "Portfolio-aware financial document retrieval for FinGPT feature extraction."
+requires-python = ">=3.9"
+dependencies = [
+  "pyyaml",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

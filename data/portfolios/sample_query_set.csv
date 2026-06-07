@@ -1,0 +1,5 @@
+query_id,portfolio,decision_datetime,notes
+sample_portfolio_001_2022-03-15,configs/sample_portfolio.yaml,2022-03-15T09:30:00-05:00,Balanced Dow sample portfolio before US market open.
+sample_portfolio_tech_rates_2022-03-15,configs/sample_portfolio_tech_rates.yaml,2022-03-15T09:30:00-05:00,Technology-heavy portfolio sensitive to Apple Microsoft and rates.
+sample_portfolio_health_macro_2022-03-15,configs/sample_portfolio_health_macro.yaml,2022-03-15T09:30:00-05:00,Healthcare and financials portfolio with macro risk.
+sample_portfolio_banks_macro_2022-03-15,configs/sample_portfolio_banks_macro.yaml,2022-03-15T09:30:00-05:00,Bank-heavy portfolio sensitive to Fed rates deposits and credit.

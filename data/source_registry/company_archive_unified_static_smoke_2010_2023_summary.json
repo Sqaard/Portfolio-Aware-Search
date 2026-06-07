@@ -1,0 +1,58 @@
+{
+  "created_at": "2026-05-13T14:31:54Z",
+  "config": {
+    "start_year": 2010,
+    "end_year": 2023,
+    "max_archive_pages_per_source": 2,
+    "max_detail_candidates_per_source": 8,
+    "max_documents_per_source": 3,
+    "min_body_words": 100,
+    "q4_page_size": 100,
+    "rss_item_limit": 200,
+    "wp_page_size": 50,
+    "wp_max_pages_per_year": 1,
+    "enable_q4_feed": false,
+    "enable_rss": false,
+    "enable_wordpress": true,
+    "enable_generic_html": true
+  },
+  "source_rows_checked": 54,
+  "documents_written": 0,
+  "detail_candidates_checked": 403,
+  "accepted_by_ticker": {},
+  "accepted_by_source_type": {},
+  "reject_reasons": {
+    "missing_published_at": 191,
+    "body_too_short": 32,
+    "published_at_outside_range": 126,
+    "pdf_detail_not_supported_in_this_pass": 24,
+    "http_status_403": 4,
+    "http_status_404": 1,
+    "ReadTimeout: HTTPSConnectionPool(host='www.ibm.com', port=443): Read timed out. (read timeout=3)": 1,
+    "archive_or_index_page": 17,
+    "ReadTimeout: HTTPSConnectionPool(host='www.unitedhealthgroup.com', port=443): Read timed out. (read timeout=3)": 2,
+    "ReadTimeout: HTTPSConnectionPool(host='www.verizon.com', port=443): Read timed out. (read timeout=3)": 3,
+    "ReadTimeout: HTTPSConnectionPool(host='stock.walmart.com', port=443): Read timed out. (read timeout=3)": 2
+  },
+  "vendor_queue_rows": 54,
+  "vendor_profiles": {
+    "static_html_or_custom": 33,
+    "q4_or_q4_like": 6,
+    "gcs_web": 5,
+    "wordpress": 6,
+    "fetch_problem": 4
+  },
+  "vendor_priorities": {
+    "medium_source_specific_adapter": 54
+  },
+  "fast_pass_note": "Small static validation pass: 8 candidates/source, 3 accepted/source.",
+  "documents_by_ticker": {},
+  "documents_by_year": {},
+  "outputs": {
+    "documents": "data\\raw_documents\\company_archive_unified_static_smoke_2010_2023_documents.jsonl",
+    "detail_manifest": "data\\source_registry\\company_archive_unified_static_smoke_2010_2023_detail_manifest.csv",
+    "source_manifest": "data\\source_registry\\company_archive_unified_static_smoke_2010_2023_source_manifest.csv",
+    "vendor_queue": "data\\source_registry\\company_archive_unified_static_smoke_2010_2023_vendor_queue.csv",
+    "summary": "data\\source_registry\\company_archive_unified_static_smoke_2010_2023_summary.json"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "created_at": "2026-05-13T12:22:05Z",
+  "config": {
+    "start_year": 2020,
+    "end_year": 2020,
+    "max_archive_pages_per_source": 6,
+    "max_detail_candidates_per_source": 12,
+    "max_documents_per_source": 2,
+    "min_body_words": 120
+  },
+  "source_rows_checked": 1,
+  "documents_written": 2,
+  "detail_candidates_checked": 2,
+  "accepted_by_ticker": {
+    "AAPL": 2
+  },
+  "accepted_by_source_type": {
+    "company_press_release": 2
+  },
+  "reject_reasons": {},
+  "vendor_queue_rows": 0,
+  "vendor_profiles": {},
+  "vendor_priorities": {}
+}

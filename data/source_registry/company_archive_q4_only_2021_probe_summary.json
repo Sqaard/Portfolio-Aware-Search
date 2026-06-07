@@ -1,0 +1,54 @@
+{
+  "created_at": "2026-05-13T12:56:14Z",
+  "config": {
+    "start_year": 2021,
+    "end_year": 2021,
+    "max_archive_pages_per_source": 0,
+    "max_detail_candidates_per_source": 8,
+    "max_documents_per_source": 1,
+    "min_body_words": 120,
+    "q4_page_size": 5,
+    "rss_item_limit": 200,
+    "wp_page_size": 50,
+    "wp_max_pages_per_year": 2,
+    "enable_q4_feed": true,
+    "enable_rss": false,
+    "enable_wordpress": false,
+    "enable_generic_html": false
+  },
+  "source_rows_checked": 87,
+  "documents_written": 16,
+  "detail_candidates_checked": 46,
+  "accepted_by_ticker": {
+    "AMZN": 2,
+    "AXP": 2,
+    "BA": 2,
+    "CAT": 2,
+    "CRM": 3,
+    "CSCO": 2,
+    "NKE": 2,
+    "V": 1
+  },
+  "accepted_by_source_type": {
+    "company_press_release": 7,
+    "company_earnings_release": 8,
+    "company_ir_archive": 1
+  },
+  "reject_reasons": {
+    "duplicate_doc_id": 9,
+    "body_too_short": 13,
+    "http_status_403": 5,
+    "missing_published_at": 3
+  },
+  "vendor_queue_rows": 86,
+  "vendor_profiles": {
+    "static_html_or_custom": 58,
+    "q4_or_q4_like": 24,
+    "gcs_web": 4
+  },
+  "vendor_priorities": {
+    "medium_source_specific_adapter": 58,
+    "high_vendor_api_adapter": 13,
+    "low_already_has_generic_yield": 15
+  }
+}

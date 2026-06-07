@@ -1,0 +1,30 @@
+{
+  "output": "data/processed_documents/repo_demo_documents.jsonl",
+  "source": "data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
+  "document_count": 993,
+  "source_type_counts": {
+    "company_earnings_release": 91,
+    "company_official_archive": 36,
+    "company_presentation": 9,
+    "company_press_release": 71,
+    "official_macro_release": 420,
+    "sample": 24,
+    "sec_filing_exhibit": 162,
+    "sec_filing_section": 180
+  },
+  "ticker_counts": {
+    "AAPL": 53,
+    "BA": 54,
+    "CRM": 54,
+    "CVX": 48,
+    "DIS": 80,
+    "JPM": 60,
+    "MARKET": 427,
+    "MMM": 45,
+    "MSFT": 50,
+    "UNH": 4,
+    "V": 80,
+    "WMT": 39
+  },
+  "note": "Small GitHub-friendly demo subset from the 26,368-row trusted corpus; full corpus is reproducible via crawler scripts."
+}

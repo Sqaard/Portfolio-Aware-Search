@@ -1,0 +1,292 @@
+{
+  "covered_ticker_count": 29,
+  "covered_tickers": [
+    "AAPL",
+    "AMGN",
+    "AMZN",
+    "AXP",
+    "BA",
+    "CAT",
+    "CRM",
+    "CSCO",
+    "CVX",
+    "DIS",
+    "GS",
+    "HD",
+    "HON",
+    "IBM",
+    "INTC",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MCD",
+    "MMM",
+    "MRK",
+    "MSFT",
+    "NKE",
+    "PG",
+    "TRV",
+    "UNH",
+    "V",
+    "VZ",
+    "WMT"
+  ],
+  "discovery_method_counts": {
+    "detail_embedded_pdf": 9,
+    "q4_press_release_feed": 924,
+    "sec_exhibit_fallback": 11,
+    "sitemap": 111,
+    "source_page_link": 62
+  },
+  "document_split_counts": {
+    "missing": 1117
+  },
+  "duplicates_dropped": 1,
+  "event_type_counts": {
+    "company_earnings_release": 512,
+    "company_financial_report": 31,
+    "company_official_archive": 266,
+    "company_presentation": 28,
+    "company_press_release": 273,
+    "company_sec_filing_hub": 7
+  },
+  "expected_ticker_count": 29,
+  "generated_at": "2026-05-14T08:07:16Z",
+  "inputs": [
+    {
+      "path": "data\\raw_documents\\company_archive_unified_detail_discovery_2010_2023_documents.jsonl",
+      "role": "primary"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\AAPL_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\AMGN_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\CVX_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\GS_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\HD_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\HON_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\IBM_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\INTC_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\JPM_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\KO_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\MCD_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\MMM_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\MRK_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\MSFT_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\PG_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\UNH_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\VZ_documents.jsonl",
+      "role": "adapter_backfill"
+    },
+    {
+      "path": "data\\raw_documents\\company_backfill_batches\\WMT_documents.jsonl",
+      "role": "adapter_backfill"
+    }
+  ],
+  "rows": 1117,
+  "source_type_counts": {
+    "company_earnings_release": 512,
+    "company_financial_report": 31,
+    "company_official_archive": 266,
+    "company_presentation": 28,
+    "company_press_release": 273,
+    "company_sec_filing_hub": 7
+  },
+  "ticker_counts": {
+    "AAPL": 12,
+    "AMGN": 20,
+    "AMZN": 36,
+    "AXP": 80,
+    "BA": 80,
+    "CAT": 106,
+    "CRM": 80,
+    "CSCO": 80,
+    "CVX": 11,
+    "DIS": 98,
+    "GS": 20,
+    "HD": 3,
+    "HON": 5,
+    "IBM": 8,
+    "INTC": 3,
+    "JNJ": 29,
+    "JPM": 20,
+    "KO": 20,
+    "MCD": 20,
+    "MMM": 12,
+    "MRK": 2,
+    "MSFT": 10,
+    "NKE": 80,
+    "PG": 9,
+    "TRV": 117,
+    "UNH": 2,
+    "V": 138,
+    "VZ": 8,
+    "WMT": 8
+  },
+  "ticker_date_ranges": {
+    "AAPL": [
+      "2013-09-10T23:59:59Z",
+      "2023-11-30T23:59:59Z"
+    ],
+    "AMGN": [
+      "2021-01-26T23:59:59Z",
+      "2023-01-31T23:59:59Z"
+    ],
+    "AMZN": [
+      "2015-04-23T16:01:00Z",
+      "2023-10-26T16:01:00Z"
+    ],
+    "AXP": [
+      "2020-09-10T11:18:00Z",
+      "2023-12-14T09:00:00Z"
+    ],
+    "BA": [
+      "2023-01-24T19:00:00Z",
+      "2023-12-29T12:42:00Z"
+    ],
+    "CAT": [
+      "2019-07-24T08:00:00Z",
+      "2023-12-19T08:05:00Z"
+    ],
+    "CRM": [
+      "2022-02-07T05:00:00Z",
+      "2023-12-14T08:00:00Z"
+    ],
+    "CSCO": [
+      "2022-08-16T11:00:00Z",
+      "2023-12-21T09:00:00Z"
+    ],
+    "CVX": [
+      "2012-04-10T16:00:00Z",
+      "2023-01-27T16:00:00Z"
+    ],
+    "DIS": [
+      "2015-03-12T00:00:00Z",
+      "2023-12-14T00:00:00Z"
+    ],
+    "GS": [
+      "2010-04-01T23:59:59Z",
+      "2022-07-18T23:59:59Z"
+    ],
+    "HD": [
+      "2016-02-23T23:59:59Z",
+      "2016-08-16T23:59:59Z"
+    ],
+    "HON": [
+      "2016-01-29T23:59:59Z",
+      "2017-01-27T23:59:59Z"
+    ],
+    "IBM": [
+      "2017-01-19T23:59:59Z",
+      "2023-01-25T23:59:59Z"
+    ],
+    "INTC": [
+      "2022-02-11T23:59:59Z",
+      "2023-12-30T23:59:59Z"
+    ],
+    "JNJ": [
+      "2022-01-25T00:00:00Z",
+      "2023-12-11T16:15:00Z"
+    ],
+    "JPM": [
+      "2015-02-24T23:59:59Z",
+      "2023-05-05T23:59:59Z"
+    ],
+    "KO": [
+      "2010-04-20T07:29:00Z",
+      "2023-11-13T10:00:00Z"
+    ],
+    "MCD": [
+      "2022-01-12T23:59:59Z",
+      "2023-12-20T23:59:59Z"
+    ],
+    "MMM": [
+      "2021-10-26T06:30:00Z",
+      "2023-10-24T06:29:00Z"
+    ],
+    "MRK": [
+      "2022-02-03T23:59:59Z",
+      "2022-04-28T23:59:59Z"
+    ],
+    "MSFT": [
+      "2020-06-01T23:59:59Z",
+      "2023-01-24T23:59:59Z"
+    ],
+    "NKE": [
+      "2017-09-05T16:15:00Z",
+      "2023-12-21T16:15:00Z"
+    ],
+    "PG": [
+      "2016-12-31T23:59:59Z",
+      "2023-12-31T23:59:59Z"
+    ],
+    "TRV": [
+      "2020-12-01T08:30:00Z",
+      "2023-12-14T09:00:00Z"
+    ],
+    "UNH": [
+      "2019-04-16T23:59:59Z",
+      "2019-07-18T23:59:59Z"
+    ],
+    "V": [
+      "2019-07-31T07:00:00Z",
+      "2023-12-18T08:02:00Z"
+    ],
+    "VZ": [
+      "2023-09-30T23:59:59Z",
+      "2023-12-31T23:59:59Z"
+    ],
+    "WMT": [
+      "2019-08-26T23:59:59Z",
+      "2023-11-16T23:59:59Z"
+    ]
+  },
+  "uncovered_tickers": []
+}

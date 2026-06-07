@@ -1,0 +1,36 @@
+{
+  "created_at": "2026-05-13T12:21:07Z",
+  "config": {
+    "start_year": 2020,
+    "end_year": 2021,
+    "max_archive_pages_per_source": 12,
+    "max_detail_candidates_per_source": 30,
+    "max_documents_per_source": 3,
+    "min_body_words": 120
+  },
+  "source_rows_checked": 5,
+  "documents_written": 3,
+  "detail_candidates_checked": 43,
+  "accepted_by_ticker": {
+    "AAPL": 3
+  },
+  "accepted_by_source_type": {
+    "company_press_release": 3
+  },
+  "reject_reasons": {
+    "missing_published_at": 20,
+    "http_status_403": 18,
+    "HTTPSConnectionPool(host='investors.amgen.com', port=443): Read timed out. (read timeout=15)": 2
+  },
+  "vendor_queue_rows": 4,
+  "vendor_profiles": {
+    "q4_or_q4_like": 2,
+    "fetch_problem": 1,
+    "static_html_or_custom": 1
+  },
+  "vendor_priorities": {
+    "high_vendor_api_adapter": 2,
+    "medium_recheck_or_replace": 1,
+    "medium_source_specific_adapter": 1
+  }
+}

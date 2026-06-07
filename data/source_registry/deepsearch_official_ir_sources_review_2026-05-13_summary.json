@@ -1,0 +1,614 @@
+{
+  "rows": 116,
+  "checked_at": "2026-05-13T13:03:21Z",
+  "output_csv": "data\\source_registry\\deepsearch_official_ir_sources_review_2026-05-13.csv",
+  "by_likely_value": {
+    "medium_static_duplicate": 15,
+    "medium_browser_or_vendor": 19,
+    "high_static_candidate": 30,
+    "medium_duplicate_sec": 7,
+    "low_recheck": 9,
+    "high_q4_feed": 33,
+    "low_blocked_unless_feed": 3
+  },
+  "by_http_status": {
+    "200": 80,
+    "403": 27,
+    "no_response": 8,
+    "404": 1
+  },
+  "by_vendor_profile": {
+    "static_html_or_custom": 36,
+    "q4_or_q4_like": 25,
+    "cloudflare_challenge": 23,
+    "fetch_problem": 9,
+    "wordpress": 5,
+    "gcs_web": 4,
+    "quotemedia": 14
+  },
+  "new_vs_previous": {
+    "no": 33,
+    "yes": 83
+  },
+  "tickers_with_high_q4_feed": [
+    "AMZN",
+    "AXP",
+    "BA",
+    "CAT",
+    "CRM",
+    "CSCO",
+    "DIS",
+    "JNJ",
+    "NKE",
+    "TRV",
+    "V"
+  ],
+  "tickers_with_high_static_candidate": [
+    "AAPL",
+    "CRM",
+    "CSCO",
+    "DIS",
+    "GS",
+    "HD",
+    "IBM",
+    "JPM",
+    "MCD",
+    "MRK",
+    "MSFT",
+    "PG",
+    "UNH",
+    "VZ"
+  ],
+  "top_new_high_value": [
+    {
+      "ticker": "AAPL",
+      "source_type": "product_news_archive",
+      "url": "https://www.apple.com/newsroom/archive/iphone/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "AMZN",
+      "source_type": "annual_reports_shareholder_letters",
+      "url": "https://ir.aboutamazon.com/annual-reports-proxies-and-shareholder-letters/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "AMZN",
+      "source_type": "investor_events",
+      "url": "https://ir.aboutamazon.com/events/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "AXP",
+      "source_type": "annual_reports_proxy",
+      "url": "https://ir.americanexpress.com/financials/annual-reports-and-proxy-statements/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "AXP",
+      "source_type": "investor_events",
+      "url": "https://ir.americanexpress.com/events/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "AXP",
+      "source_type": "ir_news_archive",
+      "url": "https://ir.americanexpress.com/news/investor-relations-news/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "BA",
+      "source_type": "events_presentations",
+      "url": "https://investors.boeing.com/investors/events-presentations/",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "BA",
+      "source_type": "financial_reports_archive",
+      "url": "https://investors.boeing.com/investors/reports/",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "CAT",
+      "source_type": "events_presentations",
+      "url": "https://investors.caterpillar.com/events-presentations/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "CRM",
+      "source_type": "company_earnings_archive",
+      "url": "https://www.salesforce.com/news/topics/earnings/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "wordpress",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "CRM",
+      "source_type": "company_press_releases",
+      "url": "https://www.salesforce.com/news/content-types/press-releases/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "wordpress",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "CRM",
+      "source_type": "events_presentations",
+      "url": "https://investor.salesforce.com/events-and-presentations/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "CRM",
+      "source_type": "quarterly_results",
+      "url": "https://investor.salesforce.com/financials/quarterly-results/",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "CSCO",
+      "source_type": "earnings_acquisitions_news",
+      "url": "https://newsroom.cisco.com/earningsandacquisitions",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "CSCO",
+      "source_type": "events_presentations",
+      "url": "https://investor.cisco.com/events-and-presentations/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "DIS",
+      "source_type": "company_press_releases_archive",
+      "url": "https://thewaltdisneycompany.com/press-releases/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "DIS",
+      "source_type": "events_presentations",
+      "url": "https://investors.thewaltdisneycompany.com/events-and-presentations/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "DIS",
+      "source_type": "ir_news_archive",
+      "url": "https://investors.thewaltdisneycompany.com/news/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "DIS",
+      "source_type": "quarterly_results",
+      "url": "https://investors.thewaltdisneycompany.com/financials/quarterly-results/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "GS",
+      "source_type": "annual_reports",
+      "url": "https://www.goldmansachs.com/investor-relations/financials/annual-reports",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "GS",
+      "source_type": "investor_presentations",
+      "url": "https://www.goldmansachs.com/investor-relations/presentations",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "HD",
+      "source_type": "annual_reports_archive",
+      "url": "https://ir.homedepot.com/financial-reports/annual-reports/archive",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "HD",
+      "source_type": "ir_news_releases_archive",
+      "url": "https://ir.homedepot.com/news-releases/archive",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "HD",
+      "source_type": "quarterly_earnings_archive",
+      "url": "https://ir.homedepot.com/financial-reports/quarterly-earnings/archive",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "IBM",
+      "source_type": "financial_reporting",
+      "url": "https://www.ibm.com/investor/financial-reporting",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "IBM",
+      "source_type": "investor_events_presentations",
+      "url": "https://www.ibm.com/investor/events",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "JNJ",
+      "source_type": "events_presentations",
+      "url": "https://www.investor.jnj.com/events-and-presentations/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "JNJ",
+      "source_type": "ir_news",
+      "url": "https://www.investor.jnj.com/investor-news/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "JNJ",
+      "source_type": "quarterly_results",
+      "url": "https://www.investor.jnj.com/financials/quarterly-results/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "JPM",
+      "source_type": "annual_report_archive",
+      "url": "https://www.jpmorganchase.com/ir/annual-report",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "JPM",
+      "source_type": "events_presentations",
+      "url": "https://www.jpmorganchase.com/ir/events",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "JPM",
+      "source_type": "ir_press_releases",
+      "url": "https://www.jpmorganchase.com/ir/news",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MCD",
+      "source_type": "investor_events_presentations",
+      "url": "https://corporate.mcdonalds.com/corpmcd/investors/events-and-presentations.html",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MCD",
+      "source_type": "investor_home",
+      "url": "https://corporate.mcdonalds.com/corpmcd/investors.html",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MCD",
+      "source_type": "ir_financial_information",
+      "url": "https://corporate.mcdonalds.com/corpmcd/investors/financial-information.html",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MCD",
+      "source_type": "mediaroom_news_release_archive",
+      "url": "https://mcdonalds.mediaroom.com/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MRK",
+      "source_type": "events_presentations",
+      "url": "https://www.merck.com/investor-relations/events-and-presentations/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "wordpress",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MRK",
+      "source_type": "financial_information_earnings",
+      "url": "https://www.merck.com/investor-relations/financial-information/",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "wordpress",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MSFT",
+      "source_type": "annual_reports",
+      "url": "https://www.microsoft.com/en-us/investor/annual-reports",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MSFT",
+      "source_type": "earnings_financials_hub",
+      "url": "https://www.microsoft.com/en-us/investor/investor-information",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MSFT",
+      "source_type": "earnings_release_page_pattern",
+      "url": "https://www.microsoft.com/en-us/investor/earnings/fy-2023-q2/press-release-webcast",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "MSFT",
+      "source_type": "investor_events",
+      "url": "https://www.microsoft.com/en-us/investor/events/default",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "NKE",
+      "source_type": "investor_news_details_archive",
+      "url": "https://investors.nike.com/investors/news-events-and-reports/investor-news/investor-news-details/",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "NKE",
+      "source_type": "ir_news_events_reports",
+      "url": "https://investors.nike.com/investors/news-events-and-reports/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "NKE",
+      "source_type": "quarterly_earnings_archive",
+      "url": "https://investors.nike.com/investors/news-events-and-reports/default.aspx#quarterly-earnings",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "PG",
+      "source_type": "annual_reports",
+      "url": "https://www.pginvestor.com/financials/annual-reports/default.aspx",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "TRV",
+      "source_type": "events_presentations",
+      "url": "https://investor.travelers.com/events-and-presentations/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "TRV",
+      "source_type": "investor_home",
+      "url": "https://investor.travelers.com/home/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "UNH",
+      "source_type": "investor_archive",
+      "url": "https://www.unitedhealthgroup.com/investors/archive.html",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "V",
+      "source_type": "events_archive",
+      "url": "https://investor.visa.com/events-calendar/events-archive/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "V",
+      "source_type": "ir_news_releases",
+      "url": "https://investor.visa.com/news/default.aspx",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 200,
+      "vendor_profile": "q4_or_q4_like",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "V",
+      "source_type": "quarterly_earnings",
+      "url": "https://investor.visa.com/financial-information/quarterly-earnings/",
+      "likely_value": "high_q4_feed",
+      "q4_years_2010_2023": "2010|2011|2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022|2023",
+      "http_status": 403,
+      "vendor_profile": "cloudflare_challenge",
+      "review_note": "Public Q4 feed exposes dated archive years; crawler can ingest via q4 adapter."
+    },
+    {
+      "ticker": "VZ",
+      "source_type": "investor_news",
+      "url": "https://www.verizon.com/about/investors/investor-news",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "VZ",
+      "source_type": "investor_relations_hub",
+      "url": "https://www.verizon.com/about/investors",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "quotemedia",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    },
+    {
+      "ticker": "VZ",
+      "source_type": "quarterly_earnings",
+      "url": "https://www.verizon.com/about/investors/quarterly-earnings",
+      "likely_value": "high_static_candidate",
+      "q4_years_2010_2023": "",
+      "http_status": 200,
+      "vendor_profile": "static_html_or_custom",
+      "review_note": "Accessible without JS; useful for static archive discovery."
+    }
+  ]
+}

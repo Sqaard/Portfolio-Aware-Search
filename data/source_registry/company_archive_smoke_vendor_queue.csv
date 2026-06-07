@@ -1,0 +1,5 @@
+ticker,company,source_type,url,crawler_grade,vendor_profile,vendor_recommendation,accepted_documents,candidate_links_seen,source_http_status,priority
+AAPL,Apple,investor_relations,https://investor.apple.com/,browser_or_api_needed,q4_or_q4_like,Discover Q4 module/API parameters or use browser network capture to identify JSON endpoints.,0,10,200,high_vendor_api_adapter
+AAPL,Apple,earnings_results_archive,https://investor.apple.com/investor-relations/default.aspx,browser_or_api_needed,q4_or_q4_like,Discover Q4 module/API parameters or use browser network capture to identify JSON endpoints.,0,18,200,high_vendor_api_adapter
+AMGN,Amgen,press_releases_archive,https://investors.amgen.com/news-and-events/press-releases/,crawler_ready,fetch_problem,Recheck with requests/certifi/curl fallback and replace if still blocked.,0,0,,medium_recheck_or_replace
+AMGN,Amgen,company_news_archive,https://www.amgen.com/newsroom/press-releases,crawler_ready,static_html_or_custom,Use generic archive discovery first; add source adapter only if coverage is poor.,0,12,200,medium_source_specific_adapter

@@ -1,0 +1,2 @@
+method,query_count,mean_judged_rate_at_5,mean_judged_rate_at_10,queries_below_80pct_at_10,queries_below_100pct_at_10
+web_search_calibrated_v19,25,1.0,1.0,0,0

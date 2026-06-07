@@ -1,0 +1,31 @@
+query_id,portfolio,decision_datetime,split,regime,notes
+train_2010_q2_sample,configs/sample_portfolio.yaml,2010-05-10T09:30:00-04:00,train,post_crisis_recovery,Early recovery period after 2010 Q1 filings.
+train_2011_debt_shock_banks,configs/sample_portfolio_banks_macro.yaml,2011-08-08T09:30:00-04:00,train,us_debt_downgrade_credit_stress,US debt downgrade and credit stress regime.
+train_2012_euro_health,configs/sample_portfolio_health_macro.yaml,2012-05-15T09:30:00-04:00,train,euro_area_stress,Euro-area stress with defensive healthcare exposure.
+train_2013_taper_tech,configs/sample_portfolio_tech_rates.yaml,2013-09-20T09:30:00-04:00,train,taper_real_yields,Taper and real-yield sensitivity.
+train_2014_energy_sample,configs/sample_portfolio.yaml,2014-10-15T09:30:00-04:00,train,energy_growth_scare,Energy and growth volatility.
+train_2015_china_tech,configs/sample_portfolio_tech_rates.yaml,2015-08-24T09:30:00-04:00,train,china_devaluation_volatility,China devaluation and global risk-off.
+train_2016_oil_credit_banks,configs/sample_portfolio_banks_macro.yaml,2016-02-12T09:30:00-05:00,train,oil_credit_stress,Oil and credit stress regime.
+train_2016_election_sample,configs/sample_portfolio.yaml,2016-11-10T09:30:00-05:00,train,election_policy_reset,US election policy reset.
+train_2017_tax_tech,configs/sample_portfolio_tech_rates.yaml,2017-12-20T09:30:00-05:00,train,tax_reform,Tax reform and repatriation period.
+train_2018_vol_banks,configs/sample_portfolio_banks_macro.yaml,2018-02-09T09:30:00-05:00,train,volatility_shock,Volatility shock and rates sensitivity.
+train_2018_selloff_sample,configs/sample_portfolio.yaml,2018-12-24T09:30:00-05:00,train,growth_selloff,Year-end growth selloff.
+train_2019_trade_tech,configs/sample_portfolio_tech_rates.yaml,2019-08-05T09:30:00-04:00,train,trade_war,US-China trade war risk.
+train_2020_covid_banks,configs/sample_portfolio_banks_macro.yaml,2020-03-16T09:30:00-04:00,train,covid_crash,COVID crash and funding stress.
+train_2020_recovery_health,configs/sample_portfolio_health_macro.yaml,2020-06-30T09:30:00-04:00,train,covid_reopening,Reopening and healthcare utilization risk.
+train_2020_vaccine_sample,configs/sample_portfolio.yaml,2020-11-09T09:30:00-05:00,train,vaccine_rotation,Vaccine/election rotation.
+train_2021_meme_banks,configs/sample_portfolio_banks_macro.yaml,2021-01-29T09:30:00-05:00,train,retail_volatility,Retail volatility and market plumbing.
+train_2021_yields_tech,configs/sample_portfolio_tech_rates.yaml,2021-03-18T09:30:00-04:00,train,yield_spike,Real-yield spike for growth equities.
+train_2021_fed_sample,configs/sample_portfolio.yaml,2021-06-16T09:30:00-04:00,train,fed_repricing,Fed repricing before OOS split.
+train_2021_delta_health,configs/sample_portfolio_health_macro.yaml,2021-08-20T09:30:00-04:00,train,delta_variant,Delta variant and healthcare utilization.
+train_2021_presplit_tech,configs/sample_portfolio_tech_rates.yaml,2021-09-30T09:30:00-04:00,train,pre_oos_boundary,Final train decision before OOS boundary.
+test_2021_earnings_sample,configs/sample_portfolio.yaml,2021-10-29T09:30:00-04:00,test,oos_earnings,OOS earnings period.
+test_2021_fed_banks,configs/sample_portfolio_banks_macro.yaml,2021-12-15T09:30:00-05:00,test,oos_fed_pivot,Fed pivot and banks sensitivity.
+test_2022_growth_tech,configs/sample_portfolio_tech_rates.yaml,2022-01-24T09:30:00-05:00,test,oos_growth_selloff,Growth selloff and duration pressure.
+test_2022_fed_sample,configs/sample_portfolio.yaml,2022-03-16T09:30:00-04:00,test,oos_first_fed_hike,First Fed hike cycle decision.
+test_2022_inflation_banks,configs/sample_portfolio_banks_macro.yaml,2022-06-13T09:30:00-04:00,test,oos_inflation_bear,Inflation shock and bear-market risk.
+test_2022_earnings_health,configs/sample_portfolio_health_macro.yaml,2022-07-28T09:30:00-04:00,test,oos_earnings_guidance,Earnings and guidance reset.
+test_2022_fed_tech,configs/sample_portfolio_tech_rates.yaml,2022-09-21T09:30:00-04:00,test,oos_fed_hike,Large Fed hike and growth risk.
+test_2022_banks_sample,configs/sample_portfolio.yaml,2022-10-14T09:30:00-04:00,test,oos_banks_earnings,Bank earnings and credit cycle.
+test_2022_dec_fed_banks,configs/sample_portfolio_banks_macro.yaml,2022-12-14T09:30:00-05:00,test,oos_december_fed,December Fed and recession risk.
+test_2023_payrolls_tech,configs/sample_portfolio_tech_rates.yaml,2023-02-03T09:30:00-05:00,test,oos_payrolls_rates,Payroll surprise and rates repricing.

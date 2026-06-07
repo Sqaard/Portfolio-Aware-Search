@@ -1,0 +1,2 @@
+ticker,company,source_type,source_url,source_http_status,source_final_url,source_error,vendor_profile,vendor_recommendation,archive_pages_seen,candidate_links_seen,source_index,accepted_documents,rejected_candidates_checked
+AAPL,Apple,company_news_archive,https://www.apple.com/newsroom/archive/,200,https://www.apple.com/newsroom/archive/,,static_html_or_custom,Use generic archive discovery first; add source adapter only if coverage is poor.,1,12,1,2,0

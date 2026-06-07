@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-05-13T12:41:27Z",
+  "config": {
+    "start_year": 2021,
+    "end_year": 2021,
+    "max_archive_pages_per_source": 2,
+    "max_detail_candidates_per_source": 8,
+    "max_documents_per_source": 2,
+    "min_body_words": 100,
+    "q4_page_size": 5,
+    "rss_item_limit": 200,
+    "wp_page_size": 50,
+    "wp_max_pages_per_year": 2
+  },
+  "source_rows_checked": 11,
+  "documents_written": 15,
+  "detail_candidates_checked": 42,
+  "accepted_by_ticker": {
+    "AMZN": 3,
+    "AXP": 4,
+    "CRM": 4,
+    "CSCO": 4
+  },
+  "accepted_by_source_type": {
+    "company_press_release": 8,
+    "company_earnings_release": 7
+  },
+  "reject_reasons": {
+    "body_too_short": 3,
+    "published_at_outside_range": 14,
+    "missing_published_at": 2,
+    "duplicate_doc_id": 8
+  },
+  "vendor_queue_rows": 11,
+  "vendor_profiles": {
+    "cloudflare_challenge": 4,
+    "static_html_or_custom": 2,
+    "q4_or_q4_like": 5
+  },
+  "vendor_priorities": {
+    "low_already_has_generic_yield": 8,
+    "medium_source_specific_adapter": 2,
+    "high_vendor_api_adapter": 1
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "output": "data\\exports\\daily_retrieval_ppo_full_company_ir\\retrieved_contexts.jsonl",
+  "document_inputs": [
+    ".\\data\\processed_documents\\sec_macro_company_ir_ppo_2010_2023_documents.jsonl"
+  ],
+  "document_count": 26368,
+  "base_panel": {
+    "path": "..\\processed_final_fixed_external_lagclean_full.csv",
+    "row_count": 96019,
+    "date_column": "date",
+    "ticker_column": "tic",
+    "date_min": "2010-01-04",
+    "date_max": "2023-02-28",
+    "trading_date_count": 3311
+  },
+  "base_panel_date_range": {
+    "start": "2010-01-04",
+    "end": "2023-02-28"
+  },
+  "base_panel_trading_calendar": {
+    "count": 3311,
+    "first": "2010-01-04",
+    "last": "2023-02-28"
+  },
+  "decision_time_policy": "market_open",
+  "decision_timezone": "America/New_York",
+  "active_universe_by_date": {
+    "date_count": 3311,
+    "min_count": 29,
+    "max_count": 29
+  },
+  "parameters": {
+    "portfolio_top_k_per_day": 5,
+    "ticker_top_k_per_day": 1,
+    "ticker_date_stride": 8,
+    "lookback_days": 365,
+    "max_contexts_total": 30000,
+    "method": "full_hybrid_diversified"
+  },
+  "row_count": 28493,
+  "retrieval_layer_counts": {
+    "portfolio": 16550,
+    "stock": 11943
+  },
+  "query_intent_counts": {
+    "rates_policy": 3047,
+    "market_volatility": 1,
+    "inflation_pressure": 310,
+    "macro_growth": 13656,
+    "earnings_guidance": 3176,
+    "company_risk": 7495,
+    "legal_regulatory": 541,
+    "credit_stress": 267
+  },
+  "source_type_counts": {
+    "official_macro_release": 16550,
+    "sec_filing_exhibit": 3029,
+    "sec_filing_section": 8167,
+    "company_press_release": 136,
+    "company_earnings_release": 471,
+    "company_financial_report": 51,
+    "company_sec_filing_hub": 16,
+    "company_official_archive": 73
+  },
+  "split_counts": {
+    "train": 25447,
+    "test": 3046
+  },
+  "document_split_counts": {
+    "train": 25447,
+    "test": 3046
+  },
+  "age_bucket_counts": {
+    "0_1d": 2495,
+    "2_7d": 2583,
+    "8_30d": 3662,
+    "31_90d": 8292,
+    "over_90d": 11461
+  },
+  "unique_doc_ids": 3456,
+  "unique_decision_dates": 3310,
+  "unique_tickers": 29,
+  "sparse_query_cache_entries": 30,
+  "strict_leakage_rows": 0,
+  "missing_active_ticker_dates": 0
+}

@@ -1,0 +1,6 @@
+portfolio_id: sample_portfolio_tech_rates
+holdings:
+  AAPL: 0.18
+  MSFT: 0.16
+  JPM: 0.04
+  UNH: 0.02

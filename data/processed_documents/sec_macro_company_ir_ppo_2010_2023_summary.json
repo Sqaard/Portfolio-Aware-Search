@@ -1,0 +1,64 @@
+{
+  "inputs": [
+    "data\\processed_documents\\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl",
+    "data\\processed_documents\\official_macro_2010_2023_documents.jsonl",
+    "data\\raw_documents\\company_archive_full_coverage_2010_2023_documents.jsonl"
+  ],
+  "input_counts": {
+    "data\\processed_documents\\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl": 7011,
+    "data\\processed_documents\\official_macro_2010_2023_documents.jsonl": 18240,
+    "data\\raw_documents\\company_archive_full_coverage_2010_2023_documents.jsonl": 1117
+  },
+  "output": "data\\processed_documents\\sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
+  "key": "doc_id",
+  "output_rows": 26368,
+  "duplicate_rows_dropped": 0,
+  "split_counts": {
+    "test": 3925,
+    "train": 21337,
+    "": 1106
+  },
+  "source_type_counts": {
+    "sec_filing_section": 6356,
+    "sec_filing_exhibit": 655,
+    "official_macro_release": 18240,
+    "company_financial_report": 31,
+    "company_official_archive": 266,
+    "company_earnings_release": 512,
+    "company_press_release": 273,
+    "company_presentation": 28,
+    "company_sec_filing_hub": 7
+  },
+  "ticker_counts": {
+    "AAPL": 302,
+    "AMGN": 300,
+    "AMZN": 291,
+    "AXP": 313,
+    "BA": 306,
+    "CAT": 311,
+    "CRM": 359,
+    "CSCO": 341,
+    "CVX": 234,
+    "DIS": 536,
+    "GS": 258,
+    "HD": 252,
+    "HON": 224,
+    "IBM": 169,
+    "INTC": 199,
+    "JNJ": 253,
+    "JPM": 251,
+    "KO": 278,
+    "MARKET": 18240,
+    "MCD": 228,
+    "MMM": 259,
+    "MRK": 223,
+    "MSFT": 265,
+    "NKE": 289,
+    "PG": 229,
+    "TRV": 372,
+    "UNH": 247,
+    "V": 342,
+    "VZ": 222,
+    "WMT": 275
+  }
+}

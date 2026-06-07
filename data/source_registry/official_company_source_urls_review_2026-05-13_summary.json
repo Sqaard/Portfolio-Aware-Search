@@ -1,0 +1,140 @@
+{
+  "input_path": "C:\\Users\\ivanp\\OneDrive\\Документы\\xwechat_files\\wxid_3slml1yu50ju12_2539\\msg\\file\\2026-05\\official_source_urls.csv",
+  "review_csv": "FinPortfolio_IR\\data\\source_registry\\official_company_source_urls_review_2026-05-13.csv",
+  "checked_at": "2026-05-13T09:56:00Z",
+  "rows": 87,
+  "by_crawler_grade": {
+    "crawler_ready": 30,
+    "browser_or_api_needed": 50,
+    "fail": 3,
+    "blocked_or_forbidden": 4
+  },
+  "by_http_status": {
+    "200": 80,
+    "no_response": 3,
+    "403": 4
+  },
+  "by_needs_js": {
+    "no": 35,
+    "yes": 52
+  },
+  "by_source_type": {
+    "company_news_archive": 27,
+    "investor_relations": 7,
+    "earnings_results_archive": 28,
+    "press_releases_archive": 25
+  },
+  "tickers_with_any_crawler_ready": [
+    "AAPL",
+    "AMGN",
+    "AMZN",
+    "BA",
+    "CAT",
+    "DIS",
+    "GS",
+    "HD",
+    "HON",
+    "IBM",
+    "JNJ",
+    "JPM",
+    "KO",
+    "MSFT",
+    "NKE",
+    "PG",
+    "UNH",
+    "V",
+    "VZ",
+    "WMT"
+  ],
+  "tickers_without_crawler_ready": [
+    "AXP",
+    "CRM",
+    "CSCO",
+    "CVX",
+    "INTC",
+    "MCD",
+    "MMM",
+    "MRK",
+    "TRV"
+  ],
+  "usable_now_or_with_browser": 80,
+  "problem_rows": [
+    {
+      "ticker": "INTC",
+      "company": "Intel",
+      "source_type": "company_news_archive",
+      "url": "https://www.intel.com/content/www/us/en/newsroom/home.html",
+      "http_status": "",
+      "crawler_grade": "fail",
+      "review_note": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+      "http_error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+      "title_hint": ""
+    },
+    {
+      "ticker": "MRK",
+      "company": "Merck",
+      "source_type": "company_news_archive",
+      "url": "https://www.merck.com/media/news/",
+      "http_status": "403",
+      "crawler_grade": "blocked_or_forbidden",
+      "review_note": "Not usable with simple crawler; needs source-specific handling or replacement.",
+      "http_error": "Forbidden",
+      "title_hint": "403 Access Denied"
+    },
+    {
+      "ticker": "MRK",
+      "company": "Merck",
+      "source_type": "press_releases_archive",
+      "url": "https://www.merck.com/newsroom/",
+      "http_status": "403",
+      "crawler_grade": "blocked_or_forbidden",
+      "review_note": "Not usable with simple crawler; needs source-specific handling or replacement.",
+      "http_error": "Forbidden",
+      "title_hint": "403 Access Denied"
+    },
+    {
+      "ticker": "MRK",
+      "company": "Merck",
+      "source_type": "earnings_results_archive",
+      "url": "https://www.merck.com/investor-relations/",
+      "http_status": "403",
+      "crawler_grade": "blocked_or_forbidden",
+      "review_note": "Not usable with simple crawler; needs source-specific handling or replacement.",
+      "http_error": "Forbidden",
+      "title_hint": "403 Access Denied"
+    },
+    {
+      "ticker": "V",
+      "company": "Visa",
+      "source_type": "press_releases_archive",
+      "url": "https://usa.visa.com/about-visa/newsroom/press-releases.html",
+      "http_status": "403",
+      "crawler_grade": "blocked_or_forbidden",
+      "review_note": "Not usable with simple crawler; needs source-specific handling or replacement.",
+      "http_error": "Forbidden",
+      "title_hint": "Just a moment..."
+    },
+    {
+      "ticker": "WMT",
+      "company": "Walmart",
+      "source_type": "press_releases_archive",
+      "url": "https://stock.walmart.com/investors/default.aspx",
+      "http_status": "",
+      "crawler_grade": "fail",
+      "review_note": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+      "http_error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+      "title_hint": ""
+    },
+    {
+      "ticker": "WMT",
+      "company": "Walmart",
+      "source_type": "earnings_results_archive",
+      "url": "https://stock.walmart.com/financial-information/financial-results",
+      "http_status": "",
+      "crawler_grade": "fail",
+      "review_note": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+      "http_error": "URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)>",
+      "title_hint": ""
+    }
+  ]
+}

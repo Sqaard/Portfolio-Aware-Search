@@ -1,0 +1,2 @@
+method,query_count,precision_at_5,precision_at_10,ndcg_at_5,ndcg_at_10,map,mrr
+full_hybrid,1,0.6,0.6,0.6992148198508501,0.8548173814165274,0.7577380952380951,1.0

@@ -1,0 +1,55 @@
+{
+  "input_files": [
+    "data\\raw_documents\\sec_dow30_filings_2010_2023.jsonl",
+    "data\\raw_documents\\sec_dow30_missing7_2010_2023.jsonl"
+  ],
+  "input_rows": 315,
+  "deduped_rows": 311,
+  "raw_rows": 300,
+  "processed_rows": 300,
+  "raw_split_counts": {
+    "test": 60,
+    "train": 240
+  },
+  "processed_split_counts": {
+    "test": 60,
+    "train": 240
+  },
+  "raw_ticker_counts": {
+    "AAPL": 10,
+    "AMGN": 10,
+    "AMZN": 10,
+    "AXP": 10,
+    "BA": 10,
+    "CAT": 10,
+    "CRM": 10,
+    "CSCO": 10,
+    "CVX": 10,
+    "DIS": 10,
+    "GS": 10,
+    "HD": 10,
+    "HON": 10,
+    "IBM": 10,
+    "JNJ": 10,
+    "JPM": 10,
+    "KO": 10,
+    "MCD": 10,
+    "MMM": 10,
+    "MRK": 10,
+    "MSFT": 10,
+    "NKE": 10,
+    "NVDA": 10,
+    "PG": 10,
+    "SHW": 10,
+    "TRV": 10,
+    "UNH": 10,
+    "V": 10,
+    "VZ": 10,
+    "WMT": 10
+  },
+  "processed_ticker_count": 30,
+  "min_available_at": "2010-01-06T16:00:00Z",
+  "max_available_at": "2023-03-01T21:45:31Z",
+  "raw_output": "data\\raw_documents\\sec_dow30_2010_2023_300.jsonl",
+  "processed_output": "data\\processed_documents\\sec_dow30_2010_2023_300_documents.jsonl"
+}

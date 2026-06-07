@@ -1,0 +1,77 @@
+{
+  "available_feature_names": [
+    "base_score",
+    "signal_strength",
+    "rank_prior",
+    "expected_ticker_match",
+    "wrong_company",
+    "source_scope_match",
+    "sec_scope_match",
+    "macro_scope_match",
+    "company_ir_scope_match",
+    "field_exact",
+    "field_bad",
+    "risk_factor_section_match",
+    "legal_section_match",
+    "mda_section_match",
+    "earnings_release_match",
+    "results_item_match",
+    "item_901_wrapper",
+    "financial_statement_section",
+    "risk_query_earnings_release_bad",
+    "nonfinancial_press_bad",
+    "energy_theme_match"
+  ],
+  "cross_validation": {
+    "mean_test_mrr": 1.0,
+    "mean_test_ndcg_at_10": 0.9414431241951465,
+    "mean_test_precision_at_10": 0.8560000000000001
+  },
+  "feature_names": [
+    "base_score",
+    "signal_strength",
+    "rank_prior",
+    "expected_ticker_match",
+    "wrong_company",
+    "source_scope_match",
+    "sec_scope_match",
+    "macro_scope_match",
+    "company_ir_scope_match",
+    "field_exact",
+    "field_bad"
+  ],
+  "final_in_sample_summary": {
+    "mrr": 1.0,
+    "ndcg_at_10": 0.957212763252349,
+    "precision_at_10": 0.872,
+    "query_count": 25
+  },
+  "inputs": {
+    "pool": "data\\annotations\\search_quality_pool_field_v4.csv",
+    "qrels": "data\\annotations\\search_quality_qrels_mixed_v10.csv",
+    "queries": "data\\annotations\\search_quality_queries_v1.csv"
+  },
+  "method": "web_search_calibrated_v19",
+  "training": {
+    "folds": 5,
+    "include_section_features": false,
+    "label_warning": "assistant-reviewed qrels are for development; replace with independent human labels before final claims",
+    "max_passes": 4,
+    "objective": "mean_ndcg_at_10_by_query + precision_weight * mean_precision_at_10 - regularization",
+    "precision_weight": 0.0,
+    "regularization_strength": 0.0
+  },
+  "weights": {
+    "base_score": 0.5,
+    "company_ir_scope_match": 0.5,
+    "expected_ticker_match": 0.75,
+    "field_bad": -2.0,
+    "field_exact": 0.0,
+    "macro_scope_match": 0.25,
+    "rank_prior": 4.0,
+    "sec_scope_match": 0.25,
+    "signal_strength": 0.0,
+    "source_scope_match": 1.0,
+    "wrong_company": -1.0
+  }
+}

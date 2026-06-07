@@ -1,0 +1,2 @@
+method,query_count,precision_at_5,precision_at_10,ndcg_at_5,ndcg_at_10,map,mrr
+web_search_calibrated_v19,25,1.0,0.872,0.9332602246086752,0.957212763252349,0.9767854924509158,1.0
