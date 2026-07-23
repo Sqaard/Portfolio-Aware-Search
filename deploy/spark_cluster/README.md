@@ -42,10 +42,20 @@ docker compose -f deploy/spark_cluster/docker-compose.yml down
 
 ## Notes
 
-- The image is `bitnami/spark:3.5.3` (bundles PySpark). If that tag is
-  unavailable in your registry, substitute another Spark 3.5 image with Python
-  (e.g. `apache/spark:3.5.3`) and keep `PYSPARK_PYTHON` pointing at its Python.
+- The image is the Docker **official** `spark:3.5.3-scala2.12-java17-python3-ubuntu`
+  (bundles PySpark + Python 3). `bitnami/spark` was removed from Docker Hub by
+  Broadcom in 2025 — do not use it. The official image has no `SPARK_MODE`
+  entrypoint, so the compose file starts master/worker explicitly via
+  `spark-class`; the container Python is `/usr/bin/python3` and `SPARK_HOME`
+  is `/opt/spark`.
 - `SparkEngine` skips the loopback (`127.0.0.1`) driver binding for `spark://`
   masters, so executors on the worker containers can reach the driver.
 - Structured Streaming (`bigdata.streaming.spark_structured_streaming`) runs
   cleanly here — the cluster provides the Hadoop environment that Windows lacks.
+- The production search index can be built distributed on this cluster:
+
+  ```bash
+  deploy/spark_cluster/submit.sh bigdata.run_build_search_index \
+    --corpus all_ppo --native-read \
+    --output data/exports/bigdata/search_index/finportfolio_search_spark.sqlite
+  ```

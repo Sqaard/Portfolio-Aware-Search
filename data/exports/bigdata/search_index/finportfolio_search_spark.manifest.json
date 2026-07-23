@@ -1,0 +1,20 @@
+{
+  "output_path": "data/exports/bigdata/search_index/finportfolio_search_spark.sqlite",
+  "document_count": 26368,
+  "feature_doc_count": 3456,
+  "run": {
+    "job": "build_search_index",
+    "corpus": "all_ppo",
+    "engine_requested": "spark",
+    "backends_available": {
+      "local": true,
+      "spark": true
+    },
+    "limit": 0,
+    "started_epoch": 1784816733.7102718,
+    "engine_used": "spark",
+    "map_seconds": 24.804,
+    "sqlite_seconds": 47.797,
+    "corpus_path": "/workspace/data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl"
+  }
+}

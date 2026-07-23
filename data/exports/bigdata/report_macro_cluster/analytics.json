@@ -1,0 +1,257 @@
+{
+  "total_documents": 18240,
+  "vocabulary_note": "term-level stats are produced by the inverted-index job",
+  "by_source_family": {
+    "official_macro": 18240
+  },
+  "by_source_type": {
+    "official_macro_release": 18240
+  },
+  "by_reliability_tier": {
+    "official": 18240
+  },
+  "by_year": {
+    "2010": 1324,
+    "2011": 1331,
+    "2012": 1319,
+    "2013": 1326,
+    "2014": 1326,
+    "2015": 1329,
+    "2016": 1331,
+    "2017": 1323,
+    "2018": 1315,
+    "2019": 1323,
+    "2020": 1330,
+    "2021": 1328,
+    "2022": 1331,
+    "2023": 385,
+    "2024": 263,
+    "2025": 261,
+    "2026": 95
+  },
+  "by_language": {
+    "en": 18240
+  },
+  "top_tickers": [
+    {
+      "name": "MARKET",
+      "count": 18240
+    }
+  ],
+  "top_event_tags": [
+    {
+      "name": "official_macro",
+      "count": 18240
+    },
+    {
+      "name": "rates",
+      "count": 6743
+    },
+    {
+      "name": "rates_policy",
+      "count": 6743
+    },
+    {
+      "name": "market_volatility",
+      "count": 6638
+    },
+    {
+      "name": "energy",
+      "count": 6614
+    },
+    {
+      "name": "yield_curve",
+      "count": 6584
+    },
+    {
+      "name": "credit",
+      "count": 4076
+    },
+    {
+      "name": "credit_stress",
+      "count": 4076
+    },
+    {
+      "name": "risk_appetite",
+      "count": 3319
+    },
+    {
+      "name": "input_costs",
+      "count": 3307
+    },
+    {
+      "name": "front_end_rates",
+      "count": 3292
+    },
+    {
+      "name": "credit_spreads",
+      "count": 784
+    },
+    {
+      "name": "macro_growth",
+      "count": 636
+    },
+    {
+      "name": "housing",
+      "count": 318
+    },
+    {
+      "name": "labor",
+      "count": 318
+    },
+    {
+      "name": "labor_market",
+      "count": 318
+    },
+    {
+      "name": "consumer_prices",
+      "count": 159
+    },
+    {
+      "name": "growth",
+      "count": 159
+    },
+    {
+      "name": "industrial_cycle",
+      "count": 159
+    },
+    {
+      "name": "inflation",
+      "count": 159
+    },
+    {
+      "name": "inflation_pressure",
+      "count": 159
+    },
+    {
+      "name": "monetary_policy",
+      "count": 159
+    }
+  ],
+  "top_risk_terms": [
+    {
+      "name": "interest rates",
+      "count": 6743
+    },
+    {
+      "name": "inflation",
+      "count": 3466
+    },
+    {
+      "name": "Fed policy",
+      "count": 3451
+    },
+    {
+      "name": "equity risk",
+      "count": 3319
+    },
+    {
+      "name": "risk appetite",
+      "count": 3319
+    },
+    {
+      "name": "volatility",
+      "count": 3319
+    },
+    {
+      "name": "energy prices",
+      "count": 3307
+    },
+    {
+      "name": "inflation pressure",
+      "count": 3307
+    },
+    {
+      "name": "oil",
+      "count": 3307
+    },
+    {
+      "name": "credit stress",
+      "count": 3292
+    },
+    {
+      "name": "duration risk",
+      "count": 3292
+    },
+    {
+      "name": "funding costs",
+      "count": 3292
+    },
+    {
+      "name": "real yields",
+      "count": 3292
+    },
+    {
+      "name": "recession risk",
+      "count": 3292
+    },
+    {
+      "name": "yield curve",
+      "count": 3292
+    },
+    {
+      "name": "credit spreads",
+      "count": 784
+    },
+    {
+      "name": "default risk",
+      "count": 784
+    },
+    {
+      "name": "funding stress",
+      "count": 784
+    },
+    {
+      "name": "consumer demand",
+      "count": 318
+    },
+    {
+      "name": "jobs",
+      "count": 318
+    },
+    {
+      "name": "construction demand",
+      "count": 159
+    },
+    {
+      "name": "cyclical demand",
+      "count": 159
+    },
+    {
+      "name": "growth",
+      "count": 159
+    },
+    {
+      "name": "housing",
+      "count": 159
+    },
+    {
+      "name": "liquidity",
+      "count": 159
+    }
+  ],
+  "total_tokens": 1173755,
+  "avg_document_length_tokens": 64.35,
+  "avg_source_credibility_by_family": {
+    "official_macro": 0.9
+  },
+  "point_in_time": {
+    "min_available_at": "2010-01-05T14:00:00Z",
+    "max_available_at": "2026-05-12T14:00:00Z"
+  },
+  "run": {
+    "job": "run_all",
+    "corpus": "macro",
+    "engine_requested": "spark",
+    "backends_available": {
+      "local": true,
+      "spark": true
+    },
+    "limit": 0,
+    "started_epoch": 1784816950.4085565,
+    "engine_used": "spark",
+    "corpus_path": "/workspace/data/processed_documents/official_macro_2010_2023_documents.jsonl",
+    "analytics_seconds": 10.914,
+    "index_seconds": 3.45
+  }
+}

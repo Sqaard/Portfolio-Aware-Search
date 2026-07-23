@@ -1,0 +1,379 @@
+{
+  "total_documents": 26368,
+  "vocabulary_note": "term-level stats are produced by the inverted-index job",
+  "by_source_family": {
+    "official_macro": 18240,
+    "sec_edgar": 7022,
+    "company_ir": 1106
+  },
+  "by_source_type": {
+    "official_macro_release": 18240,
+    "sec_filing_section": 6356,
+    "sec_filing_exhibit": 655,
+    "company_earnings_release": 512,
+    "company_press_release": 273,
+    "company_official_archive": 266,
+    "company_financial_report": 31,
+    "company_presentation": 28,
+    "company_sec_filing_hub": 7
+  },
+  "by_reliability_tier": {
+    "official": 25251,
+    "company": 1106,
+    "official_sec_company_exhibit": 11
+  },
+  "by_year": {
+    "2010": 1864,
+    "2011": 1840,
+    "2012": 1799,
+    "2013": 1814,
+    "2014": 1699,
+    "2015": 1717,
+    "2016": 1860,
+    "2017": 1878,
+    "2018": 1828,
+    "2019": 1960,
+    "2020": 1985,
+    "2021": 2121,
+    "2022": 2312,
+    "2023": 1072,
+    "2024": 263,
+    "2025": 261,
+    "2026": 95
+  },
+  "by_language": {
+    "en": 26368
+  },
+  "top_tickers": [
+    {
+      "name": "MARKET",
+      "count": 18240
+    },
+    {
+      "name": "DIS",
+      "count": 536
+    },
+    {
+      "name": "TRV",
+      "count": 372
+    },
+    {
+      "name": "CRM",
+      "count": 359
+    },
+    {
+      "name": "V",
+      "count": 342
+    },
+    {
+      "name": "CSCO",
+      "count": 341
+    },
+    {
+      "name": "AXP",
+      "count": 313
+    },
+    {
+      "name": "CAT",
+      "count": 311
+    },
+    {
+      "name": "BA",
+      "count": 306
+    },
+    {
+      "name": "AAPL",
+      "count": 302
+    },
+    {
+      "name": "AMGN",
+      "count": 300
+    },
+    {
+      "name": "AMZN",
+      "count": 291
+    },
+    {
+      "name": "NKE",
+      "count": 289
+    },
+    {
+      "name": "KO",
+      "count": 278
+    },
+    {
+      "name": "WMT",
+      "count": 275
+    },
+    {
+      "name": "MSFT",
+      "count": 265
+    },
+    {
+      "name": "MMM",
+      "count": 259
+    },
+    {
+      "name": "GS",
+      "count": 258
+    },
+    {
+      "name": "JNJ",
+      "count": 253
+    },
+    {
+      "name": "HD",
+      "count": 252
+    },
+    {
+      "name": "JPM",
+      "count": 251
+    },
+    {
+      "name": "UNH",
+      "count": 247
+    },
+    {
+      "name": "CVX",
+      "count": 234
+    },
+    {
+      "name": "PG",
+      "count": 229
+    },
+    {
+      "name": "MCD",
+      "count": 228
+    }
+  ],
+  "top_event_tags": [
+    {
+      "name": "official_macro",
+      "count": 18240
+    },
+    {
+      "name": "filing",
+      "count": 7022
+    },
+    {
+      "name": "sec_section",
+      "count": 7022
+    },
+    {
+      "name": "rates",
+      "count": 6743
+    },
+    {
+      "name": "rates_policy",
+      "count": 6743
+    },
+    {
+      "name": "market_volatility",
+      "count": 6638
+    },
+    {
+      "name": "energy",
+      "count": 6614
+    },
+    {
+      "name": "yield_curve",
+      "count": 6584
+    },
+    {
+      "name": "credit",
+      "count": 4076
+    },
+    {
+      "name": "credit_stress",
+      "count": 4076
+    },
+    {
+      "name": "10-q",
+      "count": 3511
+    },
+    {
+      "name": "risk_appetite",
+      "count": 3319
+    },
+    {
+      "name": "input_costs",
+      "count": 3307
+    },
+    {
+      "name": "front_end_rates",
+      "count": 3292
+    },
+    {
+      "name": "8-k",
+      "count": 1906
+    },
+    {
+      "name": "current_report",
+      "count": 1906
+    },
+    {
+      "name": "10-k",
+      "count": 1605
+    },
+    {
+      "name": "financial_statements",
+      "count": 1545
+    },
+    {
+      "name": "company_official",
+      "count": 1117
+    },
+    {
+      "name": "earnings_release_candidate",
+      "count": 1099
+    },
+    {
+      "name": "management_discussion",
+      "count": 1080
+    },
+    {
+      "name": "mda",
+      "count": 1080
+    },
+    {
+      "name": "risk_factors",
+      "count": 868
+    },
+    {
+      "name": "credit_spreads",
+      "count": 784
+    },
+    {
+      "name": "exhibit",
+      "count": 666
+    }
+  ],
+  "top_risk_terms": [
+    {
+      "name": "interest rates",
+      "count": 6933
+    },
+    {
+      "name": "inflation",
+      "count": 3621
+    },
+    {
+      "name": "Fed policy",
+      "count": 3451
+    },
+    {
+      "name": "oil",
+      "count": 3346
+    },
+    {
+      "name": "equity risk",
+      "count": 3319
+    },
+    {
+      "name": "risk appetite",
+      "count": 3319
+    },
+    {
+      "name": "volatility",
+      "count": 3319
+    },
+    {
+      "name": "energy prices",
+      "count": 3307
+    },
+    {
+      "name": "inflation pressure",
+      "count": 3307
+    },
+    {
+      "name": "credit stress",
+      "count": 3292
+    },
+    {
+      "name": "duration risk",
+      "count": 3292
+    },
+    {
+      "name": "funding costs",
+      "count": 3292
+    },
+    {
+      "name": "real yields",
+      "count": 3292
+    },
+    {
+      "name": "recession risk",
+      "count": 3292
+    },
+    {
+      "name": "yield curve",
+      "count": 3292
+    },
+    {
+      "name": "credit spreads",
+      "count": 784
+    },
+    {
+      "name": "default risk",
+      "count": 784
+    },
+    {
+      "name": "funding stress",
+      "count": 784
+    },
+    {
+      "name": "margin",
+      "count": 400
+    },
+    {
+      "name": "litigation",
+      "count": 375
+    },
+    {
+      "name": "demand",
+      "count": 325
+    },
+    {
+      "name": "consumer demand",
+      "count": 318
+    },
+    {
+      "name": "jobs",
+      "count": 318
+    },
+    {
+      "name": "regulation",
+      "count": 280
+    },
+    {
+      "name": "credit",
+      "count": 234
+    }
+  ],
+  "total_tokens": 45055627,
+  "avg_document_length_tokens": 1708.72,
+  "avg_source_credibility_by_family": {
+    "official_macro": 0.9,
+    "company_ir": 0.7993,
+    "sec_edgar": 0.9499
+  },
+  "point_in_time": {
+    "min_available_at": "2010-01-05T14:00:00Z",
+    "max_available_at": "2026-05-12T14:00:00Z"
+  },
+  "run": {
+    "job": "run_all",
+    "corpus": "all_ppo",
+    "engine_requested": "spark",
+    "backends_available": {
+      "local": true,
+      "spark": true
+    },
+    "limit": 0,
+    "started_epoch": 1784817198.6736932,
+    "engine_used": "spark",
+    "corpus_path": "/workspace/data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
+    "analytics_seconds": 20.276,
+    "index_seconds": 17.846
+  }
+}

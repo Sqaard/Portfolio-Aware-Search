@@ -26,3 +26,6 @@ data/exports/**/rl_panel_*.csv
 data/streaming_inbox/
 data/exports/bigdata/streaming_state/
 data/exports/bigdata/**/postings.jsonl
+
+# Spark-built search-index artifacts: manifest only; the .sqlite itself is ~800MB.
+data/exports/bigdata/search_index/*.sqlite

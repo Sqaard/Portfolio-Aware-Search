@@ -46,6 +46,12 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--partitions", type=int, default=None, help="Number of partitions / parallelism.")
     parser.add_argument("--num-workers", type=int, default=None, help="Local engine worker processes.")
     parser.add_argument("--limit", type=int, default=0, help="Only process the first N lines (quick smoke).")
+    parser.add_argument(
+        "--native-read",
+        action="store_true",
+        help="Spark only: read the corpus with sc.textFile (distributed IO). "
+             "Use on the cluster / ASCII paths; ignored for the local engine.",
+    )
     parser.add_argument("--output-dir", default=None, help="Directory for artifacts (default: data/exports/bigdata/<job>).")
 
 
@@ -78,6 +84,8 @@ def load_dataset(engine: Engine, args: argparse.Namespace) -> tuple[Dataset, Pat
                 if len(lines) >= args.limit:
                     break
         dataset = engine.parallelize(lines, num_partitions=args.partitions)
+    elif getattr(args, "native_read", False) and hasattr(engine, "text_file_native"):
+        dataset = engine.text_file_native(str(corpus_path), num_partitions=args.partitions)
     else:
         dataset = engine.text_file(str(corpus_path), num_partitions=args.partitions)
     return dataset, corpus_path

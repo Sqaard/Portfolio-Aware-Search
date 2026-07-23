@@ -1,0 +1,45 @@
+{
+  "query": "supply chain risk inflation",
+  "results": [
+    {
+      "doc_id": "sec_hd_10k_000035495022000070__item_1a_risk_factors",
+      "bm25_score": 13.305136
+    },
+    {
+      "doc_id": "company_trv_4d0a06148d82b33b",
+      "bm25_score": 12.536355
+    },
+    {
+      "doc_id": "sec_hd_10k_000035495014000008__item_1a_risk_factors",
+      "bm25_score": 12.425266
+    },
+    {
+      "doc_id": "sec_hd_10k_000119312511076501__item_1a_risk_factors",
+      "bm25_score": 12.27476
+    },
+    {
+      "doc_id": "sec_jnj_10q_000020040622000086__part1_item_2_mda",
+      "bm25_score": 12.210645
+    },
+    {
+      "doc_id": "sec_hd_10k_000035495012000003__item_1a_risk_factors",
+      "bm25_score": 12.135723
+    },
+    {
+      "doc_id": "sec_jnj_10q_000020040622000071__part1_item_2_mda",
+      "bm25_score": 12.125008
+    },
+    {
+      "doc_id": "sec_hd_10k_000035495013000008__item_1a_risk_factors",
+      "bm25_score": 12.040118
+    },
+    {
+      "doc_id": "sec_hd_8k_000035495023000025__exhibit_99_1",
+      "bm25_score": 11.856749
+    },
+    {
+      "doc_id": "sec_mcd_10k_000119312510042025__item_1a_risk_factors",
+      "bm25_score": 11.838713
+    }
+  ]
+}

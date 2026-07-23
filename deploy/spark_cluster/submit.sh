@@ -19,7 +19,7 @@ COMPOSE_FILE="$(dirname "$0")/docker-compose.yml"
 
 exec docker compose -f "$COMPOSE_FILE" exec \
   spark-master \
-  /opt/bitnami/python/bin/python3 -m "$MODULE" \
+  /usr/bin/python3 -m "$MODULE" \
     --engine spark \
     --master spark://spark-master:7077 \
     "$@"

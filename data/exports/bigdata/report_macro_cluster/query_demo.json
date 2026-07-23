@@ -1,0 +1,45 @@
+{
+  "query": "inflation interest rates rising",
+  "results": [
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-01-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-02-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-03-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-04-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-05-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-06-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-07-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-08-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-09-01",
+      "bm25_score": 2.412557
+    },
+    {
+      "doc_id": "official_macro_cpiaucsl_2010-10-01",
+      "bm25_score": 2.412557
+    }
+  ]
+}

@@ -6,8 +6,8 @@
 | --- | --- |
 | **1. Data gathering** with automatic updates | Pre-existing crawler (`crawler/`, `deploy/update_live_ir.py`, `crawler/live_incremental_fetch.py`) **+** new streaming auto-updater ([`bigdata/streaming/`](../bigdata/streaming)) |
 | **2. Selection & implementation of a Big Data technology** | **Apache Spark** (RDD MapReduce + Structured Streaming), implemented in [`bigdata/`](../bigdata), with a portable pure-Python MapReduce engine behind one shared interface |
-| **3. Processing & analysis of the collected data** | Distributed **inverted index / BM25** build + **corpus analytics**, producing `analytics.json`, `bm25_stats.json`, CSV tables and `REPORT.md` |
-| **4. Depth & volume** | Two engines behind one contract, exact parity verification against the single-machine code, streaming auto-updates, a Docker multi-node cluster, 34 tests, and an honest cost/benefit analysis (§11) |
+| **3. Processing & analysis of the collected data** | Distributed **inverted index / BM25** build + **corpus analytics** (producing `analytics.json`, `bm25_stats.json`, CSV tables, `REPORT.md`) **+ the production SQLite FTS index served by `web_app.py` is built by the layer** (`bigdata/run_build_search_index.py`, §5.2) |
+| **4. Depth & volume** | Two engines behind one contract, exact parity verification against the single-machine code, streaming auto-updates, a Docker multi-node cluster **with recorded full-corpus runs** (§10), 41 Big Data tests, and an honest cost/benefit analysis (§11) |
 
 ---
 
@@ -128,7 +128,21 @@ Parsing reuses `FinancialDocument.from_dict` and the exact tokenizer
 as `schema.load_documents` does — so the distributed corpus is identical to the
 one the reference code builds.
 
-### 5.2 Corpus analytics ([`jobs/corpus_analytics.py`](../bigdata/jobs/corpus_analytics.py))
+### 5.2 The production search index ([`jobs/search_index.py`](../bigdata/jobs/search_index.py))
+
+The SQLite FTS index that `web_app.py` serves search from is **built by the Big
+Data layer** (`python -m bigdata.run_build_search_index`). The corpus-scale,
+per-document work — parsing every record of the 352 MB combined corpus,
+deriving `source_family`/lengths, serialising the canonical `record_json`, and
+preparing the FTS payloads — is a distributed `map` over Spark executors; the
+driver then assembles the SQLite artifact (single-writer sink, exactly like any
+Spark job that terminates in a non-parallel store). The output is **drop-in
+identical** to `indexing/build_search_index.py`: every table (`documents`,
+`documents_fts`, `document_features`, `source_quality`, `ticker_coverage`)
+matches the original builder row-for-row — asserted by
+`tests/test_bigdata_search_index.py` for both engines.
+
+### 5.3 Corpus analytics ([`jobs/corpus_analytics.py`](../bigdata/jobs/corpus_analytics.py))
 
 A single MapReduce pass that fans each document into many additive counters and
 sums them:
@@ -155,6 +169,9 @@ python -m bigdata.run_all --corpus macro --query "inflation interest rates"
 # Individual jobs
 python -m bigdata.run_inverted_index  --corpus macro --with-postings
 python -m bigdata.run_corpus_analytics --corpus sec300
+
+# Build the production SQLite FTS index (what web_app.py serves) via the layer
+python -m bigdata.run_build_search_index --corpus all_ppo --engine spark
 
 # Choose the engine explicitly (default: auto → Spark if installed, else local)
 python -m bigdata.run_all --corpus macro --engine spark --master "local[*]"
@@ -199,14 +216,21 @@ This is the "practical value" of the collected data: a portfolio-aware view of
 which risks* — computed over the whole corpus, not a sample. The same jobs run
 on the 294 MB SEC section corpus and the 352 MB combined corpus.
 
-### Performance (12-core machine)
+### Performance
 
-| Job (macro, 18,240 docs) | Local engine | Spark `local[*]` |
-| --- | ---: | ---: |
-| Inverted index (compute) | **0.86 s** | 60.1 s (+ ~15 s startup) |
-| Full `run_all` (3 passes) | ~3.1 s | ~3 min |
+| Job | Local engine (12 cores, Windows) | Spark `local[*]` (Windows) | Spark cluster (Docker, 2 workers × 2 cores) |
+| --- | ---: | ---: | ---: |
+| Inverted index, macro (18,240 docs) | **0.86 s** | 60.1 s | **3.45 s** |
+| Corpus analytics, macro | ~1.1 s | ~60 s | **10.9 s** |
+| Inverted index, full corpus (26,368 docs, 352 MB) | — | — | **17.8 s** |
+| Corpus analytics, full corpus | — | — | **20.3 s** |
+| Production SQLite index build, full corpus | — | — | **~73 s** (24.8 s distributed map + 47.8 s SQLite write) |
 
-See §11 for why the local engine is *faster* here — and where Spark wins.
+Two lessons worth stating explicitly (см. §11): the notorious 60-second
+Windows `local[*]` number was mostly *Windows-specific* overhead (no `fork`,
+Python-worker spawn, py4j on loopback) — the same job on the Linux cluster
+runs in 3.5 s with a third of the cores; and the full 352 MB corpus is
+processed end-to-end on the toy 4-core cluster in tens of seconds.
 
 ---
 
@@ -222,11 +246,23 @@ single-machine code.**
 - **Spark == Local == reference.** On the full 18,240-document macro corpus the
   Spark and local `document_frequencies.csv` (5,520 terms) are **byte-identical**,
   and both report `avgdl = 64.3506`, `vocab = 5,520`.
-- **36 tests** in `tests/test_bigdata_*.py` (engine ops, index parity, query
+- **The production search index is the strongest parity check.** The index
+  built **on the Spark cluster** over the full 352 MB corpus was compared
+  table-by-table against the index built by the original single-machine
+  `indexing/build_search_index.py`: `documents` (26,368 rows), `documents_fts`
+  (26,368), `document_features` (3,456) and `ticker_coverage` (30) are
+  **row-for-row identical**; `source_quality` (10 rows) matches on every count,
+  with the two `AVG` columns differing by ≤ 2.5 × 10⁻¹³ — floating-point noise
+  from the container's newer SQLite (compensated summation in `AVG`), not a
+  logic difference. That cluster-built index **now serves the site**
+  (`data/search_index/finportfolio_search.sqlite`; the previous one is kept as
+  `finportfolio_search_pre_spark_backup.sqlite`), and the app's own 49 tests
+  (`test_search_index`, `test_web_app`) pass against it.
+- **41 tests** in `tests/test_bigdata_*.py` (engine ops, index parity, query
   parity, postings/df consistency, source-family parity vs the search index,
-  analytics, incremental-merge == full-batch, append-safe streaming, and a
-  real-Spark parity suite that self-skips when Java/PySpark is absent) — part of a
-  **221-test** full suite that stays green:
+  analytics, incremental-merge == full-batch, append-safe streaming, search-index
+  builder parity for both engines, and a real-Spark parity suite that self-skips
+  when Java/PySpark is absent) — the full suite stays green:
 
   ```powershell
   python -m unittest discover -s tests   # includes the Big Data suite
@@ -274,29 +310,45 @@ docker compose -f deploy/spark_cluster/docker-compose.yml up -d   # master + 2 w
 deploy/spark_cluster/submit.sh bigdata.run_inverted_index --corpus macro
 ```
 
-The compose file is **config-validated** (`docker compose config` passes). The
-multi-node cluster was **not brought up in the reference session** because the
-Docker Desktop Linux engine was not running there; the genuinely-distributed Spark
-execution reported above used `local[*]` (multiple executors across 12 cores),
-which exercises the same distributed code paths. The engine already skips the
-loopback driver binding for `spark://` masters so it works unchanged on the
-cluster.
+The cluster **was brought up and used for the headline runs** (Docker official
+`spark:3.5.3` image; `bitnami/spark` no longer exists on Docker Hub). Evidence
+captured from the live UIs during the runs:
+
+- **2 workers ALIVE** (2 cores / 2 GB each), applications running and completed
+  on the master — [`assets/spark_cluster_master.png`](assets/spark_cluster_master.png);
+- distributed **map / reduceByKey / collect stages, 16/16 tasks with shuffle
+  read/write** over 337–401 MiB inputs —
+  [`assets/spark_cluster_stages.png`](assets/spark_cluster_stages.png);
+- executors on both worker nodes —
+  [`assets/spark_cluster_executors.png`](assets/spark_cluster_executors.png).
+
+Cluster runs performed: the **production SQLite index build over the full
+352 MB / 26,368-document corpus** (~73 s end-to-end; the resulting index now
+*serves the site* — see §5.2 and §8), plus `run_all` analytics over both the
+macro corpus and the full combined corpus (timings in §7). Reads used
+`--native-read` (`sc.textFile`), i.e. genuinely distributed IO. The engine
+skips the loopback driver binding for `spark://` masters, so the same code
+runs unchanged on the cluster.
 
 ---
 
 ## 11. Honest analysis: when does Big Data pay off?
 
-The performance table (§7) is deliberately not spun. On this single 12-core
-machine over an 18k-document / 39 MB corpus, the **local multiprocessing engine
-is ~70× faster** than Spark. That is expected and worth understanding:
+The performance table (§7) is deliberately not spun. On the Windows laptop the
+local multiprocessing engine beat Spark `local[*]` by ~70× — and the cluster
+runs then showed **most of that gap was Windows-specific**, not intrinsic to
+Spark:
 
-- **Spark's cost** is fixed overhead: JVM startup (~10–15 s), task scheduling, and
-  serialising every record across the Python↔JVM boundary (twice) — punishing on
-  Windows, which has no `fork`.
-- **Spark's benefit** is horizontal scale: partitioned, out-of-core execution
-  across *many machines*. It dominates when the corpus no longer fits in one
-  machine's RAM or when a cluster's aggregate cores/IO exceed one box — i.e. the
-  352 MB combined corpus, the full 4.5 GB raw set, and beyond.
+- **Spark's fixed cost** is JVM startup, task scheduling, and serialising every
+  record across the Python↔JVM boundary — *amplified* on Windows (no `fork`,
+  slow Python-worker spawn). The same macro index job: 60.1 s on Windows
+  `local[*]` (12 cores) vs **3.45 s on the Linux cluster with 4 cores**.
+- **Spark's benefit** is horizontal scale: partitioned, distributed-IO execution
+  across machines. The full 352 MB corpus is processed in tens of seconds on a
+  toy 2-worker cluster, and the same code scales by adding workers — which no
+  single-process design can do.
+- The **local engine still wins on small corpora from a warm interpreter**
+  (0.86 s) — the right tool for fast iteration and as the correctness oracle.
 
 So the engineering choice is not "Spark always." It is: **a single MapReduce
 codebase that runs locally for fast iteration and correctness, and on Spark when

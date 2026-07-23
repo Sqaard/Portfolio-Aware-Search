@@ -1,0 +1,226 @@
+{
+  "k1": 1.5,
+  "b": 0.75,
+  "n_docs": 26368,
+  "unique_doc_ids": 26368,
+  "vocabulary_size": 79705,
+  "total_tokens": 45055627,
+  "average_document_length": 1708.723718143204,
+  "top_terms_by_document_frequency": [
+    {
+      "term": "on",
+      "document_frequency": 25758
+    },
+    {
+      "term": "for",
+      "document_frequency": 24761
+    },
+    {
+      "term": "market",
+      "document_frequency": 22718
+    },
+    {
+      "term": "risk",
+      "document_frequency": 22621
+    },
+    {
+      "term": "value",
+      "document_frequency": 22276
+    },
+    {
+      "term": "date",
+      "document_frequency": 22148
+    },
+    {
+      "term": "use",
+      "document_frequency": 22114
+    },
+    {
+      "term": "us",
+      "document_frequency": 21455
+    },
+    {
+      "term": "release",
+      "document_frequency": 20624
+    },
+    {
+      "term": "relevant",
+      "document_frequency": 20262
+    },
+    {
+      "term": "series",
+      "document_frequency": 19575
+    },
+    {
+      "term": "evidence",
+      "document_frequency": 19269
+    },
+    {
+      "term": "family",
+      "document_frequency": 18970
+    },
+    {
+      "term": "00",
+      "document_frequency": 18671
+    },
+    {
+      "term": "official",
+      "document_frequency": 18599
+    },
+    {
+      "term": "equities",
+      "document_frequency": 18578
+    },
+    {
+      "term": "z",
+      "document_frequency": 18423
+    },
+    {
+      "term": "macro",
+      "document_frequency": 18414
+    },
+    {
+      "term": "conservative",
+      "document_frequency": 18390
+    },
+    {
+      "term": "concepts",
+      "document_frequency": 18387
+    },
+    {
+      "term": "observation",
+      "document_frequency": 18263
+    },
+    {
+      "term": "retrieval",
+      "document_frequency": 18253
+    },
+    {
+      "term": "portfolio-level",
+      "document_frequency": 18242
+    },
+    {
+      "term": "available_at",
+      "document_frequency": 18240
+    },
+    {
+      "term": "t14",
+      "document_frequency": 18240
+    },
+    {
+      "term": "10",
+      "document_frequency": 14800
+    },
+    {
+      "term": "year",
+      "document_frequency": 14244
+    },
+    {
+      "term": "yield",
+      "document_frequency": 11981
+    },
+    {
+      "term": "treasury",
+      "document_frequency": 11847
+    },
+    {
+      "term": "2",
+      "document_frequency": 10857
+    },
+    {
+      "term": "interest",
+      "document_frequency": 10736
+    },
+    {
+      "term": "rates",
+      "document_frequency": 10637
+    },
+    {
+      "term": "percent",
+      "document_frequency": 9481
+    },
+    {
+      "term": "the",
+      "document_frequency": 8066
+    },
+    {
+      "term": "of",
+      "document_frequency": 8048
+    },
+    {
+      "term": "and",
+      "document_frequency": 8043
+    },
+    {
+      "term": "to",
+      "document_frequency": 7912
+    },
+    {
+      "term": "credit",
+      "document_frequency": 7508
+    },
+    {
+      "term": "in",
+      "document_frequency": 7374
+    },
+    {
+      "term": "filed",
+      "document_frequency": 7167
+    },
+    {
+      "term": "price",
+      "document_frequency": 7103
+    },
+    {
+      "term": "filing",
+      "document_frequency": 7069
+    },
+    {
+      "term": "by",
+      "document_frequency": 7038
+    },
+    {
+      "term": "a",
+      "document_frequency": 6956
+    },
+    {
+      "term": "costs",
+      "document_frequency": 6954
+    },
+    {
+      "term": "as",
+      "document_frequency": 6892
+    },
+    {
+      "term": "is",
+      "document_frequency": 6873
+    },
+    {
+      "term": "financial",
+      "document_frequency": 6818
+    },
+    {
+      "term": "equity",
+      "document_frequency": 6817
+    },
+    {
+      "term": "official_macro_rates",
+      "document_frequency": 6743
+    }
+  ],
+  "run": {
+    "job": "run_all",
+    "corpus": "all_ppo",
+    "engine_requested": "spark",
+    "backends_available": {
+      "local": true,
+      "spark": true
+    },
+    "limit": 0,
+    "started_epoch": 1784817198.6736932,
+    "engine_used": "spark",
+    "corpus_path": "/workspace/data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
+    "analytics_seconds": 20.276,
+    "index_seconds": 17.846
+  }
+}

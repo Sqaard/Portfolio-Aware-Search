@@ -8,6 +8,6 @@ process-pool backend requires.
 
 from __future__ import annotations
 
-from . import corpus_analytics, inverted_index, mapping
+from . import corpus_analytics, inverted_index, mapping, search_index
 
-__all__ = ["mapping", "inverted_index", "corpus_analytics"]
+__all__ = ["mapping", "inverted_index", "corpus_analytics", "search_index"]
