@@ -21,3 +21,8 @@ data/raw_documents/sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections.jsonl
 data/exports/**/retrieved_contexts.jsonl
 data/exports/**/rl_panel_*.csv
 
+
+# Big Data layer: dynamic streaming state and potentially huge postings dumps.
+data/streaming_inbox/
+data/exports/bigdata/streaming_state/
+data/exports/bigdata/**/postings.jsonl

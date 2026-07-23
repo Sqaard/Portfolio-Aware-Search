@@ -6,7 +6,8 @@ param(
     [string]$TunnelRunner = "auto",
     [ValidateSet("http2", "quic", "auto")]
     [string]$TunnelProtocol = "http2",
-    [switch]$DisableServerLlm
+    [switch]$DisableServerLlm,
+    [switch]$RunSmoke
 )
 
 $ErrorActionPreference = "Stop"
@@ -61,6 +62,20 @@ try {
     throw "Port $Port on $HostName is already in use. Stop the old demo or pass a different -Port."
 }
 
+# Preflight: the demo serves search over this prebuilt SQLite index.
+$indexPath = Join-Path $Root "data\search_index\finportfolio_search.sqlite"
+if (-not (Test-Path $indexPath)) {
+    throw "Search index not found at $indexPath. Rebuild it before sharing the demo (see docs/PUBLIC_DEMO_CLOUDFLARE.md)."
+}
+
+# Preflight: make sure `python` can actually import the app before we background it.
+try {
+    & python -c "import sys; import web_app" *> $null
+    if ($LASTEXITCODE -ne 0) { throw "python could not import web_app.py" }
+} catch {
+    throw "The 'python' on PATH cannot run web_app.py. Use a Python 3.9+ that can import the project (e.g. the conda env), then retry."
+}
+
 Write-Host "Starting FinPortfolio IR public demo server at $url"
 $env:PYTHONUNBUFFERED = "1"
 $serverArgs = @(
@@ -93,20 +108,49 @@ try {
 
 $serverProcess.Id | Set-Content -Path $pidFile -Encoding ASCII
 
-Start-Sleep -Seconds 5
-
-try {
-    $health = Invoke-WebRequest -UseBasicParsing -Uri "$url/api/health" -TimeoutSec 10
-    if ($health.StatusCode -ne 200) {
-        throw "Health check returned HTTP $($health.StatusCode)"
+# Poll the health endpoint instead of guessing a fixed sleep: the server loads
+# an 811 MB SQLite index and can take several seconds to answer.
+Write-Host "Waiting for the local server to become ready..."
+$ready = $false
+for ($i = 0; $i -lt 45; $i++) {
+    if ($serverProcess.HasExited) {
+        Write-Host "Demo server exited during startup. Logs:"
+        if (Test-Path $serverErr) { Get-Content $serverErr -Tail 80 }
+        throw "Demo server exited before it became ready."
     }
-    Write-Host "Local server is ready."
-} catch {
-    Write-Host "Server logs:"
+    try {
+        $health = Invoke-WebRequest -UseBasicParsing -Uri "$url/api/health" -TimeoutSec 5
+        if ($health.StatusCode -eq 200) { $ready = $true; break }
+    } catch {
+        # not up yet; keep polling
+    }
+    Start-Sleep -Seconds 1
+}
+if (-not $ready) {
+    Write-Host "Server did not become ready in time. Logs:"
     if (Test-Path $serverOut) { Get-Content $serverOut -Tail 40 }
     if (Test-Path $serverErr) { Get-Content $serverErr -Tail 80 }
     Stop-DemoProcess $serverProcess
-    throw
+    throw "Health check did not pass within 45 seconds."
+}
+Write-Host "Local server is ready."
+
+if ($RunSmoke) {
+    Write-Host "Running live search smoke checks before opening the tunnel..."
+    $smokeOutput = Join-Path $Root "data\exports\live_search_smoke_cloudflare_preflight"
+    try {
+        & python "evaluation\run_live_search_smoke.py" `
+            --base-url $url `
+            --output-dir $smokeOutput `
+            --strict
+        Write-Host "Live search smoke checks passed. Results: $smokeOutput"
+    } catch {
+        Write-Host "Live search smoke checks failed. Server logs:"
+        if (Test-Path $serverOut) { Get-Content $serverOut -Tail 40 }
+        if (Test-Path $serverErr) { Get-Content $serverErr -Tail 80 }
+        Stop-DemoProcess $serverProcess
+        throw
+    }
 }
 
 if ($NoTunnel) {

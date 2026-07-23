@@ -19,6 +19,11 @@ def _compact_document(record: dict[str, object]) -> dict[str, object]:
     return {
         "rank": record.get("rank", 0),
         "doc_id": record.get("doc_id", ""),
+        "evidence_unit_id": record.get("evidence_unit_id", ""),
+        "parent_doc_id": record.get("parent_doc_id", ""),
+        "evidence_unit_type": record.get("evidence_unit_type", ""),
+        "evidence_unit_index": record.get("evidence_unit_index", 0),
+        "evidence_unit_claim_type": record.get("evidence_unit_claim_type", ""),
         "title": record.get("title", ""),
         "published_at": record.get("published_at", ""),
         "available_at": record.get("available_at", ""),

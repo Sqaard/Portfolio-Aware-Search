@@ -40,6 +40,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from crawler.source_registry import canonicalize_url  # noqa: E402
+from features.build_evidence_units import build_evidence_units  # noqa: E402
 from finportfolio_ir.chart_lab import ChartLabStore, chart_lab_options  # noqa: E402
 from finportfolio_ir.favorites import (  # noqa: E402
     annotate_results_with_favorites,
@@ -50,9 +51,15 @@ from finportfolio_ir.favorites import (  # noqa: E402
 )
 from finportfolio_ir.dow30 import DOW30_COMPANIES, DOW30_SECTOR_BY_TICKER, DOW30_TICKER_SET, dow30_options  # noqa: E402
 from finportfolio_ir.io_utils import local_project_path, read_jsonl  # noqa: E402
+from finportfolio_ir.live_ir_status import build_live_ir_status  # noqa: E402
 from finportfolio_ir.my_vibe import build_portfolio_impact_prompt, post_for_ui, post_portfolio_relevance  # noqa: E402
 from finportfolio_ir.portfolio_summary import summarize_portfolio  # noqa: E402
 from finportfolio_ir.query_intent import classify_query_intent  # noqa: E402
+from retrieval.evidence_unit_gate import evidence_unit_gate_for_intent  # noqa: E402
+from retrieval.evidence_unit_calibration import (  # noqa: E402
+    active_evidence_unit_calibration_tags,
+    evidence_unit_calibration_delta,
+)
 from finportfolio_ir.macro_rule_engine import evaluate_official_macro  # noqa: E402
 from finportfolio_ir.text_utils import excerpt, tokenize  # noqa: E402
 from finportfolio_ir.us_macro_rules import build_macro_portfolio_translation, build_us_macro_dashboard  # noqa: E402
@@ -84,7 +91,6 @@ DEFAULT_SETTINGS = {
 }
 
 SAMPLE_DOCUMENTS_PATH = ROOT / "data" / "processed_documents" / "documents.jsonl"
-DEMO_DOCUMENTS_PATH = ROOT / "data" / "processed_documents" / "repo_demo_documents.jsonl"
 FULL_DOCUMENTS_PATH = ROOT / "data" / "processed_documents" / "sec_macro_company_ir_ppo_2010_2023_documents.jsonl"
 TEXT_FEATURES_PATH = (
     ROOT
@@ -104,6 +110,8 @@ FEATURE_RELATIONS_PATH = (
     / "feature_target_relations_stock_level.csv"
 )
 SEARCH_INDEX_PATH = ROOT / "data" / "search_index" / "finportfolio_search.sqlite"
+LIVE_MERGED_DOCUMENTS_PATH = ROOT / "data" / "live_ir" / "merged_documents.jsonl"
+LIVE_SEARCH_INDEX_PATH = ROOT / "data" / "live_ir" / "finportfolio_search_live.sqlite"
 CHART_LAB_PANEL_PATH = (
     ROOT
     / "data"
@@ -113,10 +121,17 @@ CHART_LAB_PANEL_PATH = (
 )
 SEARCH_INDEX_VERSION = "search_index_v1"
 SEARCH_INDEX_CANDIDATE_LIMIT = 1_500
+EVIDENCE_UNIT_SEARCH_CANDIDATE_LIMIT = 1_500
+EVIDENCE_UNIT_SOURCE_CANDIDATE_LIMIT = 5_000
+EVIDENCE_UNIT_MACRO_SOURCE_CANDIDATE_LIMIT = 500
+EVIDENCE_UNIT_MACRO_SEARCH_CANDIDATE_LIMIT = 250
+EVIDENCE_UNIT_CALIBRATION_SCORE_SCALE = 10.0
 DEFAULT_SEARCH_LIMIT = 10
 MAX_SEARCH_LIMIT = 25
 MY_VIBE_INDEX_CANDIDATE_LIMIT = 700
 HISTORICAL_SEARCH_CUTOFF = "2023-03-01T23:59:59Z"
+HISTORICAL_SEARCH_END_LABEL = "2023-03-01"
+LIVE_SEARCH_CUTOFF = "9999-12-31T23:59:59Z"
 SEARCH_STOPWORDS = {
     "a",
     "about",
@@ -217,19 +232,34 @@ SIGNAL_FLAG_COLUMNS = [
 FINANCIAL_CREDIT_TICKERS = {"AXP", "GS", "JPM", "TRV", "V"}
 
 
-SEARCH_CUTOFF = os.environ.get("FINPORTFOLIO_SEARCH_CUTOFF", "").strip() or HISTORICAL_SEARCH_CUTOFF
-SEARCH_END_LABEL = SEARCH_CUTOFF[:10]
+def _env_flag(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+LIVE_IR_ENABLED = _env_flag("FINPORTFOLIO_LIVE_IR")
+EVIDENCE_UNIT_SEARCH_ENABLED = os.environ.get("FINPORTFOLIO_EVIDENCE_UNIT_SEARCH", "1").strip().lower() not in {
+    "0",
+    "false",
+    "no",
+    "off",
+}
+SEARCH_CUTOFF = os.environ.get("FINPORTFOLIO_SEARCH_CUTOFF", "").strip() or (
+    LIVE_SEARCH_CUTOFF if LIVE_IR_ENABLED else HISTORICAL_SEARCH_CUTOFF
+)
+SEARCH_END_LABEL = "live" if SEARCH_CUTOFF == LIVE_SEARCH_CUTOFF else SEARCH_CUTOFF[:10]
 
 
 def default_documents_path() -> Path:
+    if LIVE_IR_ENABLED and LIVE_MERGED_DOCUMENTS_PATH.exists():
+        return LIVE_MERGED_DOCUMENTS_PATH
     if FULL_DOCUMENTS_PATH.exists():
         return FULL_DOCUMENTS_PATH
-    if DEMO_DOCUMENTS_PATH.exists():
-        return DEMO_DOCUMENTS_PATH
     return SAMPLE_DOCUMENTS_PATH
 
 
 def default_search_index_path() -> Path:
+    if LIVE_IR_ENABLED and LIVE_SEARCH_INDEX_PATH.exists():
+        return LIVE_SEARCH_INDEX_PATH
     return SEARCH_INDEX_PATH
 
 ICON_FILES = {
@@ -887,6 +917,9 @@ class FinPortfolioWebService:
     _documents_cache_path: Path | None = field(init=False, default=None)
     _documents_cache_mtime_ns: int = field(init=False, default=-1)
     _corpus_summary_cache: dict[str, Any] = field(init=False, default_factory=dict)
+    _evidence_units_cache: list[dict[str, Any]] = field(init=False, default_factory=list)
+    _evidence_units_cache_path: Path | None = field(init=False, default=None)
+    _evidence_units_cache_mtime_ns: int = field(init=False, default=-1)
     _documents_lock: Any = field(init=False, default_factory=threading.RLock)
     _vibe_rank_cache: dict[str, dict[str, Any]] = field(init=False, default_factory=dict)
     _text_features_cache: dict[str, dict[str, Any]] = field(init=False, default_factory=dict)
@@ -967,6 +1000,23 @@ class FinPortfolioWebService:
                 self._vibe_rank_cache = {}
             return self._documents_cache
 
+    def evidence_units(self) -> list[dict[str, Any]]:
+        with self._documents_lock:
+            documents = self.documents()
+            if (
+                self._evidence_units_cache_path != self.documents_path
+                or self._evidence_units_cache_mtime_ns != self._documents_cache_mtime_ns
+            ):
+                self._evidence_units_cache = build_evidence_units(
+                    documents,
+                    company_max_chars=1400,
+                    company_min_chars=120,
+                    include_unknown_documents=False,
+                )
+                self._evidence_units_cache_path = self.documents_path
+                self._evidence_units_cache_mtime_ns = self._documents_cache_mtime_ns
+            return self._evidence_units_cache
+
     def corpus_summary(self) -> dict[str, Any]:
         self.documents()
         return dict(self._corpus_summary_cache)
@@ -1009,6 +1059,17 @@ class FinPortfolioWebService:
             "feature_doc_count": int(float(manifest.get("feature_doc_count", "0") or 0)),
             "documents_path": manifest.get("documents_path", ""),
         }
+
+    def live_ir_status(self) -> dict[str, Any]:
+        live_dir = ROOT / "data" / "live_ir"
+        return build_live_ir_status(
+            live_dir=live_dir,
+            processed_path=live_dir / "live_processed_documents.jsonl",
+            merged_path=LIVE_MERGED_DOCUMENTS_PATH,
+            queue_path=live_dir / "live_llm_queue.jsonl",
+            manifest_path=live_dir / "live_refresh_manifest.json",
+            index_path=LIVE_SEARCH_INDEX_PATH,
+        )
 
     def _search_index_is_usable(self, manifest: dict[str, str] | None = None) -> bool:
         manifest = manifest or self.search_index_manifest()
@@ -1296,6 +1357,7 @@ class FinPortfolioWebService:
                 **self.corpus_summary(),
                 "text_features": self.text_feature_summary(),
                 "search_index": self.search_index_status(),
+                "live_ir": self.live_ir_status(),
             },
         }
 
@@ -2066,8 +2128,10 @@ class FinPortfolioWebService:
         return cleaned[:8_000]
 
     def _search_score(self, record: dict[str, Any], query: str) -> float:
+        return self._search_score_for_terms(record, self._query_scoring_terms(query))
+
+    def _search_score_for_terms(self, record: dict[str, Any], terms: list[str]) -> float:
         text = f"{record.get('title', '')} {record.get('body', '')}".lower()
-        terms = self._query_scoring_terms(query)
         if not terms:
             return 0.25
         title = str(record.get("title", "")).lower()
@@ -2208,6 +2272,8 @@ class FinPortfolioWebService:
             [
                 str(record.get("title", "")),
                 str(record.get("source_type", "")),
+                str(record.get("evidence_unit_type", "")),
+                str(record.get("evidence_unit_claim_type", "")),
                 " ".join(tags),
             ]
         ).lower().replace("_", " ")
@@ -2433,6 +2499,143 @@ class FinPortfolioWebService:
         for rank, row in enumerate(rows, start=1):
             row["rank"] = rank
         return rows
+
+    def _record_text_features_for_search(
+        self,
+        record: dict[str, Any],
+        feature_lookup: dict[str, dict[str, Any]],
+    ) -> dict[str, Any]:
+        doc_id = str(record.get("doc_id", "") or "")
+        parent_doc_id = str(record.get("parent_doc_id", "") or "")
+        return feature_lookup.get(doc_id) or feature_lookup.get(parent_doc_id) or {}
+
+    def _evidence_unit_matches_preferred_type(self, record: dict[str, Any], preferred: str) -> bool:
+        preferred = str(preferred or "").lower()
+        unit_type = str(record.get("evidence_unit_type", "") or "").lower()
+        claim = str(record.get("evidence_unit_claim_type", "") or "").lower()
+        text = " ".join(
+            [
+                str(record.get("title", "")),
+                str(record.get("body", "")),
+                " ".join(str(tag) for tag in record.get("event_tags", []) or []),
+            ]
+        ).lower().replace("_", " ")
+        if not preferred:
+            return False
+        if ":" not in preferred:
+            return unit_type == preferred
+        preferred_type, preferred_claim = preferred.split(":", 1)
+        if unit_type != preferred_type:
+            return False
+        if preferred_claim == claim:
+            return True
+        if preferred_claim == "earnings_or_guidance":
+            return claim in {"filing_exhibit", "company_guidance"} or any(
+                term in text for term in ("earnings release", "guidance", "investor material", "item 2.02")
+            )
+        if preferred_claim == "legal_proceedings":
+            return claim == "legal_proceedings" or any(term in text for term in ("legal proceedings", "litigation", "lawsuit"))
+        return False
+
+    def _evidence_unit_matches_gate(self, record: dict[str, Any], gate: Any) -> bool:
+        preferred = list(getattr(gate, "preferred_unit_types", []) or [])
+        if not preferred:
+            return True
+        return any(self._evidence_unit_matches_preferred_type(record, item) for item in preferred)
+
+    def _evidence_gate_prefers_macro(self, gate: Any) -> bool:
+        preferred = list(getattr(gate, "preferred_unit_types", []) or [])
+        return any(str(item).startswith("macro_observation") for item in preferred)
+
+    def _evidence_source_matches_gate(self, record: dict[str, Any], gate: Any) -> bool:
+        preferred = list(getattr(gate, "preferred_unit_types", []) or [])
+        source_type = str(record.get("source_type", "") or "").lower()
+        if not preferred:
+            return True
+        wants_macro = any(str(item).startswith("macro_observation") for item in preferred)
+        wants_sec = any(str(item).startswith("sec_") for item in preferred)
+        wants_company = any(str(item).startswith("company_ir_fact_block") for item in preferred)
+        return (
+            (wants_macro and source_type.startswith("official_macro"))
+            or (wants_sec and source_type in {"sec_filing_section", "sec_filing_exhibit"})
+            or (wants_company and source_type.startswith("company_"))
+        )
+
+    def _evidence_unit_source_candidates(self, query: str, gate: Any) -> list[dict[str, Any]]:
+        entity_tickers = self._query_entity_tickers(query)
+        candidates: list[tuple[float, str, dict[str, Any]]] = []
+        source_limit = (
+            EVIDENCE_UNIT_MACRO_SOURCE_CANDIDATE_LIMIT
+            if self._evidence_gate_prefers_macro(gate)
+            else EVIDENCE_UNIT_SOURCE_CANDIDATE_LIMIT
+        )
+        terms = self._query_scoring_terms(query)
+        for record in self.documents():
+            if not self._is_historical_search_row(record) or not self._evidence_source_matches_gate(record, gate):
+                continue
+            source_type = str(record.get("source_type", "") or "").lower()
+            if entity_tickers and not source_type.startswith("official_macro"):
+                if not self._record_matches_query_entity(record, entity_tickers):
+                    continue
+            lexical = self._search_score_for_terms(record, terms)
+            if lexical <= 0:
+                continue
+            freshness = self._freshness_value(record)
+            candidates.append((lexical, freshness, record))
+        candidates.sort(key=lambda item: (item[0], item[1], str(item[2].get("doc_id", ""))), reverse=True)
+        return [record for _score, _freshness, record in candidates[:source_limit]]
+
+    def _evidence_unit_search_rows(self, query: str, gate: Any) -> tuple[int, list[dict[str, Any]]] | None:
+        if not EVIDENCE_UNIT_SEARCH_ENABLED or not getattr(gate, "enabled", False) or not str(query or "").strip():
+            return None
+        source_candidates = self._evidence_unit_source_candidates(query, gate)
+        if not source_candidates:
+            return None
+        units = [
+            record
+            for record in build_evidence_units(source_candidates, company_max_chars=1400, company_min_chars=120, include_unknown_documents=False)
+            if self._is_historical_search_row(record) and self._evidence_unit_matches_gate(record, gate)
+        ]
+        if not units:
+            return None
+
+        result_limit = (
+            EVIDENCE_UNIT_MACRO_SEARCH_CANDIDATE_LIMIT
+            if self._evidence_gate_prefers_macro(gate)
+            else EVIDENCE_UNIT_SEARCH_CANDIDATE_LIMIT
+        )
+        feature_lookup = self.text_features()
+        entity_tickers = self._query_entity_tickers(query)
+        terms = self._query_scoring_terms(query)
+        mode = self._signal_discovery_mode(query)
+        scored: list[dict[str, Any]] = []
+        for record in units:
+            source_type = str(record.get("source_type", "") or "").lower()
+            if entity_tickers and not source_type.startswith("official_macro"):
+                if not self._record_matches_query_entity(record, entity_tickers):
+                    continue
+            lexical = self._search_score_for_terms(record, terms)
+            text_features = self._record_text_features_for_search(record, feature_lookup)
+            if lexical <= 0 and not mode:
+                continue
+            if mode == "opportunity":
+                matched_tickers = {str(ticker).upper() for ticker in record.get("matched_tickers", []) or []}
+                if not any(ticker and ticker != "MARKET" for ticker in matched_tickers):
+                    continue
+            base_score = self._feature_aware_score(record, lexical, query, text_features)
+            if base_score <= 0:
+                continue
+            delta = evidence_unit_calibration_delta(record)
+            calibrated_record = dict(record)
+            calibrated_record["search_grain"] = "evidence_unit"
+            calibrated_record["calibration_score_delta"] = round(delta, 6)
+            calibrated_record["evidence_calibration_tags"] = active_evidence_unit_calibration_tags(record)
+            calibrated_record["evidence_unit_gate_reason_tags"] = list(getattr(gate, "reason_tags", []) or [])
+            score = base_score + EVIDENCE_UNIT_CALIBRATION_SCORE_SCALE * delta
+            scored.append(self._result_row(calibrated_record, score, text_features))
+
+        self._sort_search_results(scored)
+        return len(scored), scored[:result_limit]
 
     def _normalized_group_title(self, title: str) -> str:
         text = html.unescape(str(title or "")).lower()
@@ -4684,14 +4887,13 @@ class FinPortfolioWebService:
                     lexical_scores.setdefault(doc_id, self._search_score(record, query))
 
             feature_lookup = self.text_features()
-            has_signal_features = bool(feature_lookup)
             rows: list[dict[str, Any]] = []
             for doc_id, record in candidates.items():
                 lexical = lexical_scores.get(doc_id, 0.0)
                 text_features = feature_lookup.get(doc_id, {})
-                if lexical <= 0 and not (mode and has_signal_features):
+                if lexical <= 0 and not mode:
                     continue
-                if mode and has_signal_features and not text_features:
+                if mode and not text_features:
                     continue
                 if mode == "opportunity":
                     matched_tickers = {str(ticker).upper() for ticker in record.get("matched_tickers", []) or []}
@@ -4721,6 +4923,13 @@ class FinPortfolioWebService:
         return {
             "rank": 0,
             "doc_id": record.get("doc_id", ""),
+            "parent_doc_id": record.get("parent_doc_id", ""),
+            "evidence_unit_id": record.get("evidence_unit_id", ""),
+            "evidence_unit_type": record.get("evidence_unit_type", ""),
+            "evidence_unit_claim_type": record.get("evidence_unit_claim_type", ""),
+            "search_grain": record.get("search_grain", "document"),
+            "calibration_score_delta": record.get("calibration_score_delta", ""),
+            "evidence_calibration_tags": record.get("evidence_calibration_tags", []),
             "title": record.get("title", ""),
             "excerpt": self._result_excerpt(record, text_features),
             "source": record.get("source", ""),
@@ -4742,6 +4951,12 @@ class FinPortfolioWebService:
         }
 
     def _search_rows(self, query: str) -> tuple[int, list[dict[str, Any]]]:
+        query_intent = classify_query_intent(query)
+        evidence_gate = evidence_unit_gate_for_intent(query_intent)
+        evidence_unit_rows = self._evidence_unit_search_rows(query, evidence_gate)
+        if evidence_unit_rows is not None and evidence_unit_rows[1]:
+            return evidence_unit_rows
+
         indexed = self._indexed_search_rows(query)
         if indexed is not None:
             return indexed
@@ -4768,16 +4983,15 @@ class FinPortfolioWebService:
             return len(documents), rows
 
         feature_lookup = self.text_features()
-        has_signal_features = bool(feature_lookup)
         rows: list[dict[str, Any]] = []
         entity_tickers = self._query_entity_tickers(query)
         for record in documents:
             lexical = self._search_score(record, query)
             doc_id = str(record.get("doc_id", ""))
             text_features = feature_lookup.get(doc_id, {})
-            if lexical <= 0 and not (mode and has_signal_features):
+            if lexical <= 0 and not mode:
                 continue
-            if mode and has_signal_features and not text_features:
+            if mode and not text_features:
                 continue
             if mode == "opportunity":
                 matched_tickers = {str(ticker).upper() for ticker in record.get("matched_tickers", []) or []}
@@ -4842,9 +5056,15 @@ class FinPortfolioWebService:
         safe_limit = min(MAX_SEARCH_LIMIT, max(1, int(limit or DEFAULT_SEARCH_LIMIT)))
         safe_offset = max(0, int(offset or 0))
         page = results[safe_offset : safe_offset + safe_limit]
+        query_intent = classify_query_intent(query)
+        evidence_unit_gate = evidence_unit_gate_for_intent(query_intent).to_dict()
+        evidence_unit_gate["active"] = any(row.get("search_grain") == "evidence_unit" for row in rows)
+        evidence_unit_gate["active_result_count"] = sum(1 for row in rows if row.get("search_grain") == "evidence_unit")
+        evidence_unit_gate["feature_flag_enabled"] = EVIDENCE_UNIT_SEARCH_ENABLED
         return {
             "query": query,
-            "query_intent": classify_query_intent(query).to_dict(),
+            "query_intent": query_intent.to_dict(),
+            "evidence_unit_gate": evidence_unit_gate,
             "signal_discovery_mode": self._signal_discovery_mode(query),
             "count": count,
             "raw_count": raw_count,
@@ -4862,6 +5082,7 @@ class FinPortfolioWebService:
                 **self.corpus_summary(),
                 "text_features": self.text_feature_summary(),
                 "search_index": self.search_index_status(),
+                "live_ir": self.live_ir_status(),
             },
             "results": page,
         }
@@ -5295,6 +5516,9 @@ class FinPortfolioRequestHandler(BaseHTTPRequestHandler):
                 return
             if parsed.path == "/api/dashboard":
                 self._send_json(self.app.dashboard_payload())
+                return
+            if parsed.path == "/api/live-ir/status":
+                self._send_json(self.app.live_ir_status())
                 return
             if parsed.path == "/api/search":
                 query_values = parse_qs(parsed.query)

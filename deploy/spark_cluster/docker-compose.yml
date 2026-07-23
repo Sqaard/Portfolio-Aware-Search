@@ -1,0 +1,71 @@
+# Standalone Apache Spark cluster (1 master + 2 workers) for the FinPortfolio IR
+# Big Data layer. This turns the "engine=spark" path into a genuinely
+# distributed, multi-node deployment: jobs submitted here run their map/reduce
+# stages across the two worker containers.
+#
+# Bring up:   docker compose -f deploy/spark_cluster/docker-compose.yml up -d
+# Master UI:  http://localhost:8080   (watch workers register + jobs run)
+# Submit:     deploy/spark_cluster/submit.sh <module> [args...]
+# Tear down:  docker compose -f deploy/spark_cluster/docker-compose.yml down
+#
+# The repository is bind-mounted read-write at /workspace on every node, so the
+# jobs (bigdata/, finportfolio_ir/) are importable by driver and executors and
+# artifacts land back in data/exports/bigdata on the host.
+
+x-spark-env: &spark-env
+  SPARK_RPC_AUTHENTICATION_ENABLED: "no"
+  SPARK_RPC_ENCRYPTION_ENABLED: "no"
+  SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED: "no"
+  SPARK_SSL_ENABLED: "no"
+  PYTHONPATH: /workspace
+  PYSPARK_PYTHON: /opt/bitnami/python/bin/python3
+  PYSPARK_DRIVER_PYTHON: /opt/bitnami/python/bin/python3
+
+x-spark-common: &spark-common
+  image: bitnami/spark:3.5.3
+  volumes:
+    - ../../:/workspace
+  working_dir: /workspace
+
+services:
+  spark-master:
+    <<: *spark-common
+    container_name: finportfolio-spark-master
+    environment:
+      <<: *spark-env
+      SPARK_MODE: master
+      SPARK_LOCAL_IP: spark-master
+    ports:
+      - "8080:8080"   # master web UI
+      - "7077:7077"   # cluster RPC endpoint
+      - "4040:4040"   # driver UI (when a job runs from the master container)
+
+  spark-worker-1:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-1
+    depends_on:
+      - spark-master
+    environment:
+      <<: *spark-env
+      SPARK_MODE: worker
+      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_WORKER_MEMORY: 2G
+      SPARK_WORKER_CORES: 2
+      SPARK_LOCAL_IP: spark-worker-1
+    ports:
+      - "8081:8081"
+
+  spark-worker-2:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-2
+    depends_on:
+      - spark-master
+    environment:
+      <<: *spark-env
+      SPARK_MODE: worker
+      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_WORKER_MEMORY: 2G
+      SPARK_WORKER_CORES: 2
+      SPARK_LOCAL_IP: spark-worker-2
+    ports:
+      - "8082:8081"

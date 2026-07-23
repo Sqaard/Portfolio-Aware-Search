@@ -7,6 +7,14 @@ dependencies = [
   "pyyaml",
 ]
 
+# Optional Big Data layer (bigdata/). The core IR pipeline and the portable
+# local MapReduce engine need none of this; install only to use engine=spark:
+#   pip install -e ".[bigdata]"    (or: pip install -r requirements-bigdata.txt)
+[project.optional-dependencies]
+bigdata = [
+  "pyspark>=3.5,<4.0",
+]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]

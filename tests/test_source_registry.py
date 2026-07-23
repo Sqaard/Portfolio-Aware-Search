@@ -10,6 +10,7 @@ from crawler.source_registry import (
     canonicalize_url,
     enrich_record_source_metadata,
     load_source_registry,
+    validate_source_registry,
 )
 from finportfolio_ir.schema import FinancialDocument
 
@@ -40,6 +41,14 @@ class SourceRegistryTests(unittest.TestCase):
         self.assertEqual(document.source_reliability_tier, "official")
         self.assertEqual(document.source_type, "sec_filing")
         self.assertTrue(document.canonical_url.endswith("/Archives/edgar/data/320193/form10q.htm"))
+        self.assertGreater(float(record["source_authority_score"]), 0.9)
+        self.assertLess(float(record["source_promotion_risk_score"]), 0.2)
+        self.assertIn("sec.gov", record["source_documentation_url"])
+
+    def test_registry_validation_accepts_source_cards_v1(self):
+        errors = validate_source_registry(ROOT / "data" / "source_registry" / "source_registry.csv")
+
+        self.assertEqual(errors, [])
 
     def test_failed_url_health_is_explicit(self):
         health = build_url_health_record(

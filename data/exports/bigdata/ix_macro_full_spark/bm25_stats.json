@@ -1,0 +1,185 @@
+{
+  "k1": 1.5,
+  "b": 0.75,
+  "n_docs": 18240,
+  "unique_doc_ids": 18240,
+  "vocabulary_size": 5520,
+  "total_tokens": 1173755,
+  "average_document_length": 64.35060307017544,
+  "top_terms_by_document_frequency": [
+    {
+      "term": "00",
+      "document_frequency": 18240
+    },
+    {
+      "term": "available_at",
+      "document_frequency": 18240
+    },
+    {
+      "term": "concepts",
+      "document_frequency": 18240
+    },
+    {
+      "term": "conservative",
+      "document_frequency": 18240
+    },
+    {
+      "term": "date",
+      "document_frequency": 18240
+    },
+    {
+      "term": "equities",
+      "document_frequency": 18240
+    },
+    {
+      "term": "evidence",
+      "document_frequency": 18240
+    },
+    {
+      "term": "family",
+      "document_frequency": 18240
+    },
+    {
+      "term": "for",
+      "document_frequency": 18240
+    },
+    {
+      "term": "macro",
+      "document_frequency": 18240
+    },
+    {
+      "term": "market",
+      "document_frequency": 18240
+    },
+    {
+      "term": "observation",
+      "document_frequency": 18240
+    },
+    {
+      "term": "official",
+      "document_frequency": 18240
+    },
+    {
+      "term": "on",
+      "document_frequency": 18240
+    },
+    {
+      "term": "portfolio-level",
+      "document_frequency": 18240
+    },
+    {
+      "term": "release",
+      "document_frequency": 18240
+    },
+    {
+      "term": "relevant",
+      "document_frequency": 18240
+    },
+    {
+      "term": "retrieval",
+      "document_frequency": 18240
+    },
+    {
+      "term": "risk",
+      "document_frequency": 18240
+    },
+    {
+      "term": "series",
+      "document_frequency": 18240
+    },
+    {
+      "term": "t14",
+      "document_frequency": 18240
+    },
+    {
+      "term": "us",
+      "document_frequency": 18240
+    },
+    {
+      "term": "use",
+      "document_frequency": 18240
+    },
+    {
+      "term": "value",
+      "document_frequency": 18240
+    },
+    {
+      "term": "z",
+      "document_frequency": 18240
+    },
+    {
+      "term": "yield",
+      "document_frequency": 10660
+    },
+    {
+      "term": "treasury",
+      "document_frequency": 9876
+    },
+    {
+      "term": "year",
+      "document_frequency": 9876
+    },
+    {
+      "term": "10",
+      "document_frequency": 8270
+    },
+    {
+      "term": "percent",
+      "document_frequency": 7686
+    },
+    {
+      "term": "rates",
+      "document_frequency": 6902
+    },
+    {
+      "term": "interest",
+      "document_frequency": 6743
+    },
+    {
+      "term": "official_macro_rates",
+      "document_frequency": 6743
+    },
+    {
+      "term": "2",
+      "document_frequency": 6608
+    },
+    {
+      "term": "credit",
+      "document_frequency": 4076
+    },
+    {
+      "term": "funding",
+      "document_frequency": 4076
+    },
+    {
+      "term": "official_macro_credit",
+      "document_frequency": 4076
+    },
+    {
+      "term": "spread",
+      "document_frequency": 4076
+    },
+    {
+      "term": "stress",
+      "document_frequency": 4076
+    },
+    {
+      "term": "index",
+      "document_frequency": 3637
+    }
+  ],
+  "run": {
+    "job": "inverted_index",
+    "corpus": "macro",
+    "engine_requested": "spark",
+    "backends_available": {
+      "local": true,
+      "spark": true
+    },
+    "limit": 0,
+    "started_epoch": 1784382110.4104273,
+    "engine_used": "spark",
+    "corpus_path": "C:\\Users\\ivanp\\OneDrive\\Рабочий стол\\доки+черчи\\ITMO\\2_sem\\FinRL_Tsinghua\\FinPortfolio_IR\\data\\processed_documents\\official_macro_2010_2023_documents.jsonl",
+    "seconds": 60.121
+  }
+}

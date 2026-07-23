@@ -633,6 +633,34 @@ data/annotations/human_qrels_v1.csv
 
 ## 8. Main Project Roadmap
 
+### Stage Closure Protocol
+
+Every stage has the same definition of done:
+
+```text
+stage-specific checks pass
+    -> SkillLens/SkillOpt loop is rerun
+    -> methodology closure report remains green
+```
+
+Required commands after each methodology stage:
+
+```powershell
+python tools\skillopt_ir\run_ir_skill_loops.py --loops 5
+python evaluation\build_ir_methodology_closure.py --strict
+```
+
+If code changed, also run:
+
+```powershell
+python -m unittest discover tests
+```
+
+This protocol makes the agent skill a living operating manual. A stage is not
+closed merely because code was written; it is closed only when the current
+skill, retrieval artifacts, qrels/promotion evidence, and smoke/monitoring
+checks agree.
+
 ### Stage A: Source Discipline And PIT Corpus
 
 Goal:

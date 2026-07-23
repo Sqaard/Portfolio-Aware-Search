@@ -12,6 +12,11 @@ ranking_weights:
   recency: 0.10
   event_importance: 0.05
   source_credibility: 0.00
+  source_authority: 0.00
+  source_timeliness: 0.00
+  source_legal_liability: 0.00
+  source_numeric_density: 0.00
+  source_promotion_risk_penalty: 0.00
 
 diversification:
   enabled: true
@@ -31,6 +36,11 @@ ranking_methods:
     recency: 0.00
     event_importance: 0.00
     source_credibility: 0.00
+    source_authority: 0.00
+    source_timeliness: 0.00
+    source_legal_liability: 0.00
+    source_numeric_density: 0.00
+    source_promotion_risk_penalty: 0.00
   bm25_entity:
     sparse: 0.75
     dense: 0.00
@@ -39,6 +49,11 @@ ranking_methods:
     recency: 0.00
     event_importance: 0.00
     source_credibility: 0.00
+    source_authority: 0.00
+    source_timeliness: 0.00
+    source_legal_liability: 0.00
+    source_numeric_density: 0.00
+    source_promotion_risk_penalty: 0.00
   bm25_entity_portfolio:
     sparse: 0.55
     dense: 0.00
@@ -47,23 +62,38 @@ ranking_methods:
     recency: 0.00
     event_importance: 0.00
     source_credibility: 0.00
+    source_authority: 0.00
+    source_timeliness: 0.00
+    source_legal_liability: 0.00
+    source_numeric_density: 0.00
+    source_promotion_risk_penalty: 0.00
   full_hybrid:
-    sparse: 0.40
+    sparse: 0.35
     dense: 0.00
     entity: 0.20
-    portfolio_exposure: 0.25
+    portfolio_exposure: 0.23
     recency: 0.10
-    event_importance: 0.05
-    source_credibility: 0.00
+    event_importance: 0.04
+    source_credibility: 0.02
+    source_authority: 0.03
+    source_timeliness: 0.01
+    source_legal_liability: 0.01
+    source_numeric_density: 0.01
+    source_promotion_risk_penalty: 0.02
   full_hybrid_diversified:
     weights:
-      sparse: 0.35
+      sparse: 0.32
       dense: 0.00
       entity: 0.20
-      portfolio_exposure: 0.25
+      portfolio_exposure: 0.23
       recency: 0.10
-      event_importance: 0.05
-      source_credibility: 0.05
+      event_importance: 0.04
+      source_credibility: 0.03
+      source_authority: 0.04
+      source_timeliness: 0.01
+      source_legal_liability: 0.01
+      source_numeric_density: 0.01
+      source_promotion_risk_penalty: 0.02
     diversification: true
 
 event_keywords:

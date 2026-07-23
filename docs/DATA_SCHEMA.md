@@ -72,6 +72,11 @@ Key fields:
 - `evidence_bundle_id`
 - `rank`
 - `doc_id`
+- `evidence_unit_id`
+- `parent_doc_id`
+- `evidence_unit_type`
+- `evidence_unit_index`
+- `evidence_unit_claim_type`
 - `source`
 - `source_type`
 - `source_registry_id`
@@ -91,6 +96,16 @@ Key fields:
 - `event_tags`
 - `risk_terms`
 - `source_credibility`
+- `source_authority`
+- `source_timeliness`
+- `source_legal_liability`
+- `source_numeric_density`
+- `source_promotion_risk`
+- `source_fetch_method`
+- `source_update_frequency`
+- `source_point_in_time_policy`
+- `source_documentation_url`
+- `source_coverage_scope`
 - `evidence_scope`
 - `portfolio_weight_sum`
 - `sparse_score`
@@ -100,6 +115,12 @@ Key fields:
 - `recency_score`
 - `event_importance_score`
 - `source_credibility_score`
+- `source_authority_score`
+- `source_timeliness_score`
+- `source_legal_liability_score`
+- `source_numeric_density_score`
+- `source_promotion_risk_score`
+- `source_quality_score`
 - `final_score`
 - `retrieval_reason_tags`
 - `diversification_applied`
@@ -123,6 +144,30 @@ Feature Engine and adds:
   `high_exposure`, `fresh_24h`, and `high_source_credibility`.
 
 No FinGPT inference happens in this project.
+
+## Evidence Unit JSONL
+
+`features/build_evidence_units.py` writes schema-compatible retrieval units.
+Each row can still be loaded as a `FinancialDocument`, but it has extra
+evidence-unit metadata:
+
+- `evidence_unit_id`
+- `parent_doc_id`
+- `evidence_unit_type`
+- `evidence_unit_index`
+- `evidence_unit_claim_type`
+
+Current unit types:
+
+- `sec_section`
+- `sec_exhibit`
+- `company_ir_fact_block`
+- `macro_observation`
+- `document_block` when unknown documents are explicitly included
+
+The purpose is to let retrieval rank decision-grade units such as Item 1A risk
+factors, earnings exhibits, company IR fact blocks, and macro observations
+instead of only whole pages.
 
 ## Evidence Bundle JSONL
 
@@ -153,6 +198,63 @@ duplicate cluster IDs, matched holdings, and reason tags. This is the preferred
 handoff shape for the FinGPT Feature Engine once its loader supports grouped
 contexts.
 
+## Event Ledger V1
+
+`features/build_event_ledger_v1.py` creates a point-in-time event ledger from
+retrieved official documents plus optional SEC submissions/companyfacts API
+caches. This is a READ/FEATURE layer artifact only; it does not promote
+features into PPO state.
+
+Core files:
+
+- `data/event_ledger_v1/events.jsonl`
+- `data/event_ledger_v1/daily_event_features.csv`
+- `data/event_ledger_v1/coverage_by_ticker_year.csv`
+- `data/event_ledger_v1/pit_validation.json`
+- `data/event_ledger_v1/source_cards_v1.csv`
+- `data/event_ledger_v1/manifest.json`
+
+Required event fields:
+
+- `event_id`
+- `source_id`
+- `source_family`
+- `ticker`
+- `company_id`
+- `cik`
+- `event_type`
+- `event_subtype`
+- `event_time_utc`
+- `available_at_utc`
+- `retrieval_cutoff_utc`
+- `decision_time_utc`
+- `market_session_tag`
+- `before_open`
+- `during_market`
+- `after_close`
+- `document_hash`
+- `raw_source_url`
+- `source_document_id`
+- `title`
+- `body_excerpt`
+- `extracted_features`
+- `source_reliability_score`
+- `timestamp_confidence`
+- `point_in_time_valid_flag`
+- `pit_failure_reason`
+- `metadata`
+
+Hard invariant:
+
+```text
+available_at_utc <= retrieval_cutoff_utc <= decision_time_utc
+```
+
+Daily CHRL-compatible features are conservative aggregations by
+`ticker/decision_date`. They are not PPO-ready until coverage, PIT, IC,
+macro/sector/source controls, temporal nulls, and an obs-dim matched noise
+placebo pass.
+
 ## Source Registry CSV
 
 `data/source_registry/source_registry.csv` records source-level provenance
@@ -168,6 +270,21 @@ before any large crawling expansion. Required fields:
 - `source_credibility`
 - `preferred_for_v1`
 - `notes`
+
+Source cards v1 may also include richer fields used for explainable source
+quality and route-aware ranking:
+
+- `authority_score`
+- `timeliness_score`
+- `legal_liability_score`
+- `numeric_density_score`
+- `promotion_risk_score`
+- `fetch_method`
+- `update_frequency`
+- `point_in_time_policy`
+- `preferred_endpoints`
+- `documentation_url`
+- `coverage_scope`
 
 Favorite websites are allowed to affect local ranking priority, but they do not
 raise `source_credibility` unless the source registry explicitly assigns a

@@ -15,11 +15,16 @@ files.
    Current engineering sprint and acceptance criteria. This is the working plan,
    not a historical changelog.
 
-3. `CURRENT_ARTIFACTS_AND_EXPERIMENTS.md`
+3. `IR_IMPLEMENTATION_PLAN.md`
+   Source-detective implementation plan for the next IR layer: source cards,
+   crawler, evidence ledger, hybrid ranking, qrels evaluation, LLM summaries,
+   and FinGPT handoff.
+
+4. `CURRENT_ARTIFACTS_AND_EXPERIMENTS.md`
    Current datasets, exports, Mistral/Codex results, event-study findings, and
    known caveats.
 
-4. `THEORY_AND_BENCHMARKS.md`
+5. `THEORY_AND_BENCHMARKS.md`
    Theoretical foundation, baseline choices, benchmark positioning, and why the
    system is designed as causal IR rather than an LLM trader.
 

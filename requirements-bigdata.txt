@@ -1,0 +1,10 @@
+# Optional dependencies for the Big Data layer (bigdata/) — Apache Spark.
+#
+# Not required for the core IR pipeline or for the portable local MapReduce
+# engine (which is pure standard library). Install only to use engine=spark:
+#
+#   pip install -r requirements-bigdata.txt
+#
+# Pinned to 3.5.x: PySpark 4.0.0 has a Windows worker bug reading
+# error-conditions.json from pyspark.zip. Spark 3.5.x needs a Java 8/11/17 JVM.
+pyspark>=3.5,<4.0

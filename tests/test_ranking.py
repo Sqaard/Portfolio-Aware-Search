@@ -96,6 +96,12 @@ class RankingTests(unittest.TestCase):
             "recency_score",
             "event_importance_score",
             "source_credibility_score",
+            "source_authority_score",
+            "source_timeliness_score",
+            "source_legal_liability_score",
+            "source_numeric_density_score",
+            "source_promotion_risk_score",
+            "source_quality_score",
             "final_score",
             "retrieval_reason_tags",
             "diversification_applied",
@@ -105,6 +111,79 @@ class RankingTests(unittest.TestCase):
 
         self.assertEqual(len(records), 3)
         self.assertTrue(required.issubset(records[0]))
+
+    def test_source_card_authority_beats_promotion_risk_when_scores_tie(self):
+        documents = [
+            FinancialDocument.from_dict(
+                {
+                    "doc_id": "official_sec",
+                    "title": "Apple 10-Q risk factors",
+                    "body": "Apple risk factors and liquidity.",
+                    "source": "sec_edgar",
+                    "url": "",
+                    "published_at": "2022-03-15T12:00:00Z",
+                    "available_at": "2022-03-15T12:00:00Z",
+                    "tickers_detected": ["AAPL"],
+                    "source_credibility": 0.95,
+                    "source_authority_score": 0.98,
+                    "source_timeliness_score": 0.85,
+                    "source_legal_liability_score": 0.95,
+                    "source_numeric_density_score": 0.90,
+                    "source_promotion_risk_score": 0.10,
+                }
+            ),
+            FinancialDocument.from_dict(
+                {
+                    "doc_id": "promo_blog",
+                    "title": "Apple risk factors opinion",
+                    "body": "Apple risk factors and liquidity.",
+                    "source": "promo",
+                    "url": "",
+                    "published_at": "2022-03-15T12:00:00Z",
+                    "available_at": "2022-03-15T12:00:00Z",
+                    "tickers_detected": ["AAPL"],
+                    "source_credibility": 0.50,
+                    "source_authority_score": 0.35,
+                    "source_timeliness_score": 0.70,
+                    "source_legal_liability_score": 0.20,
+                    "source_numeric_density_score": 0.25,
+                    "source_promotion_risk_score": 0.75,
+                }
+            ),
+        ]
+        query = PortfolioQuery(
+            portfolio_id="p",
+            tickers=["AAPL"],
+            weighted_entities={"AAPL": 0.12},
+            expanded_terms={},
+            query_text="Apple risk factors",
+        )
+        ranked = rank_documents(
+            documents=documents,
+            query=query,
+            decision_datetime=datetime(2022, 3, 15, 14, 30, tzinfo=timezone.utc),
+            sparse_scores={document.doc_id: 1.0 for document in documents},
+            config=RankerConfig(
+                weights=RankingWeights(
+                    sparse=0.0,
+                    entity=0.0,
+                    portfolio_exposure=0.0,
+                    recency=0.0,
+                    event_importance=0.0,
+                    source_credibility=0.15,
+                    source_authority=0.45,
+                    source_legal_liability=0.20,
+                    source_numeric_density=0.10,
+                    source_promotion_risk_penalty=0.25,
+                )
+            ),
+            top_k=2,
+        )
+
+        self.assertEqual(ranked[0]["doc_id"], "official_sec")
+        self.assertGreater(ranked[0]["source_quality_score"], ranked[1]["source_quality_score"])
+        self.assertIn("high_source_quality", ranked[0]["retrieval_reason_tags"])
+        self.assertIn("promotion_risk_watch", ranked[1]["retrieval_reason_tags"])
 
     def test_diversified_ranking_limits_duplicate_clusters(self):
         documents = []

@@ -9,6 +9,16 @@ from .text_utils import excerpt, stable_content_hash, stable_document_hash
 from .time_utils import parse_datetime, to_utc_iso
 
 
+def _float_or_default(record: dict[str, Any], key: str, default: float) -> float:
+    value = record.get(key, default)
+    if value is None or value == "":
+        return default
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 @dataclass
 class FinancialDocument:
     doc_id: str
@@ -43,6 +53,21 @@ class FinancialDocument:
     sentiment_score: float = 0.0
     uncertainty_score: float = 0.0
     source_credibility: float = 0.5
+    source_authority_score: float = 0.5
+    source_timeliness_score: float = 0.5
+    source_legal_liability_score: float = 0.5
+    source_numeric_density_score: float = 0.5
+    source_promotion_risk_score: float = 0.5
+    source_fetch_method: str = ""
+    source_update_frequency: str = ""
+    source_point_in_time_policy: str = ""
+    source_documentation_url: str = ""
+    source_coverage_scope: str = ""
+    evidence_unit_id: str = ""
+    parent_doc_id: str = ""
+    evidence_unit_type: str = ""
+    evidence_unit_index: int = 0
+    evidence_unit_claim_type: str = ""
     event_type: str = ""
     language: str = "en"
     document_hash: str = ""
@@ -99,9 +124,24 @@ class FinancialDocument:
             sector_tags=[str(sector) for sector in record.get("sector_tags", record.get("sectors_detected", []))],
             event_tags=[str(tag) for tag in record.get("event_tags", [record.get("event_type", "")] if record.get("event_type", "") else [])],
             risk_terms=[str(term) for term in record.get("risk_terms", [])],
-            sentiment_score=float(record.get("sentiment_score", 0.0) or 0.0),
-            uncertainty_score=float(record.get("uncertainty_score", 0.0) or 0.0),
-            source_credibility=float(record.get("source_credibility", 0.5) or 0.5),
+            sentiment_score=_float_or_default(record, "sentiment_score", 0.0),
+            uncertainty_score=_float_or_default(record, "uncertainty_score", 0.0),
+            source_credibility=_float_or_default(record, "source_credibility", 0.5),
+            source_authority_score=_float_or_default(record, "source_authority_score", 0.5),
+            source_timeliness_score=_float_or_default(record, "source_timeliness_score", 0.5),
+            source_legal_liability_score=_float_or_default(record, "source_legal_liability_score", 0.5),
+            source_numeric_density_score=_float_or_default(record, "source_numeric_density_score", 0.5),
+            source_promotion_risk_score=_float_or_default(record, "source_promotion_risk_score", 0.5),
+            source_fetch_method=str(record.get("source_fetch_method", "")),
+            source_update_frequency=str(record.get("source_update_frequency", "")),
+            source_point_in_time_policy=str(record.get("source_point_in_time_policy", "")),
+            source_documentation_url=str(record.get("source_documentation_url", "")),
+            source_coverage_scope=str(record.get("source_coverage_scope", "")),
+            evidence_unit_id=str(record.get("evidence_unit_id", record.get("doc_id", "")) or ""),
+            parent_doc_id=str(record.get("parent_doc_id", "")),
+            evidence_unit_type=str(record.get("evidence_unit_type", "")),
+            evidence_unit_index=int(record.get("evidence_unit_index", 0) or 0),
+            evidence_unit_claim_type=str(record.get("evidence_unit_claim_type", "")),
             event_type=str(record.get("event_type", "")),
             language=str(record.get("language", "en")),
             document_hash=str(record.get("document_hash", "")),
@@ -146,6 +186,21 @@ class FinancialDocument:
             "sentiment_score": self.sentiment_score,
             "uncertainty_score": self.uncertainty_score,
             "source_credibility": self.source_credibility,
+            "source_authority_score": self.source_authority_score,
+            "source_timeliness_score": self.source_timeliness_score,
+            "source_legal_liability_score": self.source_legal_liability_score,
+            "source_numeric_density_score": self.source_numeric_density_score,
+            "source_promotion_risk_score": self.source_promotion_risk_score,
+            "source_fetch_method": self.source_fetch_method,
+            "source_update_frequency": self.source_update_frequency,
+            "source_point_in_time_policy": self.source_point_in_time_policy,
+            "source_documentation_url": self.source_documentation_url,
+            "source_coverage_scope": self.source_coverage_scope,
+            "evidence_unit_id": self.evidence_unit_id,
+            "parent_doc_id": self.parent_doc_id,
+            "evidence_unit_type": self.evidence_unit_type,
+            "evidence_unit_index": self.evidence_unit_index,
+            "evidence_unit_claim_type": self.evidence_unit_claim_type,
             "event_type": self.event_type,
             "language": self.language,
         }

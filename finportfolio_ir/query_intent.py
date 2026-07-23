@@ -149,6 +149,7 @@ EXTERNAL_TERMS = {
 }
 
 FIELD_KEYWORDS = {
+    "risk_factors": {"risk factor", "risk factors", "item 1a", "downside risk", "company risk"},
     "earnings": {"earnings", "eps", "profit", "net income", "guidance"},
     "revenue": {"revenue", "sales", "top line"},
     "capital_return": {"buyback", "repurchase", "dividend", "cash return"},
@@ -158,7 +159,7 @@ FIELD_KEYWORDS = {
     "labor": {"payrolls", "jobs", "unemployment", "wages"},
     "housing": {"housing", "mortgage", "starts", "permits", "home sales"},
     "energy": {"oil", "brent", "wti", "opec", "gas"},
-    "legal_regulatory": {"lawsuit", "investigation", "regulation", "sec", "doj", "ftc"},
+    "legal_regulatory": {"lawsuit", "investigation", "regulation", "legal proceedings", "sec", "doj", "ftc"},
 }
 
 def _company_aliases(name: str, ticker: str) -> set[str]:

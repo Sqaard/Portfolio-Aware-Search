@@ -44,6 +44,11 @@ class RankingWeights:
     recency: float = 0.10
     event_importance: float = 0.05
     source_credibility: float = 0.0
+    source_authority: float = 0.0
+    source_timeliness: float = 0.0
+    source_legal_liability: float = 0.0
+    source_numeric_density: float = 0.0
+    source_promotion_risk_penalty: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -115,6 +120,22 @@ def source_credibility_score(document: FinancialDocument) -> float:
     return min(1.0, max(0.0, float(document.source_credibility)))
 
 
+def _clamped_source_score(value: float) -> float:
+    return min(1.0, max(0.0, float(value)))
+
+
+def source_quality_score(document: FinancialDocument) -> float:
+    positive = (
+        0.30 * _clamped_source_score(document.source_credibility)
+        + 0.25 * _clamped_source_score(document.source_authority_score)
+        + 0.15 * _clamped_source_score(document.source_timeliness_score)
+        + 0.15 * _clamped_source_score(document.source_legal_liability_score)
+        + 0.15 * _clamped_source_score(document.source_numeric_density_score)
+    )
+    penalty = 0.25 * _clamped_source_score(document.source_promotion_risk_score)
+    return _clamped_source_score(positive - penalty)
+
+
 def evidence_scope(document: FinancialDocument, matched_tickers: list[str]) -> str:
     if matched_tickers:
         return "stock"
@@ -167,6 +188,10 @@ def deterministic_reason_tags(
     tags.append(_freshness_tag(document, decision_datetime))
     if source_credibility_score(document) >= 0.80:
         tags.append("high_source_credibility")
+    if source_quality_score(document) >= 0.75:
+        tags.append("high_source_quality")
+    if _clamped_source_score(document.source_promotion_risk_score) >= 0.50:
+        tags.append("promotion_risk_watch")
     return list(dict.fromkeys(tags))
 
 
@@ -329,6 +354,12 @@ def rank_documents(
         recency = recency_score(document, decision_datetime, config.recency_lambda)
         event = event_importance_score(document, config.event_keywords)
         source = source_credibility_score(document)
+        source_authority = _clamped_source_score(document.source_authority_score)
+        source_timeliness = _clamped_source_score(document.source_timeliness_score)
+        source_legal_liability = _clamped_source_score(document.source_legal_liability_score)
+        source_numeric_density = _clamped_source_score(document.source_numeric_density_score)
+        source_promotion_risk = _clamped_source_score(document.source_promotion_risk_score)
+        source_quality = source_quality_score(document)
 
         weights = config.weights
         final = (
@@ -339,6 +370,11 @@ def rank_documents(
             + weights.recency * recency
             + weights.event_importance * event
             + weights.source_credibility * source
+            + weights.source_authority * source_authority
+            + weights.source_timeliness * source_timeliness
+            + weights.source_legal_liability * source_legal_liability
+            + weights.source_numeric_density * source_numeric_density
+            - weights.source_promotion_risk_penalty * source_promotion_risk
         )
         matched_tickers = sorted(set(document.tickers_detected).intersection(query.weighted_entities))
         rows.append(
@@ -355,6 +391,12 @@ def rank_documents(
                 "recency_score": recency,
                 "event_importance_score": event,
                 "source_credibility_score": source,
+                "source_authority_score": source_authority,
+                "source_timeliness_score": source_timeliness,
+                "source_legal_liability_score": source_legal_liability,
+                "source_numeric_density_score": source_numeric_density,
+                "source_promotion_risk_score": source_promotion_risk,
+                "source_quality_score": source_quality,
                 "final_score": final,
                 "reason": _reason(document, query, event),
                 "retrieval_reason_tags": deterministic_reason_tags(

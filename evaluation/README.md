@@ -78,6 +78,361 @@ These include `CausalValidity@K`, `DuplicateRate@K`,
 `PortfolioCoverage@K`, stock/sector/market scope rates, and mean source
 credibility.
 
+## Document vs Evidence-Unit Retrieval
+
+Use this comparison before changing the default retrieval grain. It runs the
+same query set over whole normalized documents and over decision-grade evidence
+units, then evaluates both against the same qrels.
+
+```powershell
+python evaluation/compare_document_vs_evidence_units.py `
+  --documents data\processed_documents\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl,data\processed_documents\official_macro_2010_2023_documents.jsonl `
+  --queries data\portfolios\sample_query_set.csv `
+  --metadata data\processed_documents\ticker_metadata.csv `
+  --top-k 10 `
+  --method full_hybrid `
+  --qrels data\annotations\sample_qrels.csv `
+  --output-dir data\exports\document_vs_evidence_units_v1
+```
+
+The default `--evidence-eval-grain source_document` keeps SEC sections and
+macro observations at their original row IDs, while company IR fact blocks are
+collapsed back to their source document ID. This is the fairest mode when qrels
+were labeled on the existing document corpus. Use `--evidence-eval-grain unit`
+only when qrels label individual evidence-unit IDs, or `--evidence-eval-grain
+parent` when qrels label parent filings/pages.
+
+Key outputs:
+
+- `comparison_run.csv`: combined document and evidence-unit run.
+- `comparison_metrics_by_method.csv`: raw metric averages by method.
+- `comparison_delta_by_method.csv`: evidence-unit minus document deltas.
+- `qrels_coverage_summary.csv`: judged top-k coverage; do not trust metrics
+  when this is low.
+- `comparison_annotation_pool.csv`: review table for qrels matching this run.
+- `evidence_unit_raw_retrieved_all.jsonl`: exact sections/fact blocks returned.
+- `evidence_unit_eval_retrieved_all.jsonl`: qrels-grain collapsed run.
+
+If coverage is low, seed a development qrels file from the generated pool:
+
+```powershell
+python evaluation/assistant_label_comparison_pool.py `
+  --input data\exports\document_vs_evidence_units_v1\comparison_annotation_pool.csv `
+  --output data\exports\document_vs_evidence_units_v1\comparison_annotation_pool_labeled_assistant_v1.csv
+
+python evaluation/export_qrels_from_pool.py `
+  --input data\exports\document_vs_evidence_units_v1\comparison_annotation_pool_labeled_assistant_v1.csv `
+  --output data\annotations\document_vs_evidence_units_qrels_assistant_v1.csv `
+  --issues-output data\annotations\document_vs_evidence_units_qrels_assistant_v1_issues.csv `
+  --label-source assistant_document_vs_evidence_v1 `
+  --strict
+```
+
+Current development check on the SEC-section + macro corpus:
+
+- qrels coverage at 10: 1.000 after assistant labels;
+- document `full_hybrid`: Precision@10 1.000, NDCG@10 0.836, MRR 1.000;
+- evidence-unit `full_hybrid`: Precision@10 1.000, NDCG@10 0.836, MRR 1.000.
+
+Interpretation: this corpus is already mostly evidence-unit shaped
+(`sec_section`, `sec_exhibit`, `macro_observation`), so evidence-unit retrieval
+does not improve ranking yet. The next useful test should include raw company
+IR pages or whole filings where fact-block extraction actually changes the
+retrieval grain.
+
+Company-IR corpus check:
+
+```powershell
+python evaluation/compare_document_vs_evidence_units.py `
+  --documents data\processed_documents\sec_macro_company_ir_ppo_2010_2023_documents.jsonl `
+  --queries data\portfolios\sample_query_set.csv `
+  --metadata data\processed_documents\ticker_metadata.csv `
+  --top-k 10 `
+  --method full_hybrid `
+  --output-dir data\exports\document_vs_evidence_units_company_ir_v1
+```
+
+This run expands 26,368 source rows into 39,101 evidence units, including
+13,850 `company_ir_fact_block` rows. Development qrels are stored in
+`data/annotations/document_vs_evidence_units_company_ir_qrels_assistant_v1.csv`.
+
+Current development result:
+
+| Run | Precision@10 | NDCG@10 | MRR |
+| --- | ---: | ---: | ---: |
+| document `full_hybrid` | 1.000 | 0.833 | 1.000 |
+| evidence-unit `full_hybrid` | 1.000 | 0.778 | 1.000 |
+
+Interpretation: evidence-unit mode is not ready as the default on the mixed
+SEC/macro/company-IR corpus. It increases retrieval grain, but top-10 is still
+dominated by SEC sections and the changed corpus-level sparse normalization
+slightly worsens ordering. The next ranking task is to calibrate evidence-unit
+mode with source/type-aware weights before enabling it broadly.
+
+Source/type-aware evidence-unit calibration:
+
+```powershell
+python evaluation/calibrate_evidence_unit_reranker.py `
+  --input data\exports\document_vs_evidence_units_company_ir_v1\evidence_unit_raw_retrieved_all.jsonl `
+  --output-dir data\exports\document_vs_evidence_units_company_ir_v1\calibrated_source_type_v1 `
+  --qrels data\annotations\document_vs_evidence_units_company_ir_qrels_assistant_v1.csv `
+  --document-summary data\exports\document_vs_evidence_units_company_ir_v1\comparison_metrics_by_method_assistant_v1.csv
+```
+
+The calibration uses transparent features only: evidence-unit claim type,
+source/type family, and publication freshness. It does not call an LLM and does
+not inspect future outcomes.
+
+Current development result:
+
+| Run | Precision@10 | NDCG@10 | MRR |
+| --- | ---: | ---: | ---: |
+| document `full_hybrid` | 1.000 | 0.833 | 1.000 |
+| raw evidence-unit `full_hybrid` | 1.000 | 0.778 | 1.000 |
+| calibrated evidence-unit `full_hybrid` | 1.000 | 0.976 | 1.000 |
+
+Interpretation: a small source/type/freshness calibration recovers and improves
+ordering on the development qrels. Do not promote it to production until the
+same comparison is checked on independent human labels or a larger held-out
+query set.
+
+Held-out company-IR validation:
+
+```powershell
+python evaluation/compare_document_vs_evidence_units.py `
+  --documents data\processed_documents\sec_macro_company_ir_ppo_2010_2023_documents.jsonl `
+  --queries data\portfolios\evidence_unit_holdout_query_set_v1.csv `
+  --metadata data\processed_documents\ticker_metadata.csv `
+  --top-k 10 `
+  --method full_hybrid `
+  --output-dir data\exports\document_vs_evidence_units_company_ir_holdout_v1
+
+python evaluation/assistant_label_comparison_pool.py `
+  --input data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_annotation_pool.csv `
+  --output data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_annotation_pool_labeled_assistant_v1.csv
+
+python evaluation/export_qrels_from_pool.py `
+  --input data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_annotation_pool_labeled_assistant_v1.csv `
+  --output data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_v1.csv `
+  --issues-output data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_v1_issues.csv `
+  --label-source assistant_document_vs_evidence_v1 `
+  --strict
+
+python evaluation/calibrate_evidence_unit_reranker.py `
+  --input data\exports\document_vs_evidence_units_company_ir_holdout_v1\evidence_unit_raw_retrieved_all.jsonl `
+  --output-dir data\exports\document_vs_evidence_units_company_ir_holdout_v1\calibrated_source_type_v1 `
+  --qrels data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_v1.csv `
+  --document-summary data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_metrics_by_method_assistant_v1.csv
+```
+
+Held-out assistant-development result:
+
+| Run | Precision@10 | NDCG@10 | MRR |
+| --- | ---: | ---: | ---: |
+| document `full_hybrid` | 1.000 | 0.818 | 1.000 |
+| raw evidence-unit `full_hybrid` | 1.000 | 0.825 | 1.000 |
+| calibrated evidence-unit `full_hybrid` | 1.000 | 1.000 | 1.000 |
+
+Interpretation: the same transparent source/type/freshness calibration improves
+the independent held-out query set by +0.182 NDCG@10 versus document retrieval.
+This is a stronger development signal than the first in-sample check, but it
+still uses assistant labels. Promotion to the live search path should wait for
+manual review of this held-out pool or for a larger human-labeled qrels file.
+
+Build the manual held-out evidence-unit review queue:
+
+```powershell
+python evaluation/build_evidence_unit_review_queue.py `
+  --document-run data\exports\document_vs_evidence_units_company_ir_holdout_v1\document_retrieved_all.jsonl `
+  --raw-evidence-run data\exports\document_vs_evidence_units_company_ir_holdout_v1\evidence_unit_raw_retrieved_all.jsonl `
+  --calibrated-run data\exports\document_vs_evidence_units_company_ir_holdout_v1\calibrated_source_type_v1\evidence_unit_calibrated_eval.jsonl `
+  --qrels data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_v1.csv `
+  --output data\annotations\evidence_unit_holdout_review_queue_v1.csv `
+  --summary-output data\annotations\evidence_unit_holdout_review_queue_v1_summary.csv `
+  --prompt-output data\annotations\evidence_unit_holdout_review_queue_v1.md `
+  --top-k 10 `
+  --limit 80
+```
+
+Current queue size: 45 rows across 4 held-out queries. The queue includes
+document rank, raw evidence-unit rank, calibrated rank, rank deltas,
+calibration tags, and the current assistant label. Use this file for manual
+review before reporting the held-out improvement as human-validated.
+
+For an assistant-reviewed development pass, fill suggested labels and export
+qrels without pretending they are human labels:
+
+```powershell
+python evaluation/assistant_review_evidence_unit_queue.py `
+  --input data\annotations\evidence_unit_holdout_review_queue_v1.csv `
+  --output data\annotations\evidence_unit_holdout_review_queue_v1_assistant_reviewed.csv `
+  --overwrite
+
+python evaluation/export_qrels_from_evidence_unit_review_queue.py `
+  --input data\annotations\evidence_unit_holdout_review_queue_v1_assistant_reviewed.csv `
+  --output data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_reviewed_v1.csv `
+  --issues-output data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_reviewed_v1_issues.csv `
+  --label-source assistant_evidence_unit_review_v1 `
+  --annotator codex_assistant `
+  --strict
+
+python evaluation/evaluate_ir_metrics.py `
+  --qrels data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_reviewed_v1.csv `
+  --run data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_run.csv `
+  --output data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_metrics_assistant_reviewed_v1.csv `
+  --summary-output data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_metrics_by_method_assistant_reviewed_v1.csv
+
+python evaluation/calibrate_evidence_unit_reranker.py `
+  --input data\exports\document_vs_evidence_units_company_ir_holdout_v1\evidence_unit_raw_retrieved_all.jsonl `
+  --output-dir data\exports\document_vs_evidence_units_company_ir_holdout_v1\calibrated_source_type_assistant_reviewed_v1 `
+  --qrels data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_assistant_reviewed_v1.csv `
+  --document-summary data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_metrics_by_method_assistant_reviewed_v1.csv
+```
+
+Assistant-reviewed held-out result (`assistant_evidence_unit_review_v1`, 45
+labels; relevance counts: 1=20, 2=15, 3=10):
+
+| Run | Precision@10 | NDCG@10 | MRR |
+| --- | ---: | ---: | ---: |
+| document `full_hybrid` | 1.000 | 0.843 | 1.000 |
+| raw evidence-unit `full_hybrid` | 1.000 | 0.813 | 1.000 |
+| calibrated evidence-unit `full_hybrid` | 1.000 | 1.000 | 1.000 |
+
+Interpretation: under a stricter assistant review, raw evidence-unit retrieval
+is not good enough by itself, but the calibrated source/type/freshness layer
+still improves held-out NDCG@10 by +0.157 versus document retrieval. The
+remaining promotion blocker is independent human review, not code mechanics.
+
+Compact human spot-check packet:
+
+```powershell
+python evaluation/build_evidence_unit_human_spotcheck.py `
+  --input data\annotations\evidence_unit_holdout_review_queue_v1_assistant_reviewed.csv `
+  --output data\annotations\evidence_unit_holdout_human_spotcheck_v1.csv `
+  --summary-output data\annotations\evidence_unit_holdout_human_spotcheck_v1_summary.csv `
+  --prompt-output data\annotations\evidence_unit_holdout_human_spotcheck_v1.md `
+  --limit 15 `
+  --max-per-query 4
+```
+
+The generated packet selects 15 high-impact rows for quick human judgment:
+calibrated top results, promotions, document/unit rank disagreements,
+borderline labels, and assistant label changes. The CSV deliberately leaves
+`human_relevance` blank; do not report these rows as human labels until a
+reviewer fills them with 0, 1, 2, or 3.
+
+After the spot-check is filled, apply it to the full evidence-unit queue:
+
+```powershell
+python evaluation/apply_evidence_unit_human_spotcheck.py `
+  --review-queue data\annotations\evidence_unit_holdout_review_queue_v1_assistant_reviewed.csv `
+  --spotcheck data\annotations\evidence_unit_holdout_human_spotcheck_v1.csv `
+  --output-queue data\annotations\evidence_unit_holdout_review_queue_v2_mixed.csv `
+  --qrels-output data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_mixed_v1.csv `
+  --issues-output data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_mixed_v1_issues.csv `
+  --strict
+```
+
+This creates mixed qrels: human spot-check rows override assistant labels, and
+all remaining rows stay explicitly marked as `assistant_evidence_unit_review_v1`.
+
+For fast chat-based labeling, fill the spot-check CSV directly from a compact
+answer string:
+
+```powershell
+python evaluation/fill_evidence_unit_spotcheck_labels.py `
+  --input data\annotations\evidence_unit_holdout_human_spotcheck_v1.csv `
+  --labels "1=3, 2=1, 3=0" `
+  --output data\annotations\evidence_unit_holdout_human_spotcheck_v1.csv `
+  --reviewer-notes "human chat review" `
+  --strict
+```
+
+Then run the promotion gate:
+
+```powershell
+python evaluation/evaluate_evidence_unit_promotion_gate.py `
+  --qrels data\annotations\document_vs_evidence_units_company_ir_holdout_qrels_mixed_v1.csv `
+  --comparison-run data\exports\document_vs_evidence_units_company_ir_holdout_v1\comparison_run.csv `
+  --calibrated-run data\exports\document_vs_evidence_units_company_ir_holdout_v1\calibrated_source_type_assistant_reviewed_v1\evidence_unit_calibrated_run.csv `
+  --output-dir data\exports\document_vs_evidence_units_company_ir_holdout_v1\promotion_gate_mixed_v1 `
+  --prefix evidence_unit_promotion_mixed_v1
+```
+
+The gate requires enough human spot-check labels, positive calibrated NDCG@10
+delta versus document retrieval, no material Precision@10 drop, and complete
+top-10 qrels coverage. The current dry-run output, which contains no human
+labels, is stored in
+`data\exports\document_vs_evidence_units_company_ir_holdout_v1\promotion_gate_mixed_dryrun_v1`
+and correctly returns `block_promotion` with reason
+`pending_human_spotcheck_labels`.
+
+After applying 15 user-confirmed spot-check labels, the mixed-qrels gate output
+is stored in
+`data\exports\document_vs_evidence_units_company_ir_holdout_v1\promotion_gate_mixed_v1`
+and returns `accept_guarded_promotion`.
+
+| Run | Precision@10 | NDCG@10 | MRR |
+| --- | ---: | ---: | ---: |
+| document `full_hybrid` | 0.950 | 0.824 | 1.000 |
+| raw evidence-unit `full_hybrid` | 0.950 | 0.823 | 1.000 |
+| calibrated evidence-unit `full_hybrid` | 0.950 | 0.982 | 1.000 |
+
+This accepts only the calibrated, intent-guarded evidence-unit path. Raw
+evidence-unit retrieval remains rejected as a default path.
+
+Live search smoke regression:
+
+```powershell
+python evaluation/run_live_search_smoke.py `
+  --output-dir data\exports\live_search_smoke_v1 `
+  --strict
+```
+
+For a running local server:
+
+```powershell
+python evaluation/run_live_search_smoke.py `
+  --base-url http://127.0.0.1:8780 `
+  --output-dir data\exports\live_search_smoke_cloudflare_preflight `
+  --strict
+```
+
+The smoke suite checks four representative queries: SEC risk factors, broad
+company overview, macro rates/credit, and SEC 8-K earnings guidance. Current
+baseline: 4/4 passed, max latency 7402.4 ms, mean latency 2905.8 ms, promotion
+status `accepted` for all cases.
+
+Live gating note: `retrieval/evidence_unit_gate.py` now exposes a deterministic
+guard. Evidence-unit mode is allowed only for high-specificity intents such as
+Item 1A risk factors, earnings/guidance, legal proceedings, and official macro
+observations. Broad company-overview queries stay on document-level retrieval.
+
+Live guarded switch:
+
+- `FINPORTFOLIO_EVIDENCE_UNIT_SEARCH=1` enables the guarded switch; this is the
+  default.
+- `FINPORTFOLIO_EVIDENCE_UNIT_SEARCH=0` disables it and forces the old
+  document/index path.
+- The switch is still intent-gated. It activates only when
+  `evidence_unit_gate.enabled=true`; broad queries keep `search_grain=document`.
+- The response payload includes `evidence_unit_gate.active`,
+  `active_result_count`, and `feature_flag_enabled`.
+- Offline and live calibration share `retrieval/evidence_unit_calibration.py`,
+  so evaluation and demo behavior use the same source/type/freshness weights.
+
+Smoke check on the full local corpus:
+
+| Query | Gate | Grain | Time |
+| --- | --- | --- | ---: |
+| `Apple risk factors in the latest 10-K` | enabled/active | `evidence_unit` Item 1A | 7.3s |
+| `Apple company overview and product history` | disabled | `document` | 4.8s |
+| `Fed rates and credit spreads` | enabled/active | `evidence_unit` macro observations | 3.6s |
+
+Macro evidence-unit search uses a smaller query-selective source window to
+avoid Cloudflare-style timeout behavior; it no longer builds all macro evidence
+units for a live request.
+
 Build a compact static HTML report:
 
 ```powershell
