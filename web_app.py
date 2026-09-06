@@ -92,6 +92,10 @@ DEFAULT_SETTINGS = {
 
 SAMPLE_DOCUMENTS_PATH = ROOT / "data" / "processed_documents" / "documents.jsonl"
 FULL_DOCUMENTS_PATH = ROOT / "data" / "processed_documents" / "sec_macro_company_ir_ppo_2010_2023_documents.jsonl"
+# The full corpus is too large for the public repo (.gitignore), so a fresh clone
+# ships a stratified 993-document slice of it instead. Without this fallback the
+# site would come up on the 24 synthetic example.com rows and look like a toy.
+REPO_DEMO_DOCUMENTS_PATH = ROOT / "data" / "processed_documents" / "repo_demo_documents.jsonl"
 TEXT_FEATURES_PATH = (
     ROOT
     / "data"
@@ -254,6 +258,8 @@ def default_documents_path() -> Path:
         return LIVE_MERGED_DOCUMENTS_PATH
     if FULL_DOCUMENTS_PATH.exists():
         return FULL_DOCUMENTS_PATH
+    if REPO_DEMO_DOCUMENTS_PATH.exists():
+        return REPO_DEMO_DOCUMENTS_PATH
     return SAMPLE_DOCUMENTS_PATH
 
 
