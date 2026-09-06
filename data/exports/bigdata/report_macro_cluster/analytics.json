@@ -52,14 +52,6 @@
       "count": 6743
     },
     {
-      "name": "market_volatility",
-      "count": 6638
-    },
-    {
-      "name": "energy",
-      "count": 6614
-    },
-    {
       "name": "yield_curve",
       "count": 6584
     },
@@ -72,8 +64,16 @@
       "count": 4076
     },
     {
+      "name": "market_volatility",
+      "count": 3319
+    },
+    {
       "name": "risk_appetite",
       "count": 3319
+    },
+    {
+      "name": "energy",
+      "count": 3307
     },
     {
       "name": "input_costs",
@@ -92,10 +92,6 @@
       "count": 636
     },
     {
-      "name": "housing",
-      "count": 318
-    },
-    {
       "name": "labor",
       "count": 318
     },
@@ -109,6 +105,10 @@
     },
     {
       "name": "growth",
+      "count": 159
+    },
+    {
+      "name": "housing",
       "count": 159
     },
     {
@@ -248,10 +248,10 @@
       "spark": true
     },
     "limit": 0,
-    "started_epoch": 1784816950.4085565,
+    "started_epoch": 1788672949.343143,
     "engine_used": "spark",
     "corpus_path": "/workspace/data/processed_documents/official_macro_2010_2023_documents.jsonl",
-    "analytics_seconds": 10.914,
-    "index_seconds": 3.45
+    "analytics_seconds": 11.931,
+    "index_seconds": 3.689
   }
 }

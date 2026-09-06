@@ -428,9 +428,21 @@ Spark:
   | fewer partitions: 12 → 2 | 11.4 s | 5.9× |
   | same RDD code on the **Docker cluster**, 12 partitions | 4.0 s | 16.7× |
   | same RDD code on the **Docker cluster**, 4 partitions | 2.2 s | **30×** |
-  | **DataFrame/SQL API on Windows**, 12 partitions | 2.3 s | 29× |
+  | **DataFrame/SQL API on Windows**, 12 partitions | 1.3 s | 51× |
   | **DataFrame/SQL API on Windows**, 4 partitions | 1.2 s | **56×** |
   | DataFrame/SQL API on the cluster, 4 partitions | 1.9 s | 35× |
+
+
+  The DataFrame/SQL rows are produced by `bigdata/run_sql_inverted_index.py`,
+  which discards a warm-up run:
+
+  ```powershell
+  python -m bigdata.run_sql_inverted_index --corpus macro --partitions 4
+  .\deploy\spark_cluster\submit.ps1 bigdata.run_sql_inverted_index --corpus macro --partitions 4
+  ```
+
+  Both platforms return the same 18,158-term vocabulary, so the SQL job itself is
+  deterministic across them; only the wall-clock differs.
 
   Three things stand out. First, the knob everyone suggests —
   `spark.python.worker.reuse` — does **nothing** here (64.1 s vs 66.8 s, within
@@ -440,7 +452,7 @@ Spark:
   workers Windows' only weakness disappears and the 12-core laptop simply has
   more cores than the 4-core toy cluster. That is the cleanest proof that the
   bottleneck was never "Windows is slow", it was specifically Python-worker
-  spawn. Third, the SQL path produces a different vocabulary (18,152 vs 5,520)
+  spawn. Third, the SQL path produces a different vocabulary (18,158 vs 5,520)
   because its regex tokeniser is not the project tokeniser — it demonstrates the
   mechanism, not parity. Keeping `finportfolio_ir.text_utils.tokenize` verbatim
   is exactly what makes the byte-identical parity guarantee possible, which is

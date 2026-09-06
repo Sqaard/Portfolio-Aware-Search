@@ -108,10 +108,14 @@ def _read_new_lines(work: list) -> list:
     """Read only the appended bytes of each file (binary seek at a line boundary)."""
 
     lines: list = []
-    for path, start, _size in work:
+    for path, start, size in work:
         with path.open("rb") as handle:
             handle.seek(start)
-            chunk = handle.read()
+            # Bound the read by the size that was probed, not by EOF: the writer
+            # may append while we read, and those bytes belong to the NEXT tick.
+            # Reading them now would process them twice, because the offset
+            # recorded for this tick is the probed size.
+            chunk = handle.read(size - start)
         for line in chunk.decode("utf-8", errors="replace").splitlines():
             if line.strip():
                 lines.append(line)

@@ -66,13 +66,13 @@
 | sec_section | 7,022 |
 | rates | 6,743 |
 | rates_policy | 6,743 |
-| market_volatility | 6,638 |
-| energy | 6,614 |
 | yield_curve | 6,584 |
 | credit | 4,076 |
 | credit_stress | 4,076 |
 | 10-q | 3,511 |
+| market_volatility | 3,319 |
 | risk_appetite | 3,319 |
+| energy | 3,307 |
 | input_costs | 3,307 |
 | front_end_rates | 3,292 |
 | 8-k | 1,906 |

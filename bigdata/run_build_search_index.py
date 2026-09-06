@@ -263,6 +263,7 @@ def build_index_sqlite(
     text_features_path: Path,
     feature_relations_path: Path,
     engine_name: str,
+    documents_path_label: str | None = None,
 ) -> dict:
     """Assemble the SQLite artifact from collected distributed rows (driver-side)."""
 
@@ -312,11 +313,17 @@ def build_index_sqlite(
         connection.executescript(_QUALITY_SQL)
         _build_ticker_coverage(connection, [(r[2], r[3]) for r in rows])
 
+        # web_app only trusts the index when this path equals the corpus it is
+        # about to serve (web_app._search_index_is_usable). A build inside the
+        # Spark container sees /workspace/..., which never matches the host, so
+        # the caller can record the host-side path it will actually be served
+        # from. The stat() below still reads the real file, so mtime/size stay true.
         documents_stat = documents_path.stat()
+        recorded_path = documents_path_label or str(documents_path.resolve())
         manifest = {
             "index_version": "search_index_v1",
             "created_at_epoch": str(time.time()),
-            "documents_path": str(documents_path.resolve()),
+            "documents_path": recorded_path,
             "documents_mtime_ns": str(documents_stat.st_mtime_ns),
             "documents_size": str(documents_stat.st_size),
             "text_features_path": str(text_features_path.resolve()) if text_features_path.exists() else "",
@@ -347,6 +354,13 @@ def main(argv: list | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build the SQLite FTS search index via the Big Data layer.")
     add_common_args(parser)
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT), help="SQLite output path.")
+    parser.add_argument(
+        "--documents-path-label", default=None,
+        help="Path to record in the manifest instead of the corpus path this "
+             "process sees. Use it when building inside the Spark container "
+             "(/workspace/...) for an index that will be served from the host, "
+             "otherwise web_app rejects the index as built for another corpus.",
+    )
     parser.add_argument("--text-features", default=None, help="Doc-level text feature CSV (default: web_app's).")
     parser.add_argument("--feature-relations", default=None, help="Feature-target relation CSV (default: web_app's).")
     args = parser.parse_args(argv)
@@ -374,6 +388,7 @@ def main(argv: list | None = None) -> int:
                 text_features_path=text_features_path,
                 feature_relations_path=feature_relations_path,
                 engine_name=engine.name,
+                documents_path_label=args.documents_path_label,
             )
         context["sqlite_seconds"] = round(timer.seconds, 3)
         context["corpus_path"] = str(corpus_path)

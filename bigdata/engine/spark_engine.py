@@ -127,7 +127,8 @@ class SparkEngine(Engine):
         except Exception as exc:  # pragma: no cover - exercised only without pyspark
             raise RuntimeError(
                 "PySpark is not importable. Install it with "
-                "`pip install pyspark==4.0.0` or use the local engine."
+                "`pip install -r requirements-bigdata.txt` (pins pyspark>=3.5,<4.0 -- "
+                "4.0.0 has a Windows worker bug) or use --engine local."
             ) from exc
 
         scratch = _ascii_scratch_dir()

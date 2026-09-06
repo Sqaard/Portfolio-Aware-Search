@@ -214,13 +214,13 @@
     "engine_requested": "local",
     "backends_available": {
       "local": true,
-      "spark": true
+      "spark": false
     },
     "limit": 0,
-    "started_epoch": 1784382649.5068798,
+    "started_epoch": 1788673079.3303492,
     "engine_used": "local",
     "corpus_path": "C:\\Users\\ivanp\\OneDrive\\Рабочий стол\\доки+черчи\\ITMO\\2_sem\\FinRL_Tsinghua\\FinPortfolio_IR\\data\\processed_documents\\official_macro_2010_2023_documents.jsonl",
-    "analytics_seconds": 1.114,
-    "index_seconds": 0.851
+    "analytics_seconds": 1.219,
+    "index_seconds": 1.446
   }
 }

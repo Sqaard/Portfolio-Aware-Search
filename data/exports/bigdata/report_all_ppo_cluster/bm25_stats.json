@@ -217,10 +217,10 @@
       "spark": true
     },
     "limit": 0,
-    "started_epoch": 1784817198.6736932,
+    "started_epoch": 1788672975.7300034,
     "engine_used": "spark",
     "corpus_path": "/workspace/data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
-    "analytics_seconds": 20.276,
-    "index_seconds": 17.846
+    "analytics_seconds": 22.983,
+    "index_seconds": 18.565
   }
 }

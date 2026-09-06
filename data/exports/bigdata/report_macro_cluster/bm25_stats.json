@@ -217,10 +217,10 @@
       "spark": true
     },
     "limit": 0,
-    "started_epoch": 1784816950.4085565,
+    "started_epoch": 1788672949.343143,
     "engine_used": "spark",
     "corpus_path": "/workspace/data/processed_documents/official_macro_2010_2023_documents.jsonl",
-    "analytics_seconds": 10.914,
-    "index_seconds": 3.45
+    "analytics_seconds": 11.931,
+    "index_seconds": 3.689
   }
 }

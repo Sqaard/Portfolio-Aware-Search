@@ -40,7 +40,8 @@ def get_engine(engine: str = "auto", **kwargs: Any) -> Engine:
         if not spark_available():
             raise EngineUnavailableError(
                 "engine='spark' requested but pyspark is not installed "
-                "(pip install pyspark==4.0.0)."
+                "(pip install -r requirements-bigdata.txt, which pins "
+                "pyspark>=3.5,<4.0 -- 4.0.0 has a Windows worker bug)."
             )
         from .spark_engine import SparkEngine
 

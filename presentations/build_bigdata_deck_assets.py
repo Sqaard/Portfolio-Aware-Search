@@ -335,7 +335,7 @@ def build_performance(out_dir: Path) -> Path:
          ("fewer partitions: 12 to 2", "11.4 s", "5.9×"),
          ("cluster, 12 partitions", "4.0 s", "16.7×"),
          ("cluster, 4 partitions", "2.2 s", "30×"),
-         ("DataFrame/SQL on Windows, 12", "2.3 s", "29×"),
+         ("DataFrame/SQL on Windows, 12", "1.3 s", "51×"),
          ("DataFrame/SQL on Windows, 4", "1.2 s", "56×"),
          ("DataFrame/SQL on cluster, 4", "1.9 s", "35×")],
         (0.0, 35.0, 46.0),
@@ -358,7 +358,7 @@ def build_performance(out_dir: Path) -> Path:
     _text(ax, 24.0, 28.1, "Why the project still ships the RDD path", size=9.8,
           color=VIOLET, weight="bold")
     _text(ax, 24.0, 23.1, "The SQL variant builds a different vocabulary", size=8.6, color=INK)
-    _text(ax, 24.0, 19.5, "(18,152 vs 5,520 terms): its regexp tokenizer is", size=8.6, color=INK)
+    _text(ax, 24.0, 19.5, "(18,158 vs 5,520 terms): its SQL tokenizer is", size=8.6, color=INK)
     _text(ax, 24.0, 15.9, "not the project's. It demonstrates the mechanism,", size=8.6, color=INK)
     _text(ax, 24.0, 12.3, "not parity.", size=8.6, color=INK)
     _text(ax, 24.0, 4.0, "correctness first — speed from the cluster", size=9.0,

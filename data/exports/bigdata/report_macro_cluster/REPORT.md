@@ -48,18 +48,18 @@
 | official_macro | 18,240 |
 | rates | 6,743 |
 | rates_policy | 6,743 |
-| market_volatility | 6,638 |
-| energy | 6,614 |
 | yield_curve | 6,584 |
 | credit | 4,076 |
 | credit_stress | 4,076 |
+| market_volatility | 3,319 |
 | risk_appetite | 3,319 |
+| energy | 3,307 |
 | input_costs | 3,307 |
 | front_end_rates | 3,292 |
 | credit_spreads | 784 |
 | macro_growth | 636 |
-| housing | 318 |
 | labor | 318 |
+| labor_market | 318 |
 
 ## Top risk terms
 

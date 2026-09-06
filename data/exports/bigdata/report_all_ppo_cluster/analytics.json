@@ -168,14 +168,6 @@
       "count": 6743
     },
     {
-      "name": "market_volatility",
-      "count": 6638
-    },
-    {
-      "name": "energy",
-      "count": 6614
-    },
-    {
       "name": "yield_curve",
       "count": 6584
     },
@@ -192,8 +184,16 @@
       "count": 3511
     },
     {
+      "name": "market_volatility",
+      "count": 3319
+    },
+    {
       "name": "risk_appetite",
       "count": 3319
+    },
+    {
+      "name": "energy",
+      "count": 3307
     },
     {
       "name": "input_costs",
@@ -370,10 +370,10 @@
       "spark": true
     },
     "limit": 0,
-    "started_epoch": 1784817198.6736932,
+    "started_epoch": 1788672975.7300034,
     "engine_used": "spark",
     "corpus_path": "/workspace/data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
-    "analytics_seconds": 20.276,
-    "index_seconds": 17.846
+    "analytics_seconds": 22.983,
+    "index_seconds": 18.565
   }
 }

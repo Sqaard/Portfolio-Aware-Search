@@ -111,6 +111,48 @@ class SearchIndexParityTests(unittest.TestCase):
         self.assertEqual(manifest["built_by"], "bigdata.run_build_search_index")
 
 
+class ShippedIndexIsServableTests(unittest.TestCase):
+    """The index the site actually loads must be accepted by the site.
+
+    A cluster build records the path it saw inside the container
+    (``/workspace/...``), which never equals the host corpus path, and
+    ``web_app._search_index_is_usable`` rejects the index on that mismatch --
+    silently falling back to the in-memory scan. That happened once; this test
+    is here so it cannot happen again unnoticed.
+    """
+
+    def test_shipped_index_is_usable_by_web_app(self):
+        import web_app
+
+        index_path = web_app.SEARCH_INDEX_PATH
+        if not index_path.exists():
+            self.skipTest(f"{index_path.name} is gitignored; nothing to check here")
+
+        connection = sqlite3.connect(f"file:{index_path}?mode=ro", uri=True)
+        try:
+            manifest = dict(
+                connection.execute("SELECT key, value FROM manifest").fetchall()
+            )
+        finally:
+            connection.close()
+
+        recorded = Path(manifest["documents_path"])
+        self.assertFalse(
+            recorded.as_posix().startswith("/workspace/"),
+            "manifest records the Spark container path; rebuild with "
+            "--documents-path-label or rewrite that manifest row",
+        )
+
+        service = web_app.FinPortfolioWebService()
+        self.assertTrue(
+            service._search_index_is_usable(),
+            f"web_app rejects {index_path.name}: manifest documents_path="
+            f"{manifest['documents_path']!r} vs corpus "
+            f"{service.documents_path.resolve()!r}",
+        )
+        self.assertIsNotNone(service._open_search_index())
+
+
 @unittest.skipUnless(spark_available(), "pyspark not installed")
 class SearchIndexSparkParityTests(unittest.TestCase):
     def test_spark_built_index_matches_reference(self):
