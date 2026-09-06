@@ -1,0 +1,2 @@
+decision,reason,human_label_count,qrels_count,min_human_labels,document_method,calibrated_method,document_ndcg_at_10,calibrated_ndcg_at_10,delta_ndcg_at_10,document_precision_at_10,calibrated_precision_at_10,delta_precision_at_10,min_ndcg_delta,max_precision_drop,min_judged_rate_at_10,calibrated_judged_rate_at_10
+accept_guarded_promotion,all_thresholds_passed,15,45,10,document__full_hybrid,evidence_unit_calibrated_source_document__full_hybrid,0.8239847616347736,0.9815943356978304,0.15760957406305676,0.95,0.95,0.0,0.02,0.02,1.0,1.0

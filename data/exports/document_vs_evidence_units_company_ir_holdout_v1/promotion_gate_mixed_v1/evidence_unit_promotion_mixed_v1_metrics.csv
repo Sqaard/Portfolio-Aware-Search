@@ -1,0 +1,13 @@
+query_id,method,precision_at_5,precision_at_10,ndcg_at_5,ndcg_at_10,map,mrr
+heldout_balanced_2020-11-03,document__full_hybrid,1.0,1.0,0.8688881839864374,0.8552858350669763,1.0,1.0
+heldout_banks_macro_2020-11-03,document__full_hybrid,0.8,0.8,0.6166181783369411,0.664279724030482,0.8956845238095237,1.0
+heldout_health_macro_2020-11-03,document__full_hybrid,1.0,1.0,0.9250256699929476,0.9937530847440493,1.0,1.0
+heldout_tech_rates_2020-11-03,document__full_hybrid,1.0,1.0,0.753741145977712,0.782620402697587,1.0,1.0
+heldout_balanced_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,1.0,1.0,1.0,0.9959945185764778,1.0,1.0
+heldout_banks_macro_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,0.8,0.8,0.9518714281026602,0.9536842050533373,0.8701388888888888,1.0
+heldout_health_macro_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,1.0,1.0,0.9250256699929476,0.97902359817503,1.0,1.0
+heldout_tech_rates_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,1.0,1.0,1.0,0.9976750209864765,1.0,1.0
+heldout_balanced_2020-11-03,evidence_unit_source_document__full_hybrid,1.0,1.0,0.8688881839864374,0.8880566932717651,1.0,1.0
+heldout_banks_macro_2020-11-03,evidence_unit_source_document__full_hybrid,0.8,0.8,0.5407522501839647,0.5992430723962989,0.9067956349206348,1.0
+heldout_health_macro_2020-11-03,evidence_unit_source_document__full_hybrid,1.0,1.0,0.9250256699929476,0.9889921456572737,1.0,1.0
+heldout_tech_rates_2020-11-03,evidence_unit_source_document__full_hybrid,1.0,1.0,0.753741145977712,0.8165015760294461,1.0,1.0

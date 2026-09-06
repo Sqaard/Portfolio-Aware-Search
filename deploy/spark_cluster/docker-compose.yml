@@ -23,6 +23,10 @@ x-spark-env: &spark-env
   PYTHONPATH: /workspace:/opt/spark/python:/opt/spark/python/lib/py4j-0.10.9.7-src.zip
   PYSPARK_PYTHON: /usr/bin/python3
   PYSPARK_DRIVER_PYTHON: /usr/bin/python3
+  # Turning this on makes every job write an event log, which the History Server
+  # (http://localhost:18080) replays after the app exits: DAG, per-task Event
+  # Timeline, shuffle read/write, executor metrics.
+  FINPORTFOLIO_SPARK_EVENTLOG_DIR: /workspace/data/spark-events
 
 x-spark-common: &spark-common
   image: spark:3.5.3-scala2.12-java17-python3-ubuntu
@@ -92,3 +96,27 @@ services:
       SPARK_LOCAL_IP: spark-worker-2
     ports:
       - "8082:8081"
+
+  spark-history:
+    <<: *spark-common
+    container_name: finportfolio-spark-history
+    depends_on:
+      - spark-master
+    # The log dir is gitignored, so on a fresh clone it does not exist yet and the
+    # History Server would exit at startup (before any job creates it). Create it
+    # first so `compose up` -> http://localhost:18080 works on a clean checkout.
+    command:
+      - /bin/sh
+      - -c
+      - >-
+        mkdir -p /workspace/data/spark-events &&
+        exec /opt/spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-history
+      SPARK_HISTORY_OPTS: >-
+        -Dspark.history.fs.logDirectory=file:/workspace/data/spark-events
+        -Dspark.history.ui.port=18080
+        -Dspark.history.fs.update.interval=5s
+    ports:
+      - "18080:18080"   # History Server: finished jobs stay inspectable here

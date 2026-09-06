@@ -218,6 +218,30 @@ on the 294 MB SEC section corpus and the 352 MB combined corpus.
 
 ### Performance
 
+**Headline result — the full 352 MB corpus (26,368 documents).** This is the run
+that matters, and it reverses the small-corpus conclusion:
+
+| Engine / platform | Inverted index over 352 MB | Cores |
+| --- | ---: | ---: |
+| Spark, **Docker cluster** (2 workers × 2 cores, Linux) | **18.5 s** | 4 |
+| Local MapReduce engine (Windows) | 23.5 s | 12 |
+| Spark `local[*]` (Windows) | 64–71 s | 12 |
+
+On real data volume the cluster is the fastest option **while using 3× fewer
+cores**, and Spark's per-task overhead — which dominated the tiny 39 MB corpus —
+is amortised away. The often-quoted "the local engine is 70× faster than Spark"
+holds *only* for the 39 MB toy corpus; at 352 MB that same Windows comparison
+shrinks to 2.8×, and the cluster beats the local engine outright.
+
+All five figures above were re-measured on an idle machine. An earlier set of
+numbers for this table (44 s / 81–105 s) was discarded: a previous benchmark
+process had survived its wrapper and was competing for CPU, inflating every
+measurement by 1.3–1.9×. Two lessons, both worth stating: a benchmark script
+that uses `multiprocessing` on Windows **must** guard its entry point with
+`if __name__ == "__main__":` (spawn re-imports `__main__`, so an unguarded
+script re-runs itself in every worker), and the first timing of a Spark session
+is warm-up (26.8 s vs 18.5 s here) and must be discarded.
+
 | Job | Local engine (12 cores, Windows) | Spark `local[*]` (Windows) | Spark cluster (Docker, 2 workers × 2 cores) |
 | --- | ---: | ---: | ---: |
 | Inverted index, macro (18,240 docs) | **0.86 s** | 60.1 s | **3.45 s** |
@@ -339,10 +363,92 @@ local multiprocessing engine beat Spark `local[*]` by ~70× — and the cluster
 runs then showed **most of that gap was Windows-specific**, not intrinsic to
 Spark:
 
-- **Spark's fixed cost** is JVM startup, task scheduling, and serialising every
-  record across the Python↔JVM boundary — *amplified* on Windows (no `fork`,
-  slow Python-worker spawn). The same macro index job: 60.1 s on Windows
-  `local[*]` (12 cores) vs **3.45 s on the Linux cluster with 4 cores**.
+- **Measured, not guessed.** Two controlled experiments on the macro corpus
+  (18,240 docs) isolate the cause:
+
+  | Experiment | Result | Conclusion |
+  | --- | --- | --- |
+  | Read path: driver-read+`parallelize` vs `sc.textFile` (Windows `local[*]`, 12 parts) | 65.9 s vs 63.4 s | the IO path is **irrelevant** |
+  | Partition count, **Windows `local[*]`, 12 cores** | 2 → 12.5 s, 4 → 21.5 s, 12 → **64.0 s** | time *grows* with parallelism → fixed per-task cost dominates |
+  | Partition count, **Linux cluster, 4 cores** (same code, same corpus) | 2 → 7.4 s, 4 → **3.9 s**, 12 → 4.2 s | time *falls* then flattens → per-task cost is negligible |
+
+  The two platforms behave in *opposite* directions on identical data and
+  identical code, which is the whole diagnosis: on Windows more parallelism buys
+  nothing and costs ~5.3 s per extra task, while on Linux parallelism does what
+  it should (7.4 s → 3.9 s from 2 to 4 partitions, then flat once the 4 cluster
+  cores are saturated). A cost that grows with *task count* rather than data
+  volume is a fixed per-task cost — not the algorithm, and not the network
+  (there is no network in `local[*]` at all). On Windows PySpark
+  cannot `fork`: it spawns a fresh `python.exe` per task, each re-importing
+  PySpark and the project modules. On Linux, workers are forked from a pooled
+  daemon at near-zero cost — which is why the *same code with the same read
+  path* takes **3.45 s on the 4-core Linux cluster** versus 63 s on a 12-core
+  Windows box.
+- **Where the cluster optimum actually is.** A wider sweep on the 4-core cluster
+  (`sc.textFile`, same job) shows over-partitioning costs on Linux too — just far
+  more gently than on Windows:
+
+  | partitions | macro (39 MB) | | partitions | all_ppo (352 MB) |
+  | ---: | ---: | --- | ---: | ---: |
+  | 2 | 4.2 s | | 11 | 18.1 s |
+  | **4** | **2.7 s** | | **16** | **18.3 s** |
+  | 8 | 3.1 s | | 32 | 22.3 s |
+  | 16 | 4.4 s | | 64 | 27.9 s |
+  | 64 | 14.0 s | | | |
+
+  The optimum sits at roughly **one partition per core** (4 for the 4-core
+  cluster), and 64 partitions costs 5× the optimum. Two further facts fell out of
+  the sweep: `minPartitions` is a **floor, not an exact count** — asking for 1, 2,
+  4 or 8 on the 352 MB corpus all yielded **11** partitions, because Hadoop's
+  32 MB split size decides (352/32 ≈ 11); and the very first run of a session is
+  ~1.8× slower (7.6 s vs 4.2 s for an identical config) from JVM/JIT warm-up, so
+  benchmarks must discard the first measurement.
+- **Windows vs cluster, same RDD job** (macro corpus, 18,240 docs; all figures
+  re-measured on an idle machine, warm-up run discarded):
+
+  | Partitions | PySpark on **Windows** (12 cores) | PySpark on **Docker cluster** (4 cores) | Cluster advantage |
+  | ---: | ---: | ---: | ---: |
+  | 2 | 11.4 s | 2.3 s | 5.0× |
+  | 4 | 21.6 s | 2.2 s | 9.8× |
+  | 12 | 66.8 s | 4.0 s | **16.7×** |
+
+  The cluster's advantage *grows with the partition count* — because every extra
+  partition is an extra task, and on Windows every task costs a fresh
+  `python.exe`. On Linux that cost is a `fork` and is effectively free.
+
+- **What actually fixes the Windows path** — four remedies, measured against the
+  same baseline (Windows, RDD, 12 partitions = 66.8 s). None of them involves
+  writing an engine:
+
+  | Remedy | Time | Speed-up |
+  | --- | ---: | ---: |
+  | baseline — Windows, RDD+Python, 12 partitions | 66.8 s | 1× |
+  | `spark.python.worker.reuse=false` (vs default `true`) | 64.1 s | **1.0× — no effect** |
+  | fewer partitions: 12 → 4 | 21.6 s | 3.1× |
+  | fewer partitions: 12 → 2 | 11.4 s | 5.9× |
+  | same RDD code on the **Docker cluster**, 12 partitions | 4.0 s | 16.7× |
+  | same RDD code on the **Docker cluster**, 4 partitions | 2.2 s | **30×** |
+  | **DataFrame/SQL API on Windows**, 12 partitions | 2.3 s | 29× |
+  | **DataFrame/SQL API on Windows**, 4 partitions | 1.2 s | **56×** |
+  | DataFrame/SQL API on the cluster, 4 partitions | 1.9 s | 35× |
+
+  Three things stand out. First, the knob everyone suggests —
+  `spark.python.worker.reuse` — does **nothing** here (64.1 s vs 66.8 s, within
+  noise): it optimises the daemon/`fork` path, which does not exist on Windows.
+  Second, the DataFrame/SQL rewrite is the strongest remedy *and it is fastest on
+  Windows*, beating the cluster (1.2 s vs 1.9 s) — because with zero Python
+  workers Windows' only weakness disappears and the 12-core laptop simply has
+  more cores than the 4-core toy cluster. That is the cleanest proof that the
+  bottleneck was never "Windows is slow", it was specifically Python-worker
+  spawn. Third, the SQL path produces a different vocabulary (18,152 vs 5,520)
+  because its regex tokeniser is not the project tokeniser — it demonstrates the
+  mechanism, not parity. Keeping `finportfolio_ir.text_utils.tokenize` verbatim
+  is exactly what makes the byte-identical parity guarantee possible, which is
+  why the RDD path is the one that ships.
+
+- **Practical consequence:** on Windows use *fewer* partitions (`--partitions 2`
+  cut this job from 64 s to 12.5 s); on a cluster, partition for the cores you
+  actually have.
 - **Spark's benefit** is horizontal scale: partitioned, distributed-IO execution
   across machines. The full 352 MB corpus is processed in tens of seconds on a
   toy 2-worker cluster, and the same code scales by adding workers — which no

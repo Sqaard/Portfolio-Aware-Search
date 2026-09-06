@@ -55,6 +55,87 @@ available_at < published_at
 The critical timestamp is `available_at`. `published_at` is informative, but it
 is not enough to protect a backtest.
 
+#### 2.1.1 Macro `available_at`: Vintages, Not Estimates
+
+For official macro series the first implementation derived `available_at`
+synthetically as *observation date + a hardcoded `release_lag_days`*, and took
+values from `fredgraph.csv`, which always serves today's **revised** numbers.
+Both shortcuts leak lookahead, so the collector now reads true point-in-time
+vintages from **ALFRED** (`features/fred_alfred.py`): `available_at` becomes the
+date the observation was actually first published, and `macro_value` becomes the
+value **as first published**.
+
+Measured on the 2010-01-01..2023-03-01 corpus, the estimates were wrong in ways
+that mattered:
+
+| Series | Estimated lag | Real median lag | Observations released later than assumed | Values later revised |
+| --- | ---: | ---: | ---: | ---: |
+| PAYEMS | 7 d | 34 d | 159 / 159 | 159 |
+| UNRATE | 7 d | 34 d | 159 / 159 | 82 |
+| FEDFUNDS | 7 d | 32 d | 159 / 159 | 0 |
+| CPIAUCSL | 18 d | 44 d | 159 / 159 | 159 |
+| INDPRO | 21 d | 45 d | 159 / 159 | 159 |
+| HOUST | 21 d | 47 d | 159 / 159 | 157 |
+| DCOILWTICO | 1 d | 6 d | 2 865 / 2 983 | 27 |
+| DGS10 / DGS2 | 1 d | 1 d | 2 358 / 6 581 | 3 |
+| VIXCLS | 1 d | 0 d | 205 / 3 085 | 0 |
+
+Overall: **6 382 of 17 456 documents (36.6%)** were marked available earlier than
+they truly were, by a median of 4 days and up to 87 days; **746** carried a value
+that was not knowable at the stated time; **8** documents move across the
+train/test boundary once the real release date is used.
+
+**A vintage date is a day, not an hour.** ALFRED reports *which day* a value was
+first published, not at what time. Taking that date at face value would stamp a
+close-based series (VIXCLS, DGS10/DGS2, DCOILWTICO all settle around 21:00 UTC)
+as available at 14:00 UTC on the observation day itself -- roughly seven hours
+before the session that produced it. That is a *worse* leak than the estimate it
+replaces, and it affected 2 148 documents. The builder therefore never moves
+availability earlier than the conservative estimate:
+
+```text
+available_at = max(vintage_release_date @ 14:00Z, observation_date + release_lag_days @ 14:00Z)
+```
+
+Those 2 148 documents keep the estimated timestamp and are labelled
+`macro_availability_source = alfred_floored_by_estimate`, so the three regimes
+stay separable. After this floor, **no document in the corpus becomes available
+earlier than it was under the original estimates** -- the change is a strict
+improvement in point-in-time safety.
+
+Two derived series (`T10Y2Y`, `BAMLH0A0HYM2`) are not archived in ALFRED and
+keep the conservative estimate; the per-series regime is recorded in every
+document as `macro_availability_source`, so the two populations stay separable
+downstream.
+
+**Observation-window clamp.** `fredgraph.csv` silently ignores its `cosd`/`coed`
+parameters for some series. `BAMLH0A0HYM2` is one: ICE BofA truncated the series
+at the source in April 2026, and FRED now returns only a trailing three-year
+window, so a request for 2010-2023 came back with 2023-05..2026-05 data. The
+previous corpus therefore contained **784 macro documents dated after the study
+cutoff**. The builder now clamps every observation to the requested window and
+reports `out_of_window_dropped` in its summary.
+
+Regimes are selected with `--vintage-mode`:
+
+```bash
+# Point-in-time vintages (needs FRED_API_KEY in the environment or .env).
+# The two corpus files are gitignored (~91MB); the summary next to them is tracked.
+python -m features.build_official_macro_documents --vintage-mode alfred   --output-raw data/raw_documents/official_macro_2010_2023_pit.jsonl   --output-processed data/processed_documents/official_macro_2010_2023_pit_documents.jsonl   --summary-output data/processed_documents/official_macro_2010_2023_pit_summary.json
+
+# The original estimated-lag corpus, reproducible without an API key.
+# These are the builder's default output paths.
+python -m features.build_official_macro_documents --vintage-mode estimate
+```
+
+Pass the `_pit` paths explicitly: the builder writes wherever it is told, and the
+defaults belong to the estimate-regime corpus, so a bare `--vintage-mode alfred`
+would overwrite it.
+
+`auto` (the default) prefers vintages and degrades to estimates when no key is
+configured. `estimate` reproduces the original documents field-for-field, so the
+change is additive rather than a rewrite of the corpus contract.
+
 ### 2.2 Future Returns Are Diagnostic Only
 
 Event-study feedback uses realized future returns. It is allowed only for:

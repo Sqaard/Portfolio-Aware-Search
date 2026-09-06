@@ -1,0 +1,4 @@
+method,query_count,precision_at_5,precision_at_10,ndcg_at_5,ndcg_at_10,map,mrr
+document__full_hybrid,4,0.95,0.95,0.7910682945735095,0.8239847616347736,0.973921130952381,1.0
+evidence_unit_calibrated_source_document__full_hybrid,4,0.95,0.95,0.9692242745239019,0.9815943356978304,0.9675347222222221,1.0
+evidence_unit_source_document__full_hybrid,4,0.95,0.95,0.7721018125352654,0.8231983718386959,0.9766989087301587,1.0

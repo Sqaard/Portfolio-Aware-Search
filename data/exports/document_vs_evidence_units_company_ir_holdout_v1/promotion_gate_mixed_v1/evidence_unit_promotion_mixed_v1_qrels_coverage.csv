@@ -1,0 +1,13 @@
+query_id,method,judged_at_5,unjudged_at_5,judged_rate_at_5,judged_at_10,unjudged_at_10,judged_rate_at_10,unjudged_doc_ids_at_10
+heldout_balanced_2020-11-03,document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_banks_macro_2020-11-03,document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_health_macro_2020-11-03,document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_tech_rates_2020-11-03,document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_balanced_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_banks_macro_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_health_macro_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_tech_rates_2020-11-03,evidence_unit_calibrated_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_balanced_2020-11-03,evidence_unit_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_banks_macro_2020-11-03,evidence_unit_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_health_macro_2020-11-03,evidence_unit_source_document__full_hybrid,5,0,1.0,10,0,1.0,
+heldout_tech_rates_2020-11-03,evidence_unit_source_document__full_hybrid,5,0,1.0,10,0,1.0,

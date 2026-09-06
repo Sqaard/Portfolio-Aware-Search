@@ -59,3 +59,42 @@ docker compose -f deploy/spark_cluster/docker-compose.yml down
     --corpus all_ppo --native-read \
     --output data/exports/bigdata/search_index/finportfolio_search_spark.sqlite
   ```
+
+## Inspecting a finished job (Spark History Server)
+
+The driver UI on `:4040` disappears the moment the application exits, so a
+20-second job leaves nothing to look at. The cluster therefore runs a **History
+Server** that replays finished applications from the event logs written to
+`data/spark-events/`:
+
+- **<http://localhost:18080>** — every finished application.
+
+Click an application → **Stages** → click a stage. That page carries exactly the
+diagnostics people know from Databricks (Databricks simply hosts this same
+Spark UI):
+
+| What you want to see | Where |
+| --- | --- |
+| Stage DAG (which RDD ops fused into this stage) | **DAG Visualization** (expand) |
+| Per-task coloured breakdown: scheduler delay, task deserialisation, executor computing, shuffle read/write, result serialisation | **Event Timeline** (expand) |
+| Shuffle Read / Shuffle Write bytes and records | stage header + Tasks table |
+| Per-executor totals | **Aggregated Metrics by Executor** |
+| Min / median / max task duration, GC time, input size | **Summary Metrics** |
+
+Event logging is opt-in via the `FINPORTFOLIO_SPARK_EVENTLOG_DIR` environment
+variable (already set for every cluster node in `docker-compose.yml`). Set it
+locally too if you want history for `local[*]` runs:
+
+```powershell
+$env:FINPORTFOLIO_SPARK_EVENTLOG_DIR = "$PWD\data\spark-events"
+```
+
+## Submitting from PowerShell
+
+`submit.sh` is a bash script; on Windows `.sh` is usually associated with an
+editor, so running it from PowerShell just opens the file. Use the PowerShell
+wrapper instead — it also starts the cluster if it is not running:
+
+```powershell
+.\deploy\spark_cluster\submit.ps1 bigdata.run_all --corpus all_ppo --native-read --partitions 16
+```

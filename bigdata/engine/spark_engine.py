@@ -132,13 +132,29 @@ class SparkEngine(Engine):
 
         scratch = _ascii_scratch_dir()
         resolved_master = master or os.environ.get("SPARK_MASTER", "local[*]")
+        # Tag the application with where it actually ran, so the History Server
+        # list distinguishes a cluster run from a local[*] run at a glance
+        # (both otherwise show the same name and look identical).
+        if resolved_master.startswith("local"):
+            run_tag = f"local({resolved_master})"
+        else:
+            run_tag = "CLUSTER"
         conf = SparkConf()
-        conf.setAppName(app_name)
+        conf.setAppName(f"{app_name} [{run_tag}]")
         conf.setMaster(resolved_master)
         conf.set("spark.ui.showConsoleProgress", "false")
         conf.set("spark.sql.warehouse.dir", _as_uri(os.path.join(scratch, "warehouse")))
         conf.set("spark.local.dir", os.path.join(scratch, "local"))
         conf.set("spark.hadoop.fs.permissions.umask-mode", "000")
+        # Event logging: lets the Spark History Server replay a finished job, so the
+        # DAG, per-task Event Timeline (scheduler delay / deserialise / compute /
+        # shuffle read+write) and executor metrics stay inspectable AFTER the run.
+        # The driver UI on :4040 dies with the application; the history UI does not.
+        event_log_dir = os.environ.get("FINPORTFOLIO_SPARK_EVENTLOG_DIR", "").strip()
+        if event_log_dir:
+            os.makedirs(event_log_dir, exist_ok=True)
+            conf.set("spark.eventLog.enabled", "true")
+            conf.set("spark.eventLog.dir", _as_uri(event_log_dir))
         # Pin the loopback interface only in local mode; on a real spark:// cluster
         # the driver must be reachable by executors, so let Spark/SPARK_LOCAL_IP decide.
         if resolved_master.startswith("local"):

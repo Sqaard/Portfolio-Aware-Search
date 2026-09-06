@@ -1,0 +1,4 @@
+method,query_count,mean_judged_rate_at_5,mean_judged_rate_at_10,queries_below_80pct_at_10,queries_below_100pct_at_10
+document__full_hybrid,4,1.0,1.0,0,0
+evidence_unit_calibrated_source_document__full_hybrid,4,1.0,1.0,0,0
+evidence_unit_source_document__full_hybrid,4,1.0,1.0,0,0

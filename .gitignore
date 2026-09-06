@@ -29,3 +29,16 @@ data/exports/bigdata/**/postings.jsonl
 
 # Spark-built search-index artifacts: manifest only; the .sqlite itself is ~800MB.
 data/exports/bigdata/search_index/*.sqlite
+
+# Spark event logs (per-run; replayed by the History Server, regenerated locally).
+data/spark-events/
+
+# Point-in-time macro corpus (ALFRED vintages): ~91MB. Reproduce with the full
+# command in docs/MAIN_METHODOLOGY.md 2.1.1 -- the --output-raw/--output-processed
+# overrides are required, since the builder's defaults are the estimate-regime
+# corpus. The summary JSON next to them IS tracked.
+data/raw_documents/official_macro_2010_2023_pit.jsonl
+data/processed_documents/official_macro_2010_2023_pit_documents.jsonl
+
+# PowerPoint lock files.
+~$*.pptx

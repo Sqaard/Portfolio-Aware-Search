@@ -40,6 +40,32 @@ Required fields:
 | `language` | string | Language code. |
 | `document_hash` | string | SHA-256 fingerprint of the text and timestamps. |
 
+## Official Macro Fields
+
+Documents with `source_type = official_macro_release`
+(`features/build_official_macro_documents.py`) carry extra provenance fields on
+top of the normalized schema:
+
+| Field | Meaning |
+| --- | --- |
+| `macro_series_id` | FRED/ALFRED series identifier, e.g. `CPIAUCSL` |
+| `macro_series_title`, `macro_family`, `macro_frequency`, `macro_units` | Series metadata |
+| `macro_observation_date` | The period the number describes |
+| `macro_value` | **Point-in-time** value: as first published when a vintage exists, otherwise the current value |
+| `macro_value_latest` | Today's value, after all revisions |
+| `macro_value_revision` | `macro_value_latest - macro_value`; `""` when no vintage is available |
+| `macro_release_lag_days` | The *assumed* lag baked into the series spec |
+| `macro_actual_release_lag_days` | The *observed* lag from the ALFRED vintage; `""` without one |
+| `macro_first_release_date` | Date the observation was actually first published; `""` without a vintage |
+| `macro_availability_source` | Which regime produced `available_at`: `alfred_first_release` (vintage date used), `alfred_floored_by_estimate` (same-day vintage; the later conservative estimate kept instead), or `estimated_release_lag` (no vintage available) |
+
+`available_at` is the **later** of the vintage release date and the estimated
+release date, so switching a corpus to ALFRED can only ever make a document
+available later, never earlier (see `docs/MAIN_METHODOLOGY.md` §2.1.1 for why a
+day-granular vintage must not be trusted as an intraday timestamp). Always filter on `available_at`; use `macro_availability_source` when
+an analysis needs to separate measured from estimated availability. See
+`docs/MAIN_METHODOLOGY.md` §2.1.1.
+
 ## Portfolio YAML
 
 ```yaml
