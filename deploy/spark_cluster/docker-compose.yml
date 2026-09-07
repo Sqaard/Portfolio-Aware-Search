@@ -32,6 +32,11 @@ x-spark-common: &spark-common
   image: spark:3.5.3-scala2.12-java17-python3-ubuntu
   volumes:
     - ../../:/workspace
+    # Optional second mount for data kept outside the repo -- benchmark corpora
+    # live on an ASCII path because Hadoop's local reader hangs on the project's
+    # Cyrillic directory. Harmless when FINPORTFOLIO_EXTRA_DIR is unset: it then
+    # mounts the repo's own exports directory, which is already visible.
+    - ${FINPORTFOLIO_EXTRA_DIR:-../../data/exports}:/extra
   working_dir: /workspace
 
 services:

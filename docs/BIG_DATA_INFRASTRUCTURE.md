@@ -258,6 +258,39 @@ processed end-to-end on the toy 4-core cluster in tens of seconds.
 
 ---
 
+
+### 7.1 What the layer did and did not do for the site
+
+Honest before/after on the artifact the site actually serves — the 774 MB SQLite
+FTS index over the full 352 MB corpus:
+
+| Builder | Wall clock |
+| --- | ---: |
+| `indexing/build_search_index.py`, single machine | **25 s** |
+| `bigdata.run_build_search_index` on the Docker cluster | **75 s** (24 s distributed map + 37.5 s SQLite write) |
+
+**The distributed build is three times slower.** The map phase parallelises, but
+the SQLite write is a single writer by construction and dominates. For a corpus
+this size the Big Data path buys the site no speed at all, and saying otherwise
+would not survive a stopwatch.
+
+What it did buy is correctness, and that came from the parity requirement rather
+than from Spark:
+
+- Comparing two implementations of the same job surfaced three real bugs —
+  analytics counting a repeated tag once per occurrence instead of once per
+  document (37% of the macro corpus carries one), the streaming updater
+  double-counting rows appended between its size probe and its read, and the
+  shipped index being silently rejected by `web_app` so search had fallen back to
+  an in-memory scan.
+- The point-in-time work that came with it found that **36.6% of macro documents
+  were marked available earlier than they truly were**, by up to 87 days.
+- The processing layer now has 53 tests where it previously had one script.
+
+The scaling argument is real but forward-looking: the same job runs unchanged on
+N machines. At 352 MB that is headroom, not a benefit already collected.
+
+
 ## 8. Verification
 
 The central guarantee: **the distributed output is identical to the trusted
@@ -445,6 +478,46 @@ Spark:
   deterministic across them; only the wall-clock differs.
 
 
+
+
+
+- **"Isn't this just measuring worker start-up?"** On the 39 MB macro corpus,
+  yes — and that criticism is correct. So the job was re-run on the largest body
+  of text the project has: all 3,026 SEC filings from the raw HTML cache, cleaned
+  to full text. **376 MiB, 59.7 M tokens, 90,888 distinct terms** — more tokens
+  than the 352 MB production corpus.
+
+  | Partitions | Windows, 12 cores | Docker cluster, 4 cores |
+  | ---: | ---: | ---: |
+  | 2 | 101.0 s | **39.6 s** |
+  | 4 | 132.5 s | 65.3 s |
+  | 12 | **89.3 s** | 63.6 s |
+
+  Output is identical in every cell (3,026 documents, 90,888 terms, 59,660,408
+  tokens). The cluster's advantage **collapses from 16.7x to 2.3x** once there is
+  real work to do, which is the honest scale of it.
+
+  Subtracting the start-up measured above (48 tasks x ~1.25 s at 12 partitions)
+  separates the two costs:
+
+  | | Wall clock | Start-up | Compute |
+  | --- | ---: | ---: | ---: |
+  | Windows, 12 partitions | 89.3 s | ~60 s | **~29 s** on 12 cores |
+  | Cluster, 12 partitions | 63.6 s | ~0 s | **~64 s** on 4 cores |
+
+  So on compute alone the laptop is about **2.2x faster than the cluster** —
+  which is what 12 cores against 4 predicts. The cluster wins wall-clock only
+  because Windows spends 60 s starting Python workers. That is the whole effect,
+  stated plainly.
+
+  **The data ceiling.** There is no larger corpus to reach for. The raw cache is
+  3.7 GB, but it is 90% markup: cleaned, all 3,026 filings come to 376 MiB of
+  text. Feeding the raw HTML through the job instead crashes the Python worker
+  (each record is a whole multi-megabyte filing, and the per-document term map
+  blows up). Total compute over everything this project has is roughly 65
+  core-seconds — less than the ~60 s of serialised worker start-up on Windows.
+  **A compute-dominated comparison is therefore not reachable with this dataset**,
+  and no re-partitioning changes that.
 
 
 - **"Why do 12 cores lose to 4?"** Because on Windows the dominant cost does not
