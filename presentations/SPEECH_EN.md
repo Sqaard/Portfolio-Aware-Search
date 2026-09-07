@@ -89,13 +89,24 @@ to plan the work: the document count drives the number of tasks, the volume
 drives how much travels over the network.
 
 **On the right is one real document**, exactly as it sits in the file. Nothing
-invented — this is a line from the corpus. Look at the `available_at` field:
-2 March 2012. The observation itself is for 1 March, but it was published the
-next day. Search filters on **that field only**, so on 1 March this document
-cannot be found.
+invented — this is a line from the corpus: the "Item 1A. Risk Factors" section of
+Apple's 2021 annual report. Nine of its 55 fields are shown; the whole thing does
+not fit on a slide.
 
-And notice `risk_terms` — the word "oil" is in there. This very document is what
-contributes one to the counter we will compute on slide 8.
+Look at the provenance chain, this is the important part:
+
+- `url` — the direct sec.gov link the file came from;
+- `sec_accession_number` — the SEC filing's registration number;
+- `parent_doc_id` — **the whole filing** this section was cut out of;
+- `sec_section_code: 1A · chars 24,654–91,275 of 223,208` — the exact character
+  range the section occupies inside that filing.
+
+So any document can be traced backwards: here is the section, here is the filing,
+here is the accession number, here is the link, here are the exact characters.
+This is not "we downloaded some text from somewhere".
+
+And the `available_at` field: 29 October 2021. Search filters on **that alone** —
+on 28 October this document cannot be found.
 
 **Now the bottom row — what one Spark run does with all this.**
 

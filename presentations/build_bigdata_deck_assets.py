@@ -378,20 +378,25 @@ CORPUS_SNAPSHOT = (
     ("Company IR documents", "newsrooms \u00b7 reports \u00b7 decks", 1117, 17.8),
 )
 
-#: One real row from that corpus, trimmed to what fits on a slide.
+#: One real row from that corpus. A SEC section: 55 fields in the file, 9 here.
+#: Chosen over a macro release because SEC sections are 76% of the corpus and
+#: they carry the provenance chain -- source URL, accession, parent filing, and
+#: the exact character range the section occupies inside it.
 SAMPLE_DOCUMENT = (
-    ("doc_id", "official_macro_dcoilwtico_2012-03-01"),
-    ("title", "Official US macro release: WTI Crude Oil Price"),
-    ("source", "EIA via FRED  \u00b7  official_macro_release"),
-    ("available_at", "2012-03-02T14:00:00Z"),
-    ("macro_value", "108.76 USD per barrel"),
-    ("risk_terms", "oil \u00b7 energy prices \u00b7 inflation pressure"),
+    ("doc_id", "sec_aapl_10k_000032019321000105__item_1a_risk_factors"),
+    ("title", "Apple Inc. 10-K filed 2021-10-29 \u2014 Item 1A Risk Factors"),
+    ("url", "https://www.sec.gov/Archives/edgar/data/320193/\u2026"),
+    ("sec_accession_number", "0000320193-21-000105"),
+    ("parent_doc_id", "sec_aapl_10k_000032019321000105"),
+    ("sec_section_code", "1A   \u00b7   chars 24,654\u201391,275 of 223,208"),
+    ("available_at", "2021-10-29T16:00:00Z"),
+    ("matched_tickers", "AAPL"),
+    ("split", "test"),
 )
 
 SAMPLE_BODY = (
-    '"Official US macro observation. Series DCOILWTICO: WTI Crude Oil',
-    ' Price. Observation date: 2012-03-01. Value: 108.76 USD per barrel.',
-    ' Macro family: energy. Relevant concepts: oil, energy prices, ..."',
+    '"Item 1A. Risk Factors \u2014 The Company\u2019s business, reputation,',
+    ' results of operations and financial condition\u2026"',
 )
 
 
@@ -421,9 +426,43 @@ def _measure_corpus():
     )
 
 
+def _verify_sample_document() -> None:
+    """Fail loudly if the hand-written example no longer matches the corpus.
+
+    The example is retyped into this file so the slide can be rendered without
+    the (gitignored) corpus present. That invites exactly one bug -- a mistyped
+    identifier -- so when the corpus IS present, check it. Silently shipping a
+    slide with a doc_id that does not exist is worse than not rendering.
+    """
+
+    import json
+
+    path = ROOT / "data" / "processed_documents" / "sec_macro_company_ir_ppo_2010_2023_documents.jsonl"
+    if not path.is_file():
+        return
+    fields = dict(SAMPLE_DOCUMENT)
+    wanted = fields["doc_id"]
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if wanted not in line:
+                continue
+            record = json.loads(line)
+            if record.get("doc_id") != wanted:
+                continue
+            for key in ("sec_accession_number", "parent_doc_id", "available_at", "split"):
+                if str(record.get(key)) != fields[key]:
+                    raise SystemExit(
+                        f"slide 5 example is stale: {key} is {record.get(key)!r} "
+                        f"in the corpus, {fields[key]!r} on the slide"
+                    )
+            return
+    raise SystemExit(f"slide 5 example is stale: no document with doc_id {wanted!r}")
+
+
 def build_data(out_dir: Path) -> Path:
     """What the 352 MB actually is, one real document, and what the job does to it."""
 
+    _verify_sample_document()
     fig, ax = _canvas(13.6, 6.1)
     rows = _measure_corpus() or CORPUS_SNAPSHOT
     total_docs = sum(r[2] for r in rows)
@@ -463,33 +502,35 @@ def build_data(out_dir: Path) -> Path:
     # ---- right: one real document ----------------------------------------
     _text(ax, 52.0, 95.5, "One document, as stored", size=12.5, color=MAGENTA,
           weight="bold", ha="left")
+    _text(ax, 98.0, 95.5, "9 of its 55 fields", size=8.6, color=GREY, ha="right")
+    _text(ax, 52.0, 91.4, "a 10-K section \u2014 the type that is 76% of the corpus",
+          size=8.6, color=GREY, ha="left", style="italic")
 
-    _box(ax, 52.0, 55.0, 46.0, 34.5, fill=WHITE, edge=MAGENTA, lw=2.0)
-    y = 85.0
+    _box(ax, 52.0, 47.0, 46.0, 42.5, fill=WHITE, edge=MAGENTA, lw=2.0)
+    y = 86.0
     for key, value in SAMPLE_DOCUMENT:
         emphasis = key == "available_at"
         _text(ax, 54.0, y, key, size=8.0, color=GREY, family=MONO, ha="left")
-        _text(ax, 66.0, y, value, size=8.2,
+        _text(ax, 68.5, y, value, size=7.6,
               color=MAGENTA if emphasis else INK, family=MONO,
               weight="bold" if emphasis else "normal", ha="left")
-        y -= 4.4
-    _text(ax, 54.0, 58.6, SAMPLE_BODY[0], size=7.8, color=GREY, family=MONO, ha="left")
-    _text(ax, 54.0, 56.4, SAMPLE_BODY[1], size=7.8, color=GREY, family=MONO, ha="left")
+        y -= 4.0
+    _text(ax, 54.0, 51.6, SAMPLE_BODY[0], size=7.4, color=GREY, family=MONO, ha="left")
+    _text(ax, 54.0, 49.2, SAMPLE_BODY[1], size=7.4, color=GREY, family=MONO, ha="left")
 
-    _arrow(ax, (64.5, 71.0), (60.0, 71.0), color=MAGENTA, lw=1.8)
-    _text(ax, 52.0, 51.0,
-          "available_at is the only date search filters on \u2014 nothing published",
+    _text(ax, 52.0, 43.0,
+          "Every document traces back: source URL, accession number, the parent",
           size=8.6, color=INK, ha="left")
-    _text(ax, 52.0, 47.6,
-          "after the decision date can ever be returned.",
+    _text(ax, 52.0, 39.6,
+          "filing, and the exact characters this section was cut from.",
           size=8.6, color=INK, ha="left")
-    _text(ax, 52.0, 42.4,
-          "This one document contributes \"oil\" to the count on slide 8.",
-          size=8.4, color=GREY, ha="left", style="italic")
+    _text(ax, 52.0, 34.6,
+          "available_at is the only date search filters on.",
+          size=8.8, color=MAGENTA, ha="left", weight="bold")
 
     # ---- bottom: what one run does to it ---------------------------------
-    ax.plot([2.0, 98.0], [30.5, 30.5], color="#E3DCEF", lw=1.4, zorder=1)
-    _text(ax, 2.0, 26.6, "What one Spark run moves through it", size=11.5,
+    ax.plot([2.0, 98.0], [29.0, 29.0], color="#E3DCEF", lw=1.4, zorder=1)
+    _text(ax, 2.0, 25.2, "What one Spark run moves through it", size=11.5,
           color=DEEP, weight="bold", ha="left")
 
     chain = [
