@@ -444,6 +444,45 @@ Spark:
   Both platforms return the same 18,158-term vocabulary, so the SQL job itself is
   deterministic across them; only the wall-clock differs.
 
+
+- **"Why doesn't AQE just fix the partition count?"** It cannot, for two
+  independent reasons, both measured rather than assumed.
+
+  *AQE does not apply to RDDs at all.* Adaptive Query Execution is a Spark **SQL**
+  feature: it rewrites a Catalyst physical plan using statistics collected at
+  runtime. An RDD job has no plan and no statistics — it goes straight to the
+  DAGScheduler. Toggling it on the macro corpus, 12 partitions:
+
+  | | `spark.sql.adaptive.enabled=true` | `=false` |
+  | --- | ---: | ---: |
+  | RDD job | 60.85 s | 59.84 s |
+  | DataFrame/SQL job | 1.47 s | 1.33 s |
+
+  *And even where it applies, it addresses a different axis.* AQE's
+  `coalescePartitions` merges **post-shuffle** partitions once map output sizes
+  are known. It cannot change the number of **map** tasks, which are fixed before
+  any statistic exists — and the map side is exactly where the Windows cost sits.
+
+  What actually drives the curve is task count. The job runs **four stages**, so
+  every partition costs four tasks, and on Windows every task costs a fresh
+  `python.exe`:
+
+  | Partitions | Stages | Tasks | Time | Per task |
+  | ---: | ---: | ---: | ---: | ---: |
+  | 2 | 4 | 8 | 12.0 s | 1.50 s |
+  | 12 | 4 | 48 | 60.0 s | 1.25 s |
+
+  A control run isolates that constant: `sc.parallelize(range(n), n).map(x -> x+1)`
+  — one integer per partition, no real work — costs 1.10 / 2.03 / 4.05 / 7.95 /
+  11.78 / 23.78 s for 1 / 2 / 4 / 8 / 12 / 24 partitions. **~1 s per task with no
+  data at all**, perfectly linear. (Importing the project modules inside the
+  worker adds only 0.01 s per task, so it is process start-up, not our imports.)
+
+  So the runtime is essentially `tasks x worker-start`, and reducing partitions
+  reduces tasks. On Linux the same constant is a `fork` and is negligible, which
+  is why more partitions genuinely help there — and why the DataFrame/SQL path,
+  which starts no Python worker, stays flat at 1.2-1.3 s regardless.
+
   Three things stand out. First, the knob everyone suggests —
   `spark.python.worker.reuse` — does **nothing** here (64.1 s vs 66.8 s, within
   noise): it optimises the daemon/`fork` path, which does not exist on Windows.

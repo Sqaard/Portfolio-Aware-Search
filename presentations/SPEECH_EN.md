@@ -331,6 +331,18 @@ A partition is a task, and a task is a process. On Windows each process starts
 from scratch (2–5 seconds of imports); on Linux it is a `fork`. With 12 partitions
 you pay for 12 start-ups; with 2, for two.
 
+**— Doesn't AQE choose the partition count for you?**
+Not here, for two reasons, and I measured both. First, AQE is a Spark **SQL**
+feature — it rewrites a query plan using runtime statistics. An RDD job has no
+plan, so AQE never sees it: with AQE on the RDD job takes 60.85 s, with it off,
+59.84 s. Second, even where AQE does apply it coalesces **post-shuffle**
+partitions; it cannot change the number of **map** tasks, and the map side is
+where the Windows cost is. What actually drives the curve is task count: the job
+has four stages, so 2 partitions means 8 tasks and 12 partitions means 48, at
+about 1.3 seconds of Python start-up each — 12 s against 60 s. A control run with
+one integer per partition and no real work costs the same ~1 s per task, which is
+what proves it is process start-up rather than data.
+
 **— How is a word's value computed?**
 The rarer the word, the more valuable:
 `idf = ln(1 + (N − df + 0.5)/(df + 0.5))`. It is `df` — the number of documents
