@@ -368,116 +368,147 @@ def build_performance(out_dir: Path) -> Path:
 
 
 # ---------------------------------------------------------------- slide 5 --
-#: Measured 2026-09-06. Used when data/ is not present (e.g. a fresh clone).
-DATA_SNAPSHOT_GB = (
-    ("Exports (derived experiment artifacts)", 6.18),
-    ("Raw documents (crawl dumps)", 4.51),
-    ("Search index (SQLite FTS5)", 1.51),
-    ("Processed documents", 1.03),
-    ("Event ledgers", 1.02),
-    ("Everything else", 0.03),
+#: Measured over data/processed_documents/sec_macro_company_ir_ppo_2010_2023_documents.jsonl
+#: (352,104,589 bytes = 335.8 MiB). Grouped by source_type; the company_* types
+#: are collapsed into one row. Used when the corpus is not present locally.
+CORPUS_SNAPSHOT = (
+    ("SEC filing sections", "10-K \u00b7 10-Q \u00b7 8-K", 6356, 253.8),
+    ("Official macro releases", "FRED \u00b7 BLS \u00b7 Treasury", 18240, 37.6),
+    ("SEC exhibits", "earnings releases, agreements", 655, 26.5),
+    ("Company IR documents", "newsrooms \u00b7 reports \u00b7 decks", 1117, 17.8),
+)
+
+#: One real row from that corpus, trimmed to what fits on a slide.
+SAMPLE_DOCUMENT = (
+    ("doc_id", "official_macro_dcoilwtico_2012-03-01"),
+    ("title", "Official US macro release: WTI Crude Oil Price"),
+    ("source", "EIA via FRED  \u00b7  official_macro_release"),
+    ("available_at", "2012-03-02T14:00:00Z"),
+    ("macro_value", "108.76 USD per barrel"),
+    ("risk_terms", "oil \u00b7 energy prices \u00b7 inflation pressure"),
+)
+
+SAMPLE_BODY = (
+    '"Official US macro observation. Series DCOILWTICO: WTI Crude Oil',
+    ' Price. Observation date: 2012-03-01. Value: 108.76 USD per barrel.',
+    ' Macro family: energy. Relevant concepts: oil, energy prices, ..."',
 )
 
 
-def _measure_data_dir() -> tuple[tuple[str, float], ...] | None:
-    """Re-measure data/ so the chart never drifts from reality; None if absent."""
+def _measure_corpus():
+    """Recount the corpus so the slide cannot drift; None when it is absent."""
 
-    import os
+    import json
+    from collections import defaultdict
 
-    base = ROOT / "data"
-    if not base.is_dir():
+    path = ROOT / "data" / "processed_documents" / "sec_macro_company_ir_ppo_2010_2023_documents.jsonl"
+    if not path.is_file():
         return None
-
-    def folder_bytes(path) -> int:
-        total = 0
-        for root, _dirs, files in os.walk(path):
-            for name in files:
-                try:
-                    total += os.path.getsize(os.path.join(root, name))
-                except OSError:
-                    pass
-        return total
-
     groups = {
-        "Exports (derived experiment artifacts)": ["exports"],
-        "Raw documents (crawl dumps)": ["raw_documents"],
-        "Search index (SQLite FTS5)": ["search_index"],
-        "Processed documents": ["processed_documents"],
-        "Event ledgers": [d.name for d in base.iterdir()
-                          if d.is_dir() and d.name.startswith("event_ledger")],
+        "sec_filing_section": 0, "official_macro_release": 1, "sec_filing_exhibit": 2,
     }
-    claimed = {n for names in groups.values() for n in names}
-    gb = 1024 ** 3
-    rows = [(label, sum(folder_bytes(base / n) for n in names) / gb)
-            for label, names in groups.items()]
-    other = sum(folder_bytes(d) for d in base.iterdir()
-                if d.is_dir() and d.name not in claimed) / gb
-    rows.append(("Everything else", other))
-    return tuple(rows)
+    counts = defaultdict(int)
+    sizes = defaultdict(float)
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            source_type = json.loads(line).get("source_type", "")
+            slot = groups.get(source_type, 3)   # everything else is company IR
+            counts[slot] += 1
+            sizes[slot] += len(line.encode("utf-8"))
+    return tuple(
+        (label, sub, counts[i], round(sizes[i] / 1024 / 1024, 1))
+        for i, (label, sub, _c, _m) in enumerate(CORPUS_SNAPSHOT)
+    )
 
 
 def build_data(out_dir: Path) -> Path:
-    """Separate the disk footprint from what a Spark run actually processes."""
+    """What the 352 MB actually is, one real document, and what the job does to it."""
 
     fig, ax = _canvas(13.6, 6.1)
-    rows = _measure_data_dir() or DATA_SNAPSHOT_GB
-    total = sum(v for _, v in rows)
+    rows = _measure_corpus() or CORPUS_SNAPSHOT
+    total_docs = sum(r[2] for r in rows)
+    total_mb = sum(r[3] for r in rows)
 
-    # ---- left: what is on disk ------------------------------------------
-    _text(ax, 2.0, 95.0, "What sits on disk", size=12.0, color=DEEP,
+    # ---- left: what is inside the corpus ---------------------------------
+    _text(ax, 2.0, 95.5, "What the 352 MB contains", size=12.5, color=DEEP,
           weight="bold", ha="left")
-    _text(ax, 2.0, 90.0, f"data/  =  {total:.1f} GB", size=10.0, color=GREY,
-          family=MONO, ha="left")
+    _text(ax, 2.0, 90.8, f"{total_docs:,} documents  \u00b7  one JSONL file  \u00b7  2010\u20132023",
+          size=9.0, color=GREY, ha="left")
 
-    bar_x, bar_w = 2.0, 42.0
-    top, step = 80.0, 11.5
-    scale = bar_w / max(v for _, v in rows)
-    for i, (label, value) in enumerate(rows):
-        y = top - i * step
-        _text(ax, bar_x, y + 3.6, label, size=8.4, color=INK, ha="left")
+    bar_x, bar_w = 2.0, 44.0
+    scale = bar_w / max(r[3] for r in rows)
+    y = 84.0
+    for i, (label, sub, count, megabytes) in enumerate(rows):
+        _text(ax, bar_x, y + 4.4, label, size=9.4, color=INK, weight="bold", ha="left")
+        _text(ax, bar_x + bar_w, y + 4.4, f"{count:,} docs", size=8.6,
+              color=MAGENTA, family=MONO, ha="right")
         ax.add_patch(
             FancyBboxPatch(
-                (bar_x, y - 1.6), max(value * scale, 0.4), 4.4,
+                (bar_x, y - 1.2), max(megabytes * scale, 0.5), 4.0,
                 boxstyle="round,pad=0,rounding_size=0.5",
-                facecolor=VIOLET if i else DEEP, edgecolor="none", zorder=2,
+                facecolor=DEEP if i == 0 else VIOLET, edgecolor="none", zorder=2,
             )
         )
-        _text(ax, bar_x + max(value * scale, 0.4) + 1.2, y + 0.6,
-              f"{value:.2f} GB" if value >= 0.1 else "< 0.1 GB",
-              size=8.6, color=GREY, family=MONO, ha="left")
+        _text(ax, bar_x + max(megabytes * scale, 0.5) + 1.2, y + 0.8,
+              f"{megabytes:.0f} MB", size=8.6, color=GREY, family=MONO, ha="left")
+        _text(ax, bar_x, y - 3.6, sub, size=8.0, color=GREY, ha="left", style="italic")
+        y -= 11.0
 
-    _box(ax, 2.0, 3.0, 42.0, 14.0, fill=FILL_A, edge=VIOLET, lw=1.6)
-    _text(ax, 23.0, 12.6, "Almost none of this is input data.", size=9.4,
+    _box(ax, 2.0, 35.0, 44.0, 10.6, fill=FILL_A, edge=VIOLET, lw=1.6)
+    _text(ax, 24.0, 42.4, "Count and size tell different stories", size=9.4,
           color=DEEP, weight="bold")
-    _text(ax, 23.0, 8.8, "Exports, ledgers and the index are OUTPUTS", size=8.6, color=INK)
-    _text(ax, 23.0, 5.4, "produced by the pipeline itself.", size=8.6, color=INK)
+    _text(ax, 24.0, 39.2, "Macro is 69% of the documents but 11% of the bytes:", size=8.4, color=INK)
+    _text(ax, 24.0, 36.4, "a macro release is 2 KB, a 10-K section is 41 KB.", size=8.4, color=INK)
 
-    # ---- right: what one run actually moves ------------------------------
-    _text(ax, 54.0, 95.0, "What one Spark run actually moves", size=12.0,
-          color=MAGENTA, weight="bold", ha="left")
+    # ---- right: one real document ----------------------------------------
+    _text(ax, 52.0, 95.5, "One document, as stored", size=12.5, color=MAGENTA,
+          weight="bold", ha="left")
+
+    _box(ax, 52.0, 55.0, 46.0, 34.5, fill=WHITE, edge=MAGENTA, lw=2.0)
+    y = 85.0
+    for key, value in SAMPLE_DOCUMENT:
+        emphasis = key == "available_at"
+        _text(ax, 54.0, y, key, size=8.0, color=GREY, family=MONO, ha="left")
+        _text(ax, 66.0, y, value, size=8.2,
+              color=MAGENTA if emphasis else INK, family=MONO,
+              weight="bold" if emphasis else "normal", ha="left")
+        y -= 4.4
+    _text(ax, 54.0, 58.6, SAMPLE_BODY[0], size=7.8, color=GREY, family=MONO, ha="left")
+    _text(ax, 54.0, 56.4, SAMPLE_BODY[1], size=7.8, color=GREY, family=MONO, ha="left")
+
+    _arrow(ax, (64.5, 71.0), (60.0, 71.0), color=MAGENTA, lw=1.8)
+    _text(ax, 52.0, 51.0,
+          "available_at is the only date search filters on \u2014 nothing published",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 47.6,
+          "after the decision date can ever be returned.",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 42.4,
+          "This one document contributes \"oil\" to the count on slide 8.",
+          size=8.4, color=GREY, ha="left", style="italic")
+
+    # ---- bottom: what one run does to it ---------------------------------
+    ax.plot([2.0, 98.0], [30.5, 30.5], color="#E3DCEF", lw=1.4, zorder=1)
+    _text(ax, 2.0, 26.6, "What one Spark run moves through it", size=11.5,
+          color=DEEP, weight="bold", ha="left")
 
     chain = [
-        ("corpus read", "352 MB", "26,368 documents", DEEP),
-        ("tokens emitted as (term, 1) pairs", "45,055,627", "the real shuffle volume", VIOLET),
-        ("after reduceByKey", "79,705", "distinct terms", MAGENTA),
-        ("written back", "~1 MB", "document_frequencies.csv", DEEP),
+        (2.0, "352 MB", f"{total_docs:,} documents read", DEEP),
+        (27.0, "45,055,627", "(term, 1) pairs emitted", VIOLET),
+        (52.0, "shuffle", "hash(term) % partitions", VIOLET),
+        (77.0, "79,705", "distinct terms out", MAGENTA),
     ]
-    y = 85.0
-    for i, (label, big, sub, accent) in enumerate(chain):
-        _box(ax, 54.0, y - 9.5, 44.0, 13.0, fill=WHITE, edge=accent, lw=2.0)
-        _text(ax, 56.5, y - 0.2, label, size=8.6, color=GREY, ha="left")
-        _text(ax, 95.5, y - 0.2, big, size=13.0, color=accent, weight="bold",
-              family=MONO, ha="right")
-        _text(ax, 56.5, y - 6.2, sub, size=8.2, color=INK, ha="left", style="italic")
+    for i, (x0, big, sub, accent) in enumerate(chain):
+        _box(ax, x0, 6.0, 21.0, 15.0, fill=WHITE, edge=accent, lw=2.0)
+        _text(ax, x0 + 10.5, 15.6, big, size=14.0, color=accent,
+              weight="bold", family=MONO)
+        _text(ax, x0 + 10.5, 9.6, sub, size=8.2, color=GREY)
         if i < len(chain) - 1:
-            _arrow(ax, (76.0, y - 10.1), (76.0, y - 15.4), color=GREY, lw=1.8)
-        y -= 19.0
+            _arrow(ax, (x0 + 21.6, 13.5), (x0 + 24.4, 13.5), color=GREY, lw=1.8)
 
-    _box(ax, 54.0, 2.0, 44.0, 14.0, fill=FILL_B, edge=MAGENTA, lw=1.6)
-    _text(ax, 76.0, 11.6, "1,709 pairs per document, 565× collapse", size=9.6,
-          color=MAGENTA, weight="bold")
-    _text(ax, 76.0, 7.8, "A full shuffle over 45 M pairs, re-run on every", size=8.6, color=INK)
-    _text(ax, 76.0, 4.4, "corpus update. That is the distributed-compute case.", size=8.6, color=INK)
+    _text(ax, 50, 1.6,
+          "1,709 pairs per document, collapsed 565\u00d7 \u2014 and repeated on every corpus update.",
+          size=9.4, color=MAGENTA, weight="bold")
 
     return _save(fig, out_dir / "slide05_data.png")
 

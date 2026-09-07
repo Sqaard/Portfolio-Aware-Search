@@ -71,34 +71,50 @@ Five steps, left to right on the diagram:
 
 ---
 
-## Slide 5 — What the data really is (1 min 20 sec)
+## Slide 5 — What the data really is (1 min 30 sec)
 
-Here I want to be honest, because this is the first question worth asking.
+The corpus Spark reads is **352 megabytes, 26,368 documents**, in one file. On
+the left you can see what is inside it.
 
-The data directory is **14 gigabytes**. But that is **the wrong number**, and
-here is why.
+- **SEC filing sections** — 6,356 documents, but **254 megabytes**. Three
+  quarters of the whole volume. One 10-K section is about 41 kilobytes of text.
+- **Official macro releases** — 18,240 documents, but only 38 megabytes.
+- **SEC exhibits** — 655 documents, 26 megabytes.
+- **Company IR documents** — 1,117 of them, 18 megabytes.
 
-> *Look at a kitchen after cooking. A mountain of dishes, pots, bowls. But the
-> meal was not made out of the washing-up. The ingredients were a kilo and a half.*
+Look at the box at the bottom: **macro is 69% of the documents but only 11% of
+the bytes**. One macro release is 2 kilobytes; one 10-K section is 41. So "how
+many documents" and "how much data" are two different answers, and you need both
+to plan the work: the document count drives the number of tasks, the volume
+drives how much travels over the network.
 
-Of those 14 gigabytes: experiment exports are 6 GB, the search index is 1.5 GB,
-event ledgers are 1 GB. **All of it is output the system produced itself.** The
-actual corpus that Spark reads is **352 megabytes, 26,368 documents**.
+**On the right is one real document**, exactly as it sits in the file. Nothing
+invented — this is a line from the corpus. Look at the `available_at` field:
+2 March 2012. The observation itself is for 1 March, but it was published the
+next day. Search filters on **that field only**, so on 1 March this document
+cannot be found.
+
+And notice `risk_terms` — the word "oil" is in there. This very document is what
+contributes one to the counter we will compute on slide 8.
+
+**Now the bottom row — what one Spark run does with all this.**
+
+> *Imagine you have to build an index for a book. The book itself is thin. But to
+> build the index you have to write every single word onto its own card — and the
+> pile of cards ends up many times heavier than the book. Sorting that pile is
+> the work. Carrying the book is not.*
+
+- 352 megabytes go in;
+- the job writes out **45 million cards** — "term — document" pairs;
+- that is **1,709 pairs per document**, and all of them have to be shuffled
+  between machines so that identical words end up in the same hands;
+- 79,705 terms come out — a **565-fold collapse**.
 
 And let me answer the obvious objection myself: 352 megabytes is **not big data
-by volume**. There is nothing to argue about there. But what matters is not how
-fat the file is — it is **the shape of the work**. Look at the right-hand side:
-
-- 352 MB goes in;
-- the job produces **45 million pairs** of "term — document";
-- that is **1,709 pairs per document**, and all of them have to be shuffled
-  across machines;
-- 79,705 distinct terms come out.
-
-**A 565-fold collapse**, and all that traffic happens on every corpus update.
-*That* is what needs a distributed engine. Not the size of the file, but the fact
-that in the middle the data expands hundreds of times and has to be regrouped
-correctly.
+by volume**. There is nothing to argue about there. But the problem is not the
+size of the file — it is that in the middle the data expands a thousandfold and
+needs a full shuffle, and that happens on every corpus update. That is the work a
+distributed engine is for.
 
 ---
 
