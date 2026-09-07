@@ -358,6 +358,19 @@ A partition is a task, and a task is a process. On Windows each process starts
 from scratch (2–5 seconds of imports); on Linux it is a `fork`. With 12 partitions
 you pay for 12 start-ups; with 2, for two.
 
+**— Why 12 partitions rather than 128 MB blocks?**
+Because 128 MB is a ceiling that never binds here, and 12 is what Spark picks on
+its own. Its formula is `min(128 MB, max(4 MB, totalBytes / cores))`. For 352 MB
+on 12 cores that is `min(128, max(4, 28)) = 28 MB`, so the 128 MB term loses. I
+measured it: the DataFrame reader produces 12 partitions for the full corpus by
+itself. Asking for 12 is not overriding Spark, it is naming the number it already
+chose. The RDD path answers differently again — `sc.textFile` ignores that setting
+and uses Hadoop's 32 MB local split, where `minPartitions` is only a floor: on
+352 MB anything below 11 is ignored. And 128 MB per partition would mean **3
+partitions**, fewer than the machine has cores, leaving 9 of 12 idle. The rule of
+thumb assumes per-task overhead is negligible; on Windows it is not, and there the
+fastest configuration turned out to be **2** partitions.
+
 **— Doesn't AQE choose the partition count for you?**
 Not here, for two reasons, and I measured both. First, AQE is a Spark **SQL**
 feature — it rewrites a query plan using runtime statistics. An RDD job has no
@@ -399,7 +412,7 @@ rather than be surprised. If you want the safest option, re-measure on the day
 with:
 
 ```powershell
-& $py -m bigdata.run_inverted_index --corpus macro --engine spark --master "local[*]" --partitions 12
+.\deploy\run_spark.ps1 bigdata.run_inverted_index --corpus macro --partitions 12
 .\deploy\spark_cluster\submit.ps1 bigdata.run_inverted_index --corpus macro --native-read --partitions 12
 ```
 

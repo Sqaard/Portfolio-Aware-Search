@@ -445,6 +445,50 @@ Spark:
   deterministic across them; only the wall-clock differs.
 
 
+
+- **"Why 12 partitions and not 128 MB blocks?"** Because 128 MB is a ceiling that
+  never binds at this scale, and Spark's own default lands on 12 by itself.
+
+  The 128 MB figure is `spark.sql.files.maxPartitionBytes`, and it is only half
+  the rule. Spark sizes a split as
+
+  ```text
+  maxSplit = min(maxPartitionBytes, max(openCostInBytes, totalBytes / minPartitionNum))
+           = min(128 MB,            max(4 MB,            totalBytes / defaultParallelism))
+  ```
+
+  On this machine `defaultParallelism` is 12, so for the 352 MB corpus that is
+  `min(128, max(4, 28.0)) = 28 MB` — the 128 MB term loses. Measured, the
+  DataFrame reader produces **12 partitions** for the full corpus and 10 for the
+  39 MB macro corpus, which is what the formula predicts. Asking for 12 is not
+  overriding Spark; it is naming the number Spark already chose.
+
+  The RDD path answers differently again, because `sc.textFile` does not use that
+  setting at all — it goes through Hadoop's `FileInputFormat`, whose local block
+  size is 32 MB, and `minPartitions` is a **floor**:
+
+  | Requested | `sc.textFile`, 352 MB | `sc.textFile`, 39 MB | `parallelize` |
+  | ---: | ---: | ---: | ---: |
+  | 1 | 11 | 2 | 1 |
+  | 2 | 11 | 2 | 2 |
+  | 4 | 11 | 4 | 4 |
+  | 8 | 11 | 8 | 8 |
+  | 12 | 12 | 12 | 12 |
+  | 32 | 32 | 32 | 32 |
+
+  So on the full corpus anything below 11 is ignored (352/32 ≈ 11), while the
+  default driver-side reader (`parallelize`) honours the request exactly and
+  applies no size logic whatsoever.
+
+  128 MB per partition would mean **3 partitions** for this corpus — fewer than
+  the machine has cores, leaving 9 of 12 idle. That is the tension the rule of
+  thumb hides: it assumes per-task overhead is negligible, which is true on a
+  cluster reading from HDFS and false on Windows, where a task costs ~1 s of
+  `python.exe` start-up. Section 11's measurements resolve it empirically — on
+  Windows the RDD job is fastest at **2** partitions (176 MB each), the opposite
+  of what one-partition-per-core recommends.
+
+
 - **"Why doesn't AQE just fix the partition count?"** It cannot, for two
   independent reasons, both measured rather than assumed.
 

@@ -6,21 +6,45 @@ numbers and the analysis behind them.
 
 ---
 
-## 0. Prerequisites (do this once, before the demo)
+## 0. Prerequisites
 
-**Use the interpreter that has PySpark.** The project pins `pyspark>=3.5,<4.0`
-(4.0.0 has a Windows worker bug). On this machine it is installed in the
-`tensorflow` conda environment, *not* in the default `python`:
+**Use the wrapper and there is nothing to set up.** `deploy/run_spark.ps1` finds
+an interpreter that can actually import PySpark and runs the job with it:
+
+```powershell
+cd "C:\Users\ivanp\OneDrive\Рабочий стол\доки+черчи\ITMO\2_sem\FinRL_Tsinghua\FinPortfolio_IR"
+.\deploy\run_spark.ps1 bigdata.run_inverted_index --corpus macro --partitions 4
+```
+
+It prints which interpreter it picked, supplies `--engine spark --master local[*]`
+unless you passed your own, and forwards everything else to the job. It is the
+local counterpart of `deploy/spark_cluster/submit.ps1`.
+
+### Why a wrapper is needed at all
+
+PySpark is **not** in the default interpreter on this machine. Both `py` and
+`python` resolve to Python 3.13, which has no pyspark, so this fails:
+
+```powershell
+py -m bigdata.run_inverted_index --corpus macro --engine spark    # EngineUnavailableError
+```
+
+The interpreter that has it is `anaconda3\envs\tensorflow\python.exe`
+(PySpark 3.5.3 on Python 3.9). To call it by hand, two things both matter — the
+variable must be defined **first**, and PowerShell needs the `&` call operator in
+front of it, otherwise it tries to parse `-m` as an operator:
 
 ```powershell
 $py = "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe"
-& $py -c "import pyspark; print(pyspark.__version__)"   # expect 3.5.3
+& $py -m bigdata.run_inverted_index --corpus macro --engine spark --master "local[*]" --partitions 12
 ```
 
-If that fails, install it into whichever interpreter you plan to use:
+Without the `&` you get *Непредвиденная лексема "-m"* / *Unexpected token '-m'*.
+The wrapper exists so neither detail has to be remembered mid-demo. To point it
+at a different interpreter:
 
 ```powershell
-pip install -r requirements-bigdata.txt
+$env:FINPORTFOLIO_PYTHON = "D:\envs\spark\python.exe"
 ```
 
 Spark 3.5 needs a **Java 8/11/17** runtime. `SparkEngine` finds and prefers one
@@ -39,14 +63,6 @@ inspectable in the History Server afterwards:
 $env:FINPORTFOLIO_SPARK_EVENTLOG_DIR = "$PWD\data\spark-events"
 ```
 
-Always work from the project root:
-
-```powershell
-cd "C:\Users\ivanp\OneDrive\Рабочий стол\доки+черчи\ITMO\2_sem\FinRL_Tsinghua\FinPortfolio_IR"
-```
-
----
-
 ## 1. PySpark on Windows — RDD path (`local[*]`)
 
 This is the production path: it reuses `finportfolio_ir.text_utils.tokenize`, so
@@ -54,11 +70,11 @@ its output is the one verified byte-identical to the single-machine reference.
 
 ```powershell
 # baseline: 12 partitions - deliberately the slow configuration
-& $py -m bigdata.run_inverted_index --corpus macro --engine spark --master "local[*]" --partitions 12
+.\deploy\run_spark.ps1 bigdata.run_inverted_index --corpus macro --partitions 12
 
 # the same job, fewer partitions - this is the cheap Windows remedy
-& $py -m bigdata.run_inverted_index --corpus macro --engine spark --master "local[*]" --partitions 4
-& $py -m bigdata.run_inverted_index --corpus macro --engine spark --master "local[*]" --partitions 2
+.\deploy\run_spark.ps1 bigdata.run_inverted_index --corpus macro --partitions 4
+.\deploy\run_spark.ps1 bigdata.run_inverted_index --corpus macro --partitions 2
 ```
 
 Each run prints a JSON summary and writes artifacts to
@@ -66,7 +82,7 @@ Each run prints a JSON summary and writes artifacts to
 the JVM start-up) is in `bm25_stats.json` under `run.seconds`:
 
 ```powershell
-& $py -c "import json;d=json.load(open('data/exports/bigdata/inverted_index/bm25_stats.json',encoding='utf-8'));print(d['run']['seconds'],'s |',d['n_docs'],'docs |',d['vocabulary_size'],'terms')"
+python -c "import json;d=json.load(open('data/exports/bigdata/inverted_index/bm25_stats.json',encoding='utf-8'));print(d['run']['seconds'],'s |',d['n_docs'],'docs |',d['vocabulary_size'],'terms')"
 ```
 
 Expect **18,240 documents and a 5,520-term vocabulary** on the macro corpus —
@@ -75,13 +91,13 @@ these are the numbers the parity tests assert.
 The whole pipeline (index + analytics + a scored query) in one go:
 
 ```powershell
-& $py -m bigdata.run_all --corpus macro --engine spark --master "local[*]" --partitions 4 --query "inflation interest rates"
+.\deploy\run_spark.ps1 bigdata.run_all --corpus macro --partitions 4 --query "inflation interest rates"
 ```
 
 To show that the portable engine agrees, swap one flag — no other change:
 
 ```powershell
-& $py -m bigdata.run_inverted_index --corpus macro --engine local --partitions 4
+python -m bigdata.run_inverted_index --corpus macro --engine local --partitions 4
 ```
 
 ---
@@ -148,15 +164,15 @@ The same aggregation expressed in Spark SQL. No Python worker is started at all,
 which is what makes it fast on Windows.
 
 ```powershell
-& $py -m bigdata.run_sql_inverted_index --corpus macro --partitions 4
-& $py -m bigdata.run_sql_inverted_index --corpus macro --partitions 12
+.\deploy\run_spark.ps1 bigdata.run_sql_inverted_index --corpus macro --partitions 4
+.\deploy\run_spark.ps1 bigdata.run_sql_inverted_index --corpus macro --partitions 12
 ```
 
 The first run of a session is JVM/JIT warm-up and is **discarded automatically**;
 `--repeat 3` gives two measured runs instead of one:
 
 ```powershell
-& $py -m bigdata.run_sql_inverted_index --corpus macro --partitions 4 --repeat 3
+.\deploy\run_spark.ps1 bigdata.run_sql_inverted_index --corpus macro --partitions 4 --repeat 3
 ```
 
 The same module runs on the cluster through the same wrapper:
@@ -175,7 +191,7 @@ split keeps `2010-01-01` and `217.587` whole. Splitting on punctuation instead
 collapses the vocabulary to ~900:
 
 ```powershell
-& $py -m bigdata.run_sql_inverted_index --corpus macro --partitions 4 --tokenizer alnum
+.\deploy\run_spark.ps1 bigdata.run_sql_inverted_index --corpus macro --partitions 4 --tokenizer alnum
 ```
 
 Both settings give the same answer on Windows and on the cluster, so the job is
@@ -187,16 +203,16 @@ mechanism; the RDD path is the one proven byte-identical to the reference.**
 ## 4. Proving the outputs match
 
 ```powershell
-& $py -m pytest tests/test_bigdata_engine.py tests/test_bigdata_jobs.py tests/test_bigdata_search_index.py -q
-& $py -m pytest tests/ -q          # whole suite
+python -m pytest tests/test_bigdata_engine.py tests/test_bigdata_jobs.py tests/test_bigdata_search_index.py -q
+python -m pytest tests/ -q          # whole suite
 ```
 
 Or compare two runs directly — build the same corpus with each engine into
 separate directories and diff the artifacts:
 
 ```powershell
-& $py -m bigdata.run_inverted_index --corpus macro --engine local  --partitions 4 --output-dir data/exports/bigdata/_cmp_local
-& $py -m bigdata.run_inverted_index --corpus macro --engine spark  --partitions 4 --output-dir data/exports/bigdata/_cmp_spark
+python -m bigdata.run_inverted_index --corpus macro --engine local --partitions 4 --output-dir data/exports/bigdata/_cmp_local
+.\deploy\run_spark.ps1 bigdata.run_inverted_index --corpus macro --partitions 4 --output-dir data/exports/bigdata/_cmp_spark
 fc /b data\exports\bigdata\_cmp_local\document_frequencies.csv data\exports\bigdata\_cmp_spark\document_frequencies.csv
 ```
 
