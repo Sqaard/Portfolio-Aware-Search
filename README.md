@@ -71,6 +71,24 @@ Implemented v1 scaffold:
 Dense retrieval and FinGPT inference are intentionally deferred until judged
 qrels and extraction-quality checks justify them.
 
+### Running the commands below
+
+Every command uses `$py`. Set it once per shell to an interpreter that has this
+project's requirements installed:
+
+```powershell
+$py = "python"
+```
+
+The Big Data commands additionally need PySpark, which is often installed in a
+separate environment — point `$py` at that one, or let
+[`deploy/run_spark.ps1`](deploy/run_spark.ps1) find it for you:
+
+```powershell
+$py = "$env:USERPROFILE\anaconda3\envs\tensorflow\python.exe"   # example
+.\deploy\run_spark.ps1 bigdata.run_all --corpus macro             # or this, which needs no $py
+```
+
 ## Big Data Infrastructure (course project)
 
 An additive Big Data layer lives under [`bigdata/`](bigdata) and re-expresses the
@@ -81,14 +99,14 @@ verification. No existing code was modified.
 
 ```powershell
 # optional: install Spark (else the pure-Python local engine runs)
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" -m pip install -r requirements-bigdata.txt
+& $py -m pip install -r requirements-bigdata.txt
 
 # full pipeline over a corpus -> analytics.json, bm25_stats.json, REPORT.md
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" -m bigdata.run_all --corpus macro --query "inflation interest rates"
+& $py -m bigdata.run_all --corpus macro --query "inflation interest rates"
 
 # choose the engine explicitly (default auto -> Spark if installed, else local)
-& "...python.exe" -m bigdata.run_inverted_index  --corpus macro --engine spark --master "local[*]"
-& "...python.exe" -m bigdata.run_corpus_analytics --corpus sec300 --engine local
+& $py -m bigdata.run_inverted_index  --corpus macro --engine spark --master "local[*]"
+& $py -m bigdata.run_corpus_analytics --corpus sec300 --engine local
 ```
 
 The distributed output is verified **byte-identical** to the single-machine
@@ -124,7 +142,7 @@ Use CPython 3.9+ and install the small dependency set:
 
 ```powershell
 cd "C:\Users\ivanp\OneDrive\Рабочий стол\доки+черчи\ITMO\2_sem\FinRL_Tsinghua\FinPortfolio_IR"
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" -m pip install -r requirements.txt
+& $py -m pip install -r requirements.txt
 ```
 
 In this workspace, the bare `python` command may point to PyPy. Prefer the
@@ -173,7 +191,7 @@ safe timestamp, it is excluded by normalization/loading.
 Normalize local raw documents:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" crawler\normalize_documents.py `
+& $py crawler\normalize_documents.py `
   --input data\raw_documents\sample_documents.jsonl `
   --metadata data\processed_documents\ticker_metadata.csv `
   --output data\processed_documents\documents.jsonl
@@ -182,7 +200,7 @@ Normalize local raw documents:
 Retrieve top-k causal documents for the sample portfolio:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" retrieval\retrieve_for_portfolio.py `
+& $py retrieval\retrieve_for_portfolio.py `
   --documents data\processed_documents\documents.jsonl `
   --portfolio configs\sample_portfolio.yaml `
   --metadata data\processed_documents\ticker_metadata.csv `
@@ -195,7 +213,7 @@ Retrieve top-k causal documents for the sample portfolio:
 Export FinGPT-ready contexts:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\export_fingpt_contexts.py `
+& $py features\export_fingpt_contexts.py `
   --input data\exports\retrieved_docs_sample.jsonl `
   --output data\exports\fingpt_contexts_sample.jsonl
 ```
@@ -203,7 +221,7 @@ Export FinGPT-ready contexts:
 Export grouped evidence bundles:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\export_evidence_bundles.py `
+& $py features\export_evidence_bundles.py `
   --input data\exports\retrieved_docs_sample.jsonl `
   --output data\exports\evidence_bundles_sample.jsonl
 ```
@@ -211,7 +229,7 @@ Export grouped evidence bundles:
 Build the first-test FinGPT handoff package:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_fingpt_handoff_package.py `
+& $py features\build_fingpt_handoff_package.py `
   --retrieval data\exports\retrieved_docs_sample.jsonl `
   --output-dir data\exports\fingpt_handoff_sample
 ```
@@ -219,7 +237,7 @@ Build the first-test FinGPT handoff package:
 Run the cross-project FinGPT smoke test:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\run_fingpt_handoff_smoke.py `
+& $py features\run_fingpt_handoff_smoke.py `
   --handoff-dir data\exports\fingpt_handoff_sample `
   --fingpt-project ..\Supportive_project_FinGPT_as_feature_engine
 ```
@@ -227,7 +245,7 @@ Run the cross-project FinGPT smoke test:
 Build the SEC Dow 30 300-document PPO-aligned handoff:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_sec_300_corpus.py `
+& $py features\build_sec_300_corpus.py `
   --inputs data\raw_documents\sec_dow30_filings_2010_2023.jsonl,data\raw_documents\sec_dow30_missing7_2010_2023.jsonl `
   --output-raw data\raw_documents\sec_dow30_2010_2023_300.jsonl `
   --output-processed data\processed_documents\sec_dow30_2010_2023_300_documents.jsonl `
@@ -236,7 +254,7 @@ Build the SEC Dow 30 300-document PPO-aligned handoff:
   --summary-output data\processed_documents\sec_dow30_2010_2023_300_summary.json `
   --target-docs 300
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_sec_dow30_300_contexts.py `
+& $py features\build_sec_dow30_300_contexts.py `
   --documents data\processed_documents\sec_dow30_2010_2023_300_documents.jsonl `
   --metadata data\processed_documents\dow30_ticker_metadata.csv `
   --config configs\default.yaml `
@@ -246,11 +264,11 @@ Build the SEC Dow 30 300-document PPO-aligned handoff:
   --output-count 300 `
   --rank-search-k 300
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\validate_fingpt_handoff.py `
+& $py features\validate_fingpt_handoff.py `
   --contexts data\exports\sec_dow30_2010_2023\retrieved_contexts.jsonl `
   --output data\exports\sec_dow30_2010_2023\handoff_validation.json
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\run_fingpt_handoff_smoke.py `
+& $py features\run_fingpt_handoff_smoke.py `
   --handoff-dir data\exports\sec_dow30_2010_2023 `
   --fingpt-project ..\Supportive_project_FinGPT_as_feature_engine
 ```
@@ -258,7 +276,7 @@ Build the SEC Dow 30 300-document PPO-aligned handoff:
 Build the full SEC section/exhibit-level handoff:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_sec_full_section_corpus.py `
+& $py features\build_sec_full_section_corpus.py `
   --input-raw data\raw_documents\sec_dow30_2010_2023_300.jsonl `
   --output-raw data\raw_documents\sec_dow30_2010_2023_300_sections.jsonl `
   --output-processed data\processed_documents\sec_dow30_2010_2023_300_sections_documents.jsonl `
@@ -271,7 +289,7 @@ Build the full SEC section/exhibit-level handoff:
   --max-exhibits-per-filing 6 `
   --exhibit-forms 8-K
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_sec_section_contexts.py `
+& $py features\build_sec_section_contexts.py `
   --documents data\processed_documents\sec_dow30_2010_2023_300_sections_documents.jsonl `
   --metadata data\processed_documents\dow30_ticker_metadata.csv `
   --config configs\default.yaml `
@@ -280,11 +298,11 @@ Build the full SEC section/exhibit-level handoff:
   --output-count 300 `
   --rank-search-k 1000
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\validate_fingpt_handoff.py `
+& $py features\validate_fingpt_handoff.py `
   --contexts data\exports\sec_dow30_2010_2023_sections\retrieved_contexts.jsonl `
   --output data\exports\sec_dow30_2010_2023_sections\handoff_validation.json
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\run_fingpt_handoff_smoke.py `
+& $py features\run_fingpt_handoff_smoke.py `
   --handoff-dir data\exports\sec_dow30_2010_2023_sections `
   --fingpt-project ..\Supportive_project_FinGPT_as_feature_engine
 ```
@@ -292,7 +310,7 @@ Build the full SEC section/exhibit-level handoff:
 Build official macro release documents:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_official_macro_documents.py `
+& $py features\build_official_macro_documents.py `
   --output-raw data\raw_documents\official_macro_2010_2023.jsonl `
   --output-processed data\processed_documents\official_macro_2010_2023_documents.jsonl `
   --summary-output data\processed_documents\official_macro_2010_2023_summary.json `
@@ -305,7 +323,7 @@ Build official macro release documents:
 Build PPO-aligned daily retrieval contexts:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_daily_retrieval_contexts.py `
+& $py features\build_daily_retrieval_contexts.py `
   --base-panel ..\processed_final_fixed_external_lagclean_full.csv `
   --documents data\processed_documents\sec_dow30_ppo_2010_2023_1800_with_dis_legacy_sections_documents.jsonl,data\processed_documents\official_macro_2010_2023_documents.jsonl `
   --metadata data\processed_documents\dow30_ticker_metadata.csv `
@@ -323,12 +341,12 @@ Build PPO-aligned daily retrieval contexts:
 Build the deterministic Codex-rule text features and merge-ready PPO panel:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_text_feature_baseline.py `
+& $py features\build_text_feature_baseline.py `
   --contexts data\exports\daily_retrieval_ppo_full_dis_legacy\retrieved_contexts.jsonl `
   --output-dir data\exports\daily_retrieval_ppo_full_dis_legacy\codex_rule_text_features `
   --teacher-size 300
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\merge_text_features_with_base_panel.py `
+& $py features\merge_text_features_with_base_panel.py `
   --base-panel ..\processed_final_fixed_external_lagclean_full.csv `
   --stock-features data\exports\daily_retrieval_ppo_full_dis_legacy\codex_rule_text_features\daily_stock_text_features_codex_rule.csv `
   --portfolio-features data\exports\daily_retrieval_ppo_full_dis_legacy\codex_rule_text_features\daily_portfolio_text_features_codex_rule.csv `
@@ -345,7 +363,7 @@ The smaller smoke still uses the FinGPT sample panel and writes:
 Run the local browser-testable dashboard:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" web_app.py --host 127.0.0.1 --port 8765
+& $py web_app.py --host 127.0.0.1 --port 8765
 ```
 
 Open `http://127.0.0.1:8765`. The UI is English-only, uses the local sample
@@ -371,7 +389,7 @@ only after the user explicitly clicks a post for analysis.
 Evaluate the sample ranking:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" evaluation\evaluate_ir_metrics.py `
+& $py evaluation\evaluate_ir_metrics.py `
   --qrels data\annotations\sample_qrels.csv `
   --run data\exports\sample_run.csv `
   --output data\exports\sample_metrics.csv
@@ -380,7 +398,7 @@ Evaluate the sample ranking:
 Run all configured ranking ablations:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" evaluation\run_ablation_suite.py `
+& $py evaluation\run_ablation_suite.py `
   --documents data\processed_documents\documents.jsonl `
   --portfolio configs\sample_portfolio.yaml `
   --metadata data\processed_documents\ticker_metadata.csv `
@@ -393,7 +411,7 @@ Run all configured ranking ablations:
 Run the multi-query sample evaluation set:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" evaluation\run_ablation_suite.py `
+& $py evaluation\run_ablation_suite.py `
   --documents data\processed_documents\documents.jsonl `
   --queries data\portfolios\sample_query_set.csv `
   --metadata data\processed_documents\ticker_metadata.csv `
@@ -408,7 +426,7 @@ This writes per-query metrics to `ablation_metrics.csv` and method averages to
 Build the local HTML report:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" evaluation\build_html_report.py `
+& $py evaluation\build_html_report.py `
   --metrics data\exports\ablation_batch_sample\ablation_metrics_by_method.csv `
   --diagnostics data\exports\ablation_batch_sample\ablation_diagnostics_by_method.csv `
   --output data\exports\ablation_batch_sample\retrieval_report.html `
@@ -418,7 +436,7 @@ Build the local HTML report:
 Build an annotation pool for later human review:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" evaluation\build_annotation_pool.py `
+& $py evaluation\build_annotation_pool.py `
   --input data\exports\ablation_batch_sample\ablation_retrieved_all.jsonl `
   --qrels data\annotations\bootstrap_sample_qrels.csv `
   --output data\annotations\annotation_pool_batch_sample.csv
@@ -431,7 +449,7 @@ comparisons.
 Export reviewed pool labels back to qrels:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" evaluation\export_qrels_from_pool.py `
+& $py evaluation\export_qrels_from_pool.py `
   --input data\annotations\annotation_pool_batch_sample.csv `
   --output data\annotations\human_qrels_v1.csv `
   --issues-output data\annotations\human_qrels_v1_export_issues.csv `
@@ -441,13 +459,13 @@ Export reviewed pool labels back to qrels:
 Run tests without installing pytest:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" -m unittest discover -s tests
+& $py -m unittest discover -s tests
 ```
 
 If `pytest` is installed, this also works:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" -m pytest
+& $py -m pytest
 ```
 
 ## Ranking Formula

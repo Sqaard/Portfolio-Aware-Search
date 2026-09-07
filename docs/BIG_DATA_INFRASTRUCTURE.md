@@ -446,6 +446,44 @@ Spark:
 
 
 
+
+- **"Why do 12 cores lose to 4?"** Because on Windows the dominant cost does not
+  use the cores at all. Worker creation is **serialised**, which the earlier
+  "Windows has no fork" explanation understates.
+
+  Same job, same 12 partitions, only the core count changes:
+
+  | Master | Time for 12 tasks |
+  | --- | ---: |
+  | `local[1]` | 12.86 s |
+  | `local[4]` | 12.72 s |
+  | `local[12]` | 12.79 s |
+
+  Twelve cores are worth nothing. Spark creates the Python workers one after
+  another, so the cores sit idle waiting. And it is Spark doing it, not the OS:
+  launching 12 bare `python.exe -c pass` processes from a thread pool is **6.4x**
+  faster than launching them in sequence (0.19 s vs 1.19 s), so Windows itself
+  parallelises process creation perfectly well.
+
+  What one worker costs, decomposed by cold-starting an interpreter:
+
+  | | Seconds |
+  | --- | ---: |
+  | bare `python.exe -c pass` | 0.10 |
+  | `-c "import pyspark"` | 0.61 |
+  | a real Spark Python worker (measured per task) | ~1.07 |
+
+  So roughly 0.1 s of interpreter boot, 0.5 s of importing PySpark, and 0.45 s of
+  socket/auth handshake — paid **per task**, in series. The job has four stages,
+  so 12 partitions is 48 tasks: 48 x ~1.25 s = 60 s, which is the whole runtime.
+
+  On the cluster the daemon `fork()`s instead: the child inherits an interpreter
+  that has already imported PySpark, so neither the 0.1 s nor the 0.5 s is paid
+  again and a worker costs microseconds. The 48 forks still happen — partitions
+  are not workers, tasks are — but they are free, and the 4 cores are spent on
+  actual computation. That is how 4 cores beat 12.
+
+
 - **"Why 12 partitions and not 128 MB blocks?"** Because 128 MB is a ceiling that
   never binds at this scale, and Spark's own default lands on 12 by itself.
 

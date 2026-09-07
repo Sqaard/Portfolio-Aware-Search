@@ -151,6 +151,23 @@ complete-submission headers.
 The next handoff mode is daily rather than representative. It builds
 document-date-ticker contexts for the PPO base panel:
 
+### Running the commands below
+
+Every command uses `$py`. Set it once per shell to an interpreter that has this
+project's requirements installed:
+
+```powershell
+$py = "python"
+```
+
+The Big Data commands additionally need PySpark, which is often installed in a
+separate environment — point `$py` at that one, or let
+[`deploy/run_spark.ps1`](deploy/run_spark.ps1) find it for you:
+
+```powershell
+$py = "$env:USERPROFILE\anaconda3\envs\tensorflow\python.exe"   # example
+.\deploy\run_spark.ps1 bigdata.run_all --corpus macro             # or this, which needs no $py
+```
 ```text
 for each decision_date:
     retrieve portfolio-level official macro/market evidence
@@ -271,7 +288,7 @@ improve the later API/LLM prompt.
 ## Build Package
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\build_fingpt_handoff_package.py `
+& $py features\build_fingpt_handoff_package.py `
   --retrieval data\exports\retrieved_docs_sample.jsonl `
   --output-dir data\exports\fingpt_handoff_sample
 ```
@@ -279,7 +296,7 @@ improve the later API/LLM prompt.
 ## Validate Package
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\validate_fingpt_handoff.py `
+& $py features\validate_fingpt_handoff.py `
   --contexts data\exports\fingpt_handoff_sample\retrieved_contexts.jsonl `
   --bundles data\exports\fingpt_handoff_sample\evidence_bundles.jsonl `
   --output-report data\exports\fingpt_handoff_sample\handoff_validation.json
@@ -301,7 +318,7 @@ current FinGPT Feature Engine CLI, writes all prompt/feature/provenance outputs,
 and builds one JSON/HTML summary.
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" features\run_fingpt_handoff_smoke.py `
+& $py features\run_fingpt_handoff_smoke.py `
   --handoff-dir data\exports\fingpt_handoff_sample `
   --fingpt-project ..\Supportive_project_FinGPT_as_feature_engine
 ```
@@ -328,17 +345,17 @@ preserved in doc prompts.
 The lower-level FinGPT commands are:
 
 ```powershell
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" scripts\validate_leakage.py `
+& $py scripts\validate_leakage.py `
   --retrieved-contexts ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\retrieved_contexts.jsonl `
   --output-report ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\fingpt_leakage_report.json
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" scripts\build_fingpt_inputs.py `
+& $py scripts\build_fingpt_inputs.py `
   --retrieved-contexts ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\retrieved_contexts.jsonl `
   --doc-output ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\fingpt_smoke\doc_prompts.jsonl `
   --stock-output ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\fingpt_stock_prompts.jsonl `
   --portfolio-output ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\fingpt_portfolio_prompts.jsonl
 
-& "C:\Users\ivanp\anaconda3\envs\tensorflow\python.exe" scripts\run_fingpt_feature_extraction.py `
+& $py scripts\run_fingpt_feature_extraction.py `
   --retrieved-contexts ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\retrieved_contexts.jsonl `
   --doc-output ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\fingpt_smoke\doc_extractions.csv `
   --daily-stock-output ..\FinPortfolio_IR\data\exports\fingpt_handoff_sample\fingpt_smoke\daily_stock_text_features.csv `

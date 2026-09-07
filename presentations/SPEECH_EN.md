@@ -358,6 +358,26 @@ A partition is a task, and a task is a process. On Windows each process starts
 from scratch (2–5 seconds of imports); on Linux it is a `fork`. With 12 partitions
 you pay for 12 start-ups; with 2, for two.
 
+**— Why do 12 cores on Windows lose to the cluster's 4?**
+Because on Windows the dominant cost does not use the cores at all: Python worker
+creation is **serialised**. Same job, same 12 partitions, only the core count
+changes — `local[1]` takes 12.86 s, `local[4]` 12.72 s, `local[12]` 12.79 s.
+Twelve cores buy nothing; they queue. And it is Spark serialising, not the OS:
+launching 12 bare `python.exe` processes from a thread pool is **6.4x** faster
+than launching them in sequence (0.19 s vs 1.19 s), so Windows parallelises
+process creation perfectly well. One worker costs ~1.07 s: 0.1 s of interpreter
+boot, 0.5 s of `import pyspark`, ~0.45 s of socket handshake. The job has four
+stages, so 12 partitions means 48 tasks, and 48 x 1.25 s is about 60 s — the
+entire runtime. On the cluster the daemon `fork()`s: the child inherits an
+already-imported PySpark, so neither the 0.1 s nor the 0.5 s is paid again and a
+worker costs microseconds, leaving the 4 cores free for actual computation.
+
+**— Is fork even needed if there is one partition per core?**
+Partitions are not workers — a worker is created per **task**. Four stages times
+12 partitions is 48 tasks, so the cluster performs 48 forks, not 4. But the
+number is not the issue; the unit price is. On Linux a fork is microseconds, so
+48 of them are free. On Windows it is ~1 second each, and serialised.
+
 **— Why 12 partitions rather than 128 MB blocks?**
 Because 128 MB is a ceiling that never binds here, and 12 is what Spark picks on
 its own. Its formula is `min(128 MB, max(4 MB, totalBytes / cores))`. For 352 MB
