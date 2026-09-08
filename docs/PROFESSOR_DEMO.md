@@ -4,11 +4,36 @@ A one-command way to put the FinPortfolio IR site online (via a temporary
 Cloudflare tunnel) so a reviewer can test it in a browser, with nothing to
 install. It complements the Big Data write-up in
 [BIG_DATA_INFRASTRUCTURE.md](BIG_DATA_INFRASTRUCTURE.md): the site is the
-searchable front end over the **26,368-document** corpus this project collects
-and processes (macro 18,240 · SEC 7,022 · company IR 1,106).
+searchable front end over the corpus this project collects and processes. From a
+fresh clone it serves the **993-document** slice committed to the repository
+(macro 420 · SEC 353 · company IR 196 · sample 24). The full **26,368-document**
+index (macro 18,240 · SEC 7,022 · company IR 1,106) is the one built on the Spark
+cluster from corpora too large to commit; its build manifest is kept at
+`data/exports/bigdata/search_index/finportfolio_search_spark.manifest.json`.
 
 Full options are in [PUBLIC_DEMO_CLOUDFLARE.md](PUBLIC_DEMO_CLOUDFLARE.md); this
 page is the short version.
+
+---
+
+## 0. Build the search index (once)
+
+The site serves a derived SQLite/FTS5 index. It is **not committed** — the
+cluster-built one is ~800 MB, and `data/search_index/*.sqlite` is git-ignored —
+so `start_public_demo.ps1` throws until you build it
+(`deploy/cloudflare/start_public_demo.ps1:66-69`). From a fresh clone:
+
+```powershell
+python -m pip install -r requirements.txt
+python -B indexing\build_search_index.py `
+  --documents data\processed_documents\repo_demo_documents.jsonl `
+  --output data\search_index\finportfolio_search.sqlite
+# -> {"document_count": 993, ...}   (~27 MB, a few seconds)
+```
+
+That is the whole Python-side prerequisite. `cloudflared` is needed only for the
+public URL in step 1 — the `-NoTunnel` variant below runs the site locally
+without it.
 
 ---
 
@@ -30,9 +55,9 @@ The script:
 **Copy that URL and send it to the reviewer. Keep the PowerShell window open**
 while they test — closing it takes the site down.
 
-Prerequisites (already satisfied on the build machine): `cloudflared` installed,
-`python` able to run the app, and `data/search_index/finportfolio_search.sqlite`
-present. If a network drops UDP, the default HTTP/2 transport is used; add
+Prerequisites: `cloudflared` installed, `python` able to run the app, and
+`data/search_index/finportfolio_search.sqlite` present — step 0 builds that last
+one. If a network drops UDP, the default HTTP/2 transport is used; add
 `-TunnelProtocol quic` only on networks known to pass QUIC.
 
 ### Stop

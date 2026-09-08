@@ -1,5 +1,28 @@
 # FinPortfolio IR
 
+**Portfolio-Aware Search** — a source-first financial retrieval engine, and the
+Big Data course project for ITMO, 2nd semester. The additive layer under
+[`bigdata/`](bigdata) re-expresses the corpus-wide processing as MapReduce on
+Apache Spark; the write-up is
+[docs/BIG_DATA_INFRASTRUCTURE.md](docs/BIG_DATA_INFRASTRUCTURE.md), the live-demo
+sequences are in [docs/DEFENCE_RUNBOOK.md](docs/DEFENCE_RUNBOOK.md), and the deck
+is [presentations/BigData_ITMO.pptx](presentations/BigData_ITMO.pptx).
+
+**To reproduce this on a clean machine, start at [REPRODUCE.md](REPRODUCE.md).**
+Clone, install `requirements.txt`, and every command in that guide runs against
+the 993-document corpus committed here — no downloads, no Spark, no API keys.
+
+**Portfolio-Aware Search** is a source-first information-retrieval system for
+US equities, and the Big Data course project for ITMO, 2nd semester. To
+reproduce it on a clean machine, start at [REPRODUCE.md](REPRODUCE.md): it goes
+from `git clone` to a green test run and prints the expected output of every
+step. The distributed layer under [`bigdata/`](bigdata) re-expresses the
+corpus-wide processing as MapReduce on Apache Spark; the write-up is
+[docs/BIG_DATA_INFRASTRUCTURE.md](docs/BIG_DATA_INFRASTRUCTURE.md), the
+live-demo sequences are in [docs/DEFENCE_RUNBOOK.md](docs/DEFENCE_RUNBOOK.md),
+and the defence deck is
+[presentations/BigData_ITMO.pptx](presentations/BigData_ITMO.pptx).
+
 Portfolio-driven financial news retrieval for the downstream FinGPT Feature
 Engine and later FinRL/PPO feature ablations.
 
@@ -86,8 +109,13 @@ separate environment — point `$py` at that one, or let
 
 ```powershell
 $py = "$env:USERPROFILE\anaconda3\envs\tensorflow\python.exe"   # example
-.\deploy\run_spark.ps1 bigdata.run_all --corpus macro             # or this, which needs no $py
+.\deploy\run_spark.ps1 bigdata.run_all --corpus repo_demo         # or this, which needs no $py
 ```
+
+The blocks below are PowerShell. On Linux or macOS the same commands work with
+three mechanical substitutions: drop the `& $py` prefix and call `python3`
+directly, use forward slashes in paths, and replace PowerShell's trailing
+backtick line-continuation with a trailing `\`.
 
 ## Big Data Infrastructure (course project)
 
@@ -101,18 +129,31 @@ verification. No existing code was modified.
 # optional: install Spark (else the pure-Python local engine runs)
 & $py -m pip install -r requirements-bigdata.txt
 
-# full pipeline over a corpus -> analytics.json, bm25_stats.json, REPORT.md
-& $py -m bigdata.run_all --corpus macro --query "inflation interest rates"
+# full pipeline over the corpus committed here -> analytics.json, bm25_stats.json,
+# REPORT.md; 993 documents, about a second of work, no Spark and no JVM needed
+& $py -m bigdata.run_all --corpus repo_demo --query "inflation interest rates"
 
 # choose the engine explicitly (default auto -> Spark if installed, else local)
-& $py -m bigdata.run_inverted_index  --corpus macro --engine spark --master "local[*]"
-& $py -m bigdata.run_corpus_analytics --corpus sec300 --engine local
+& $py -m bigdata.run_inverted_index  --corpus repo_demo --engine spark --master "local[*]"
+& $py -m bigdata.run_corpus_analytics --corpus repo_demo --engine local
 ```
 
-The distributed output is verified **byte-identical** to the single-machine
-`indexing/build_sparse_index.py` (`BM25Index`) on the shared corpus, plus a
-Structured-Streaming / incremental auto-updater and a Docker Spark cluster. See
-[docs/BIG_DATA_INFRASTRUCTURE.md](docs/BIG_DATA_INFRASTRUCTURE.md) and
+`repo_demo` is the default corpus and the only large one in the repository
+(`data/processed_documents/repo_demo_documents.jsonl`, 993 documents, 11.5 MB).
+Artifacts go to `data/exports/bigdata/local_runs/<job>/`, which is git-ignored,
+so a run never touches the committed reports.
+
+The distributed output was verified **byte-identical** to the single-machine
+`indexing/build_sparse_index.py` (`BM25Index`) on the 18,240-document macro
+corpus, plus a Structured-Streaming / incremental auto-updater and a Docker Spark
+cluster. That corpus is ~39 MB and is not in the repository; the two runs behind
+the claim are, as
+[`data/exports/bigdata/report_macro_local/`](data/exports/bigdata/report_macro_local)
+and
+[`report_macro_cluster/`](data/exports/bigdata/report_macro_cluster), whose
+`document_frequencies.csv` files are the same 45,030 bytes. What a fresh clone
+re-verifies for itself is set out in
+[docs/BIG_DATA_INFRASTRUCTURE.md](docs/BIG_DATA_INFRASTRUCTURE.md) § 8; see also
 [bigdata/README.md](bigdata/README.md).
 
 ## Methodology And Docs
@@ -141,12 +182,18 @@ The default causal protocol is documented in
 Use CPython 3.9+ and install the small dependency set:
 
 ```powershell
-cd "C:\Users\ivanp\OneDrive\Рабочий стол\доки+черчи\ITMO\2_sem\FinRL_Tsinghua\FinPortfolio_IR"
+git clone https://github.com/Sqaard/Portfolio-Aware-Search.git
+cd Portfolio-Aware-Search
 & $py -m pip install -r requirements.txt
 ```
 
-In this workspace, the bare `python` command may point to PyPy. Prefer the
-CPython executable above for reproducible runs.
+`requirements.txt` is the complete set the test suite and every command on this
+page need. `requirements-bigdata.txt` adds PySpark and is optional — without it
+the Big Data jobs run on the portable pure-Python engine.
+
+If the bare `python` on your machine resolves to PyPy or to an environment you do
+not control, set `$py` to a CPython 3.9+ executable as above and use it
+throughout.
 
 ## Data Format
 
@@ -188,49 +235,55 @@ safe timestamp, it is excluded by normalization/loading.
 
 ## End-To-End Sample
 
+Everything below writes into `data\exports\local_runs\`, which is git-ignored.
+The similarly named files already committed under `data\exports\`
+(`retrieved_docs_sample.jsonl`, `sample_run.csv`, `fingpt_contexts_sample.jsonl`,
+`evidence_bundles_sample.jsonl`, `sample_metrics.csv`) are reference copies from
+earlier runs — compare against them, but nothing here overwrites them.
+
 Normalize local raw documents:
 
 ```powershell
 & $py crawler\normalize_documents.py `
   --input data\raw_documents\sample_documents.jsonl `
   --metadata data\processed_documents\ticker_metadata.csv `
-  --output data\processed_documents\documents.jsonl
+  --output data\exports\local_runs\documents.jsonl
 ```
 
 Retrieve top-k causal documents for the sample portfolio:
 
 ```powershell
 & $py retrieval\retrieve_for_portfolio.py `
-  --documents data\processed_documents\documents.jsonl `
+  --documents data\exports\local_runs\documents.jsonl `
   --portfolio configs\sample_portfolio.yaml `
   --metadata data\processed_documents\ticker_metadata.csv `
   --decision-datetime 2022-03-15T09:30:00-05:00 `
   --top-k 10 `
-  --output data\exports\retrieved_docs_sample.jsonl `
-  --run-csv data\exports\sample_run.csv
+  --output data\exports\local_runs\retrieved_docs_sample.jsonl `
+  --run-csv data\exports\local_runs\sample_run.csv
 ```
 
 Export FinGPT-ready contexts:
 
 ```powershell
 & $py features\export_fingpt_contexts.py `
-  --input data\exports\retrieved_docs_sample.jsonl `
-  --output data\exports\fingpt_contexts_sample.jsonl
+  --input data\exports\local_runs\retrieved_docs_sample.jsonl `
+  --output data\exports\local_runs\fingpt_contexts_sample.jsonl
 ```
 
 Export grouped evidence bundles:
 
 ```powershell
 & $py features\export_evidence_bundles.py `
-  --input data\exports\retrieved_docs_sample.jsonl `
-  --output data\exports\evidence_bundles_sample.jsonl
+  --input data\exports\local_runs\retrieved_docs_sample.jsonl `
+  --output data\exports\local_runs\evidence_bundles_sample.jsonl
 ```
 
 Build the first-test FinGPT handoff package:
 
 ```powershell
 & $py features\build_fingpt_handoff_package.py `
-  --retrieval data\exports\retrieved_docs_sample.jsonl `
+  --retrieval data\exports\local_runs\retrieved_docs_sample.jsonl `
   --output-dir data\exports\fingpt_handoff_sample
 ```
 
@@ -386,14 +439,18 @@ LLM_MODEL=deepseek-chat
 Full post text is never rendered in the browser. It is sent to an LLM provider
 only after the user explicitly clicks a post for analysis.
 
-Evaluate the sample ranking:
+Evaluate the sample ranking, using the run CSV written above:
 
 ```powershell
 & $py evaluation\evaluate_ir_metrics.py `
   --qrels data\annotations\sample_qrels.csv `
-  --run data\exports\sample_run.csv `
-  --output data\exports\sample_metrics.csv
+  --run data\exports\local_runs\sample_run.csv `
+  --output data\exports\local_runs\sample_metrics.csv
 ```
+
+The committed `data\exports\sample_metrics.csv` is a reference copy from an
+earlier configuration. A fresh run writes to `data\exports\local_runs\` and its
+figures need not match it exactly; what should match is the ranking behaviour.
 
 Run all configured ranking ablations:
 
@@ -456,17 +513,22 @@ Export reviewed pool labels back to qrels:
   --label-source human_v1
 ```
 
-Run tests without installing pytest:
+Run the tests. Both runners work after `pip install -r requirements.txt`:
 
 ```powershell
 & $py -m unittest discover -s tests
+# -> Ran 243 tests, OK (skipped=5)
+
+& $py -m pytest -q
+# -> 238 passed, 5 skipped
 ```
 
-If `pytest` is installed, this also works:
-
-```powershell
-& $py -m pytest
-```
+Five skips on a fresh clone: the four real-Spark parity tests, plus the
+shipped-index servability check, which has nothing to check until the search
+index is built (see [REPRODUCE.md](REPRODUCE.md) step 5). After that it is four. The Spark four execute once
+`requirements-bigdata.txt` and a Java 8/11/17 runtime are installed. See
+[docs/BIG_DATA_INFRASTRUCTURE.md](docs/BIG_DATA_INFRASTRUCTURE.md) § 8 for what
+they do and do not cover.
 
 ## Ranking Formula
 

@@ -24,6 +24,9 @@ RAW_DIR = ROOT / "data" / "raw_documents"
 NAMED_CORPORA: dict[str, Path] = {
     # 24 docs -- used by the parity tests and quick smoke runs.
     "sample": PROCESSED_DIR / "documents.jsonl",
+    # 993 docs (11.5 MB) -- the largest corpus committed to the repo, and
+    # therefore the default: every documented command runs in a fresh clone.
+    "repo_demo": PROCESSED_DIR / "repo_demo_documents.jsonl",
     # ~300 SEC Dow-30 filings.
     "sec300": PROCESSED_DIR / "sec_dow30_2010_2023_300_documents.jsonl",
     # ~18k official US macro releases (~39 MB) -- the default demo scale.
@@ -36,7 +39,7 @@ NAMED_CORPORA: dict[str, Path] = {
     "all_ppo": PROCESSED_DIR / "sec_macro_company_ir_ppo_2010_2023_documents.jsonl",
 }
 
-DEFAULT_CORPUS = "macro"
+DEFAULT_CORPUS = "repo_demo"
 
 
 def resolve_corpus(name_or_path: str) -> Path:

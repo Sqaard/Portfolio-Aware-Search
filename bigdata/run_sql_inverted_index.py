@@ -137,7 +137,7 @@ def run_once(spark, corpus_uri: str, partitions: int, tokenizer: str) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument(
-        "--corpus", default="macro",
+        "--corpus", default="repo_demo",
         help=f"Named corpus or path. Named: {', '.join(sorted(NAMED_CORPORA))}.",
     )
     parser.add_argument("--master", default="local[*]",

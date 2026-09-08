@@ -33,10 +33,13 @@ Core project methodology:
 
 World-picture synthesis:
 
-- `C:\Users\ivanp\RL for Time-Series Forecasting\data_RLagent_for_Joseph\experience\WORLD OF BEST TRADING BOT\IR_01_BEST_FINGPT_WORLD_PICTURE_ECONOMIC.md`
-- `C:\Users\ivanp\RL for Time-Series Forecasting\data_RLagent_for_Joseph\experience\WORLD OF BEST TRADING BOT\IR_02_BEST_FINGPT_WORLD_PICTURE_TECHNICAL.md`
-- `C:\Users\ivanp\RL for Time-Series Forecasting\data_RLagent_for_Joseph\experience\WORLD OF BEST TRADING BOT\IR_03_BEST_FINGPT_WORLD_PICTURE_INTEGRATED.md`
-- `C:\Users\ivanp\RL for Time-Series Forecasting\data_RLagent_for_Joseph\experience\WORLD OF BEST TRADING BOT\IR_E_INNOVATIVE_METHODOLOGY_AND_PLAN.md`
+External to this repository, in the companion RL project
+(`data_RLagent_for_Joseph/experience/WORLD OF BEST TRADING BOT/`):
+
+- `IR_01_BEST_FINGPT_WORLD_PICTURE_ECONOMIC.md`
+- `IR_02_BEST_FINGPT_WORLD_PICTURE_TECHNICAL.md`
+- `IR_03_BEST_FINGPT_WORLD_PICTURE_INTEGRATED.md`
+- `IR_E_INNOVATIVE_METHODOLOGY_AND_PLAN.md`
 
 Current implementation anchors:
 
@@ -101,8 +104,8 @@ validation score improves. Current run artifacts:
 
 Current validation result: 5/5 loops accepted, final skill score 56/56. The
 installed Microsoft tools are available through `skilllens`, `skillopt`, and
-`skillopt_sleep`; the Codex-facing SkillOpt skill is installed at
-`C:\Users\ivanp\.agents\skills\skillopt-sleep\SKILL.md`.
+`skillopt_sleep`; the Codex-facing SkillOpt skill is installed outside this
+repository, at `~/.agents/skills/skillopt-sleep/SKILL.md`.
 
 ## External Source Anchors
 

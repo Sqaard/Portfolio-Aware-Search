@@ -9,6 +9,13 @@ __pycache__/
 
 data/user_settings/
 data/logs/
+
+# Scratch output from the documented walkthrough commands. The Big Data runners
+# default here (bigdata/cli_common.py resolve_output_dir) and the README's IR
+# examples are pointed here, so following the docs can never overwrite the
+# committed evidence beside it (data/exports/bigdata/report*/, data/exports/*_sample.*).
+data/exports/run/
+data/exports/bigdata/run/
 data/search_index/*.sqlite
 data/live_ir/
 
@@ -31,7 +38,12 @@ data/exports/bigdata/**/postings.jsonl
 data/exports/bigdata/search_index/*.sqlite
 
 # Spark event logs (per-run; replayed by the History Server, regenerated locally).
-data/spark-events/
+# The three runs behind the heavy-load result in BIG_DATA_INFRASTRUCTURE.md section
+# 11 are kept, so a reader can replay them instead of taking the timings on trust.
+data/spark-events/*
+!data/spark-events/app-20260907055921-0000
+!data/spark-events/app-20260907060016-0001
+!data/spark-events/app-20260907060137-0002
 
 # Point-in-time macro corpus (ALFRED vintages): ~91MB. Reproduce with the full
 # command in docs/MAIN_METHODOLOGY.md 2.1.1 -- the --output-raw/--output-processed

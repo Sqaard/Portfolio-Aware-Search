@@ -52,7 +52,7 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
         help="Spark only: read the corpus with sc.textFile (distributed IO). "
              "Use on the cluster / ASCII paths; ignored for the local engine.",
     )
-    parser.add_argument("--output-dir", default=None, help="Directory for artifacts (default: data/exports/bigdata/<job>).")
+    parser.add_argument("--output-dir", default=None, help="Directory for artifacts (default: data/exports/bigdata/run/<job>).")
 
 
 def build_engine(args: argparse.Namespace) -> Engine:
@@ -94,7 +94,10 @@ def load_dataset(engine: Engine, args: argparse.Namespace) -> tuple[Dataset, Pat
 def resolve_output_dir(args: argparse.Namespace, job_name: str) -> Path:
     if args.output_dir:
         return Path(args.output_dir)
-    return BIGDATA_OUTPUT_DIR / job_name
+    # Under ``run/`` so a default invocation writes to scratch: the committed
+    # evidence in data/exports/bigdata/report*/ is the record of runs that
+    # happened and must survive anyone following the documented commands.
+    return BIGDATA_OUTPUT_DIR / "run" / job_name
 
 
 def write_json(path: Path, payload: Any) -> None:

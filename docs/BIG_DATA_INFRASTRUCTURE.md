@@ -7,7 +7,7 @@
 | **1. Data gathering** with automatic updates | Pre-existing crawler (`crawler/`, `deploy/update_live_ir.py`, `crawler/live_incremental_fetch.py`) **+** new streaming auto-updater ([`bigdata/streaming/`](../bigdata/streaming)) |
 | **2. Selection & implementation of a Big Data technology** | **Apache Spark** (RDD MapReduce + Structured Streaming), implemented in [`bigdata/`](../bigdata), with a portable pure-Python MapReduce engine behind one shared interface |
 | **3. Processing & analysis of the collected data** | Distributed **inverted index / BM25** build + **corpus analytics** (producing `analytics.json`, `bm25_stats.json`, CSV tables, `REPORT.md`) **+ the production SQLite FTS index served by `web_app.py` is built by the layer** (`bigdata/run_build_search_index.py`, §5.2) |
-| **4. Depth & volume** | Two engines behind one contract, exact parity verification against the single-machine code, streaming auto-updates, a Docker multi-node cluster **with recorded full-corpus runs** (§10), 41 Big Data tests, and an honest cost/benefit analysis (§11) |
+| **4. Depth & volume** | Two engines behind one contract, exact parity verification against the single-machine code, streaming auto-updates, a Docker multi-node cluster **with recorded full-corpus runs** (§10), 42 Big Data tests, and an honest cost/benefit analysis (§11) |
 
 ---
 
@@ -28,7 +28,7 @@ That is fine for the 24-document sample, but the collected corpus is not small:
 | `data/raw_documents/` | ~4.5 GB |
 | SEC section corpus (`..._sections_documents.jsonl`) | ~294 MB |
 | Combined SEC+macro+company IR corpus | ~352 MB |
-| SQLite search index | ~811 MB |
+| SQLite search index | ~774 MiB (811 MB on disk) |
 | Official macro corpus (the demo corpus below) | ~39 MB / 18,240 docs |
 
 Loading a 350 MB JSONL corpus into a Python list and indexing it in one process
@@ -164,26 +164,46 @@ additive, streaming micro-batches merge losslessly (§9).
 
 ```powershell
 # Full pipeline (analytics + index + a distributed BM25 query) → REPORT.md
-python -m bigdata.run_all --corpus macro --query "inflation interest rates"
+python -m bigdata.run_all --corpus repo_demo --query "inflation interest rates"
 
 # Individual jobs
-python -m bigdata.run_inverted_index  --corpus macro --with-postings
-python -m bigdata.run_corpus_analytics --corpus sec300
+python -m bigdata.run_inverted_index  --corpus repo_demo --with-postings
+python -m bigdata.run_corpus_analytics --corpus repo_demo
 
-# Build the production SQLite FTS index (what web_app.py serves) via the layer
-python -m bigdata.run_build_search_index --corpus all_ppo --engine spark
+# Build the SQLite FTS index web_app.py serves, via the layer
+python -m bigdata.run_build_search_index --corpus repo_demo --engine local `
+    --output data/exports/bigdata/local_runs/search_index/finportfolio_search.sqlite
 
 # Choose the engine explicitly (default: auto → Spark if installed, else local)
-python -m bigdata.run_all --corpus macro --engine spark --master "local[*]"
-python -m bigdata.run_all --corpus macro --engine local --num-workers 12
+python -m bigdata.run_all --corpus repo_demo --engine spark --master "local[*]"
+python -m bigdata.run_all --corpus repo_demo --engine local --num-workers 12
 
 # Quick smoke on any corpus
-python -m bigdata.run_all --corpus all_ppo --limit 5000
+python -m bigdata.run_all --corpus repo_demo --limit 200
 ```
 
-Named corpora (`bigdata/config.py`): `sample`, `sec300`, `macro`, `sec_ppo`,
-`sec_sections`, `all_ppo`; or pass any processed-JSONL path to `--corpus`.
-Artifacts are written under `data/exports/bigdata/`.
+Every command above runs in a fresh clone with nothing but `requirements.txt`
+installed. `repo_demo` is the default corpus and the only large one committed to
+the repository: **993 documents**, 11.5 MB, the same three source families as the
+full corpus (macro 420 · SEC 353 · company IR 196 · sample 24), spanning
+2010-01-11 to 2026-05-12. The full pipeline over it takes about a second on one
+core and reports `vocabulary_size = 21,211`, `total_tokens = 1,440,187`,
+`avgdl = 1450.3`.
+
+The other names in `bigdata/config.py` are `sample` (24 documents, committed —
+it is what the parity tests use) and `sec300`, `macro` (18,240 docs, ~39 MB),
+`sec_ppo`, `sec_sections` (~294 MB) and `all_ppo` (~352 MB), **none of which are
+in the repository**: they are reproducible from the collectors in
+[`MAIN_METHODOLOGY.md`](MAIN_METHODOLOGY.md) § 2, but they are far past what
+belongs in a Git repository. The measurements in sections 7 and 11 were taken on
+`macro` and `all_ppo`, and the runs themselves are committed as the standing
+evidence: [`report_macro_local/`](../data/exports/bigdata/report_macro_local),
+[`report_macro_cluster/`](../data/exports/bigdata/report_macro_cluster) and
+[`report_all_ppo_cluster/`](../data/exports/bigdata/report_all_ppo_cluster). Any
+processed-JSONL path also works as `--corpus`.
+
+Artifacts are written under `data/exports/bigdata/local_runs/<job>/`, which is
+git-ignored — a run can never overwrite the committed report directories above.
 
 ---
 
@@ -233,6 +253,13 @@ is amortised away. The often-quoted "the local engine is 70× faster than Spark"
 holds *only* for the 39 MB toy corpus; at 352 MB that same Windows comparison
 shrinks to 2.8×, and the cluster beats the local engine outright.
 
+The boundary condition matters, and §11 sets it out: on the largest body of text
+the project has (376 MiB, 59.7 M tokens) the cluster's edge is 2.3×
+best-run-to-best-run and 1.4× run-for-run, and on compute alone — start-up
+subtracted — the 12-core laptop is about 2.2× *faster* than the 4-core cluster.
+The cluster wins wall-clock here because Windows spends ~60 s spawning Python
+workers, not because the work distributes especially well.
+
 All five figures above were re-measured on an idle machine. An earlier set of
 numbers for this table (44 s / 81–105 s) was discarded: a previous benchmark
 process had survived its wrapper and was competing for CPU, inflating every
@@ -250,7 +277,12 @@ is warm-up (26.8 s vs 18.5 s here) and must be discarded.
 | Corpus analytics, full corpus | — | — | **20.3 s** |
 | Production SQLite index build, full corpus | — | — | **~73 s** (24.8 s distributed map + 47.8 s SQLite write) |
 
-Two lessons worth stating explicitly (см. §11): the notorious 60-second
+The 17.8 s here and the 18.5 s in the headline table above are two separate runs
+of the same job on the same cluster, not a discrepancy: cluster wall-clock varies
+run to run, as §11 now quantifies — three identical-configuration runs of the
+same job logged 45.4 / 73.5 / 72.0 s.
+
+Two lessons worth stating explicitly (see §11): the notorious 60-second
 Windows `local[*]` number was mostly *Windows-specific* overhead (no `fork`,
 Python-worker spawn, py4j on loopback) — the same job on the Linux cluster
 runs in 3.5 s with a third of the cores; and the full 352 MB corpus is
@@ -261,15 +293,18 @@ processed end-to-end on the toy 4-core cluster in tens of seconds.
 
 ### 7.1 What the layer did and did not do for the site
 
-Honest before/after on the artifact the site actually serves — the 774 MB SQLite
-FTS index over the full 352 MB corpus:
+Honest before/after on the artifact the site actually serves — the ~774 MiB
+(811 MB on disk) SQLite FTS index over the full 352 MB corpus:
 
 | Builder | Wall clock |
 | --- | ---: |
 | `indexing/build_search_index.py`, single machine | **25 s** |
-| `bigdata.run_build_search_index` on the Docker cluster | **75 s** (24 s distributed map + 37.5 s SQLite write) |
+| `bigdata.run_build_search_index` on the Docker cluster | **72.6 s** (24.8 s distributed map + 47.8 s SQLite write) |
 
-**The distributed build is three times slower.** The map phase parallelises, but
+**The distributed build is just under three times slower** — 72.6 s against 25 s,
+2.9×, with both components taken from the run manifest
+(`data/exports/bigdata/search_index/finportfolio_search_spark.manifest.json`:
+`map_seconds` 24.804, `sqlite_seconds` 47.797). The map phase parallelises, but
 the SQLite write is a single writer by construction and dominates. For a corpus
 this size the Big Data path buys the site no speed at all, and saying otherwise
 would not survive a stopwatch.
@@ -279,13 +314,14 @@ than from Spark:
 
 - Comparing two implementations of the same job surfaced three real bugs —
   analytics counting a repeated tag once per occurrence instead of once per
-  document (37% of the macro corpus carries one), the streaming updater
+  document (37.2% of the macro corpus carries one), the streaming updater
   double-counting rows appended between its size probe and its read, and the
   shipped index being silently rejected by `web_app` so search had fallen back to
   an in-memory scan.
-- The point-in-time work that came with it found that **36.6% of macro documents
-  were marked available earlier than they truly were**, by up to 87 days.
-- The processing layer now has 53 tests where it previously had one script.
+- The point-in-time work that came with it found that **36.6% of the
+  point-in-time macro corpus — 6,382 of 17,456 documents — was marked available
+  earlier than it truly was**: median 4 days early, up to 87 days.
+- The processing layer now has 42 tests where it previously had one script.
 
 The scaling argument is real but forward-looking: the same job runs unchanged on
 N machines. At 352 MB that is headroom, not a benefit already collected.
@@ -294,7 +330,9 @@ N machines. At 352 MB that is headroom, not a benefit already collected.
 ## 8. Verification
 
 The central guarantee: **the distributed output is identical to the trusted
-single-machine code.**
+single-machine code.** Read the last two bullets alongside the first three: they
+say exactly how much of this a fresh clone re-executes for itself, and how much
+stands as recorded evidence.
 
 - **Exact parity vs `indexing.build_sparse_index.BM25Index`** on the sample
   corpus: `document_frequencies`, `document_lengths`, `average_document_length`,
@@ -302,7 +340,15 @@ single-machine code.**
   `BM25Index.score_query` to 1e-9.
 - **Spark == Local == reference.** On the full 18,240-document macro corpus the
   Spark and local `document_frequencies.csv` (5,520 terms) are **byte-identical**,
-  and both report `avgdl = 64.3506`, `vocab = 5,520`.
+  and both report `avgdl = 64.3506`, `vocab = 5,520`. That corpus is ~39 MB and
+  is not in the repository, but **both sides of the comparison are**, so the
+  claim is checkable with no corpus and no Spark:
+
+  ```powershell
+  (Get-FileHash data\exports\bigdata\report_macro_local\document_frequencies.csv).Hash -eq `
+  (Get-FileHash data\exports\bigdata\report_macro_cluster\document_frequencies.csv).Hash
+  # → True   (45,030 bytes each, SHA256 A685FCA3…3183)
+  ```
 - **The production search index is the strongest parity check.** The index
   built **on the Spark cluster** over the full 352 MB corpus was compared
   table-by-table against the index built by the original single-machine
@@ -315,15 +361,52 @@ single-machine code.**
   (`data/search_index/finportfolio_search.sqlite`; the previous one is kept as
   `finportfolio_search_pre_spark_backup.sqlite`), and the app's own 49 tests
   (`test_search_index`, `test_web_app`) pass against it.
-- **41 tests** in `tests/test_bigdata_*.py` (engine ops, index parity, query
+- **42 tests** in `tests/test_bigdata_*.py` (engine ops, index parity, query
   parity, postings/df consistency, source-family parity vs the search index,
-  analytics, incremental-merge == full-batch, append-safe streaming, search-index
-  builder parity for both engines, and a real-Spark parity suite that self-skips
-  when Java/PySpark is absent) — the full suite stays green:
+  analytics, incremental-merge == full-batch, append-safe streaming, and
+  search-index builder parity for both engines) — the full suite stays green:
 
   ```powershell
   python -m unittest discover -s tests   # includes the Big Data suite
+  # → Ran 243 tests, OK (skipped=5) — the 42 Big Data tests are part of that run
+
+  python -m unittest discover -s tests -p "test_bigdata_*.py"
+  # → Ran 42 tests, OK (skipped=5)
   ```
+
+- **What a fresh clone actually re-verifies, stated plainly.** Four of those 42
+  are the *real-Spark* parity tests — `SparkParityTests`
+  (`tests/test_bigdata_spark.py:23`, three tests) and
+  `SearchIndexSparkParityTests` (`tests/test_bigdata_search_index.py:156`, one) —
+  and both classes are guarded by
+  `@unittest.skipUnless(spark_available(), "pyspark not installed")`. On a machine
+  with only `requirements.txt` installed, four of the five skips above **are** the
+  Spark half; the fifth is the shipped-index servability check, which has nothing
+  to check until the search index is built. The other 38 Big Data tests do run, and they still pin **local engine ==
+  `BM25Index`** — the local engine is the correctness oracle, so a Spark
+  regression cannot hide behind them, but neither does a clean clone *execute*
+  Spark. To execute it:
+
+  ```powershell
+  python -m pip install -r requirements-bigdata.txt   # PySpark 3.5.x
+  python -m unittest discover -s tests                # the 4 skips become runs
+  ```
+
+  Spark 3.5 additionally needs a **Java 8/11/17** JVM; without one the same four
+  tests skip a second time with `Spark could not start: ...`
+  (`tests/test_bigdata_spark.py:31`).
+
+- **The evidence that stands in the meantime is recorded, not re-run.** The two
+  report directories compared above —
+  [`report_macro_cluster/`](../data/exports/bigdata/report_macro_cluster) and
+  [`report_macro_local/`](../data/exports/bigdata/report_macro_local) — plus
+  [`report_all_ppo_cluster/`](../data/exports/bigdata/report_all_ppo_cluster),
+  the index build manifest
+  `data/exports/bigdata/search_index/finportfolio_search_spark.manifest.json`,
+  and the cluster UI captures `docs/assets/spark_cluster_master.png`,
+  `spark_cluster_executors.png`, `spark_cluster_stages.png` and
+  `spark_history_stage_detail.png`. Those are artifacts of runs that happened;
+  they are not something the reader's `python -m unittest` reproduces.
 
 ---
 
@@ -449,6 +532,12 @@ Spark:
   partition is an extra task, and on Windows every task costs a fresh
   `python.exe`. On Linux that cost is a `fork` and is effectively free.
 
+  Every figure in this table is the 39 MB macro corpus, where runtime is almost
+  entirely worker start-up — so 16.7× is the ceiling of a start-up-dominated
+  regime, not a scaling law. On the 376 MiB heavy-load corpus the same
+  comparison falls to 2.3× best-run-to-best-run and 1.4× run-for-run (see the
+  start-up bullet below).
+
 - **What actually fixes the Windows path** — four remedies, measured against the
   same baseline (Windows, RDD, 12 partitions = 66.8 s). None of them involves
   writing an engine:
@@ -464,6 +553,11 @@ Spark:
   | **DataFrame/SQL API on Windows**, 12 partitions | 1.3 s | 51× |
   | **DataFrame/SQL API on Windows**, 4 partitions | 1.2 s | **56×** |
   | DataFrame/SQL API on the cluster, 4 partitions | 1.9 s | 35× |
+
+  Every row is the 39 MB macro corpus, whose baseline is ~90% Python-worker
+  start-up. The two cluster rows therefore measure how much start-up Linux
+  avoids, not how much faster the cluster computes; at 376 MiB the cluster's
+  speed-up is 2.3× best-run-to-best-run and 1.4× run-for-run (below).
 
 
   The DataFrame/SQL rows are produced by `bigdata/run_sql_inverted_index.py`,
@@ -487,20 +581,42 @@ Spark:
   to full text. **376 MiB, 59.7 M tokens, 90,888 distinct terms** — more tokens
   than the 352 MB production corpus.
 
-  | Partitions | Windows, 12 cores | Docker cluster, 4 cores |
+  | Requested `--partitions` | Windows, 12 cores | Docker cluster, 4 cores |
   | ---: | ---: | ---: |
   | 2 | 101.0 s | **39.6 s** |
   | 4 | 132.5 s | 65.3 s |
   | 12 | **89.3 s** | 63.6 s |
 
+  **Only the Windows column is a partition sweep.** On the cluster the flag
+  changed nothing. Those runs read with `--native-read`, i.e. `sc.textFile`,
+  where `minPartitions` is a **floor** and Hadoop's 32 MB split decides — so
+  376 MiB becomes 12 tasks whatever is asked for. All three cluster runs
+  executed four stages of **12 tasks each**, verified in the event logs
+  (`data/spark-events/app-20260907055921-0000`, `app-20260907060016-0001`,
+  `app-20260907060137-0002`). The 39.6 / 65.3 / 63.6 s spread is therefore
+  **run-to-run variance at one identical configuration**, not partition tuning.
+  The Windows column *is* a real sweep, because without `--native-read` the
+  driver-side reader ends in `sc.parallelize(lines, slices)`, which honours the
+  request exactly (`bigdata/engine/spark_engine.py`).
+
+  Note also that the Windows column **inverts the 39 MB rule** stated earlier in
+  this section: with real compute to do, 12 partitions is now the *fastest*
+  Windows configuration and 4 the slowest. "Fewer partitions is faster on
+  Windows" held only while start-up was the whole runtime.
+
   Output is identical in every cell (3,026 documents, 90,888 terms, 59,660,408
-  tokens). The cluster's advantage **collapses from 16.7x to 2.3x** once there is
-  real work to do, which is the honest scale of it.
+  tokens). The cluster's advantage **collapses from 16.7x to 2.3x**
+  best-run-to-best-run (89.3 s against 39.6 s) once there is real work to do —
+  and, since all three cluster runs were the same 12-task configuration, that
+  2.3x compares the cluster's luckiest run with Windows' luckiest. Run-for-run
+  at the same 12 tasks the advantage is only **1.4x** (89.3 s against 63.6 s),
+  which is the honest scale of it.
 
-  Subtracting the start-up measured above (48 tasks x ~1.25 s at 12 partitions)
-  separates the two costs:
+  Subtracting the start-up **model** established on the 39 MB corpus above
+  (48 tasks x ~1.25 s at 12 partitions) — carried over to this corpus, not
+  re-timed in these runs — separates the two costs:
 
-  | | Wall clock | Start-up | Compute |
+  | | Wall clock *(measured)* | Start-up *(modelled)* | Compute *(residual)* |
   | --- | ---: | ---: | ---: |
   | Windows, 12 partitions | 89.3 s | ~60 s | **~29 s** on 12 cores |
   | Cluster, 12 partitions | 63.6 s | ~0 s | **~64 s** on 4 cores |
@@ -518,6 +634,19 @@ Spark:
   core-seconds — less than the ~60 s of serialised worker start-up on Windows.
   **A compute-dominated comparison is therefore not reachable with this dataset**,
   and no re-partitioning changes that.
+
+  **Where the evidence for this bullet lives.** This corpus is a one-off build
+  from the raw HTML cache: it is *not* in `NAMED_CORPORA` (`bigdata/config.py`,
+  which lists `sample`, `sec300`, `macro`, `sec_ppo`, `sec_sections`, `all_ppo`)
+  and the cleaned JSONL is not checked in, so `--corpus` cannot name it and the
+  experiment cannot be repeated verbatim from this repository. What *is* on disk
+  are the three cluster runs' Spark event logs —
+  `data/spark-events/app-20260907055921-0000`, `app-20260907060016-0001` and
+  `app-20260907060137-0002` — which record the four stages of 12 tasks each and
+  application wall times of 45.4 / 73.5 / 72.0 s, ordering-consistent with the
+  39.6 / 65.3 / 63.6 s above (the log spans the whole application, the table
+  times the job). There is no corresponding artifact for the Windows column:
+  89.3 / 101.0 / 132.5 s are stopwatch figures.
 
 
 - **"Why do 12 cores lose to 4?"** Because on Windows the dominant cost does not
@@ -638,6 +767,13 @@ Spark:
   is why more partitions genuinely help there — and why the DataFrame/SQL path,
   which starts no Python worker, stays flat at 1.2-1.3 s regardless.
 
+  That relation holds *while start-up dominates*. Once the corpus carries real
+  compute it breaks down: at 376 MiB, 12 partitions becomes the fastest Windows
+  configuration rather than the slowest. And "more partitions genuinely help on
+  Linux" was not testable at that scale — on the `--native-read` path the
+  request is ignored below Hadoop's 32 MB split floor, so all three cluster runs
+  took 12 tasks whatever was asked for.
+
   Three things stand out. First, the knob everyone suggests —
   `spark.python.worker.reuse` — does **nothing** here (64.1 s vs 66.8 s, within
   noise): it optimises the daemon/`fork` path, which does not exist on Windows.
@@ -652,9 +788,13 @@ Spark:
   is exactly what makes the byte-identical parity guarantee possible, which is
   why the RDD path is the one that ships.
 
-- **Practical consequence:** on Windows use *fewer* partitions (`--partitions 2`
-  cut this job from 64 s to 12.5 s); on a cluster, partition for the cores you
-  actually have.
+- **Practical consequence:** on Windows, fewer partitions win only while
+  start-up dominates (`--partitions 2` cut the 39 MB job from 64 s to 12.5 s);
+  once there is real compute the advice reverses (376 MiB: 12 partitions 89.3 s
+  against 2 partitions 101.0 s). On a cluster, partition for the cores you
+  actually have — but note that on the `--native-read` path a `--partitions`
+  value below Hadoop's split floor is silently ignored, so raising it, not
+  lowering it, is the only lever.
 - **Spark's benefit** is horizontal scale: partitioned, distributed-IO execution
   across machines. The full 352 MB corpus is processed in tens of seconds on a
   toy 2-worker cluster, and the same code scales by adding workers — which no

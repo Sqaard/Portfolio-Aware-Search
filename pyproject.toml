@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "Portfolio-aware financial document retrieval for FinGPT feature extraction."
 requires-python = ">=3.9"
 dependencies = [
-  "pyyaml",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+  "beautifulsoup4>=4.12",
+  "tzdata>=2024.1",
 ]
 
 # Optional Big Data layer (bigdata/). The core IR pipeline and the portable

@@ -1,5 +1,5 @@
 {
-  "input_path": "C:\\Users\\ivanp\\OneDrive\\Документы\\xwechat_files\\wxid_3slml1yu50ju12_2539\\msg\\file\\2026-05\\official_source_urls.csv",
+  "input_path": "data/source_registry/official_source_urls.csv",
   "review_csv": "FinPortfolio_IR\\data\\source_registry\\official_company_source_urls_review_2026-05-13.csv",
   "checked_at": "2026-05-13T09:56:00Z",
   "rows": 87,

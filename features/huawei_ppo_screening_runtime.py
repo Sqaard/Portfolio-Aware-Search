@@ -153,7 +153,7 @@ def resolve_ablation_root(project_root: str | Path | None = None, ablation_root:
                 ancestor / "RL for Time-Series Forecasting" / "GITHUB" / "Ablation Ladder v2",
             ]
         )
-    candidates.append(Path(r"C:\Users\ivanp\RL for Time-Series Forecasting\GITHUB\Ablation Ladder v2"))
+    candidates.append(Path.home() / "RL for Time-Series Forecasting" / "GITHUB" / "Ablation Ladder v2")
     found = _first_existing(candidates, expected_file="dow30_notebook_research_runner.py")
     if found is None:
         raise FileNotFoundError(

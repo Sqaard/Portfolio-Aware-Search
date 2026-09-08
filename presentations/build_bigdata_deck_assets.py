@@ -364,6 +364,12 @@ def build_performance(out_dir: Path) -> Path:
     _text(ax, 24.0, 4.0, "correctness first — speed from the cluster", size=9.0,
           color=MAGENTA, weight="bold")
 
+    # Boundary condition: these curves hold only while start-up dominates.
+    _text(ax, 24.0, 35.2, "this holds only at 39 MB \u2014 at 376 MiB both curves invert",
+          size=9.0, color=MAGENTA, weight="bold")
+    _text(ax, 52.0, 2.2, "and the 16.7\u00d7 shrinks to 2.3\u00d7 \u2014 slide 11",
+          size=9.0, color=MAGENTA, weight="bold", ha="left")
+
     return _save(fig, out_dir / "slide12_performance.png")
 
 
@@ -554,6 +560,177 @@ def build_data(out_dir: Path) -> Path:
     return _save(fig, out_dir / "slide05_data.png")
 
 
+# --------------------------------------------------------------- slide 11 --
+def build_load_experiment(out_dir: Path) -> Path:
+    """The increased-load re-run: was the old benchmark measuring start-up?
+
+    Numbers: docs/BIG_DATA_INFRASTRUCTURE.md section 11, the "Isn't this just
+    measuring worker start-up?" bullet. The three cluster runs are backed by
+    Spark event logs in data/spark-events (2026-09-07 08:59-09:02); the Windows
+    runs were timed with a stopwatch and wrote no event log.
+    """
+
+    fig, ax = _canvas(13.6, 6.1)
+
+    _table(
+        ax, 2.0, 44.0, 90.0,
+        "1 \u00b7 Same job, same 376 MiB corpus \u2014 three runs each",
+        ("run", "Windows, 12 threads", "Cluster, 4 slots"),
+        [("fastest", "89.3 s", "39.6 s"),
+         ("median", "101.0 s", "63.6 s"),
+         ("slowest", "132.5 s", "65.3 s")],
+        (0.0, 26.0, 44.0),
+        highlight=(0,),
+    )
+    _text(ax, 2.0, 64.0, "--partitions 2 / 4 / 12 was requested; on the cluster it changed nothing:",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 2.0, 60.2, "minPartitions is a floor, and Hadoop's 32 MB split forced 12 tasks in every",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 2.0, 56.4, "run (Spark event logs). The three rows are run-to-run variance, not tuning.",
+          size=8.6, color=INK, ha="left")
+
+    _box(ax, 2.0, 33.0, 44.0, 18.0, fill=FILL_B, edge=MAGENTA, lw=1.6)
+    _text(ax, 24.0, 46.4, "16.7\u00d7 was worker start-up", size=10.0,
+          color=MAGENTA, weight="bold")
+    _text(ax, 24.0, 42.0, "best run to best run the gap is 2.3\u00d7", size=8.8,
+          color=INK, family=MONO)
+    _text(ax, 24.0, 38.2, "run for run at 12 tasks it is 1.4\u00d7", size=8.8,
+          color=INK, family=MONO)
+
+    _box(ax, 2.0, 5.5, 44.0, 22.5, fill=WHITE, edge=VIOLET, lw=1.6)
+    _text(ax, 24.0, 23.6, "The corpus: everything the project has", size=9.8,
+          color=VIOLET, weight="bold")
+    _text(ax, 24.0, 18.6, "3,026 SEC filings from the raw HTML cache,", size=8.6, color=INK)
+    _text(ax, 24.0, 15.0, "cleaned to full text: 376 MiB, 59.7 M tokens,", size=8.6, color=INK)
+    _text(ax, 24.0, 11.4, "90,888 distinct terms \u2014 more tokens than the", size=8.6, color=INK)
+    _text(ax, 24.0, 7.8, "352 MB production corpus.", size=8.6, color=INK)
+
+    _table(
+        ax, 52.0, 46.0, 90.0,
+        "2 \u00b7 Where the time goes, same 12-task configuration",
+        ("", "start-up", "compute"),
+        [("Windows   89.3 s  =", "~60 s", "+ ~29 s"),
+         ("Cluster   63.6 s  =", "~0 s", "+ ~64 s")],
+        (0.0, 34.0, 46.0),
+        highlight=(0,),
+    )
+    _text(ax, 52.0, 70.5, "start-up = 48 tasks \u00d7 ~1.25 s, measured on the 39 MB corpus and carried",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 66.7, "over to this one \u2014 a model of the residual, not a timer in these runs.",
+          size=8.6, color=INK, ha="left")
+
+    _text(ax, 52.0, 58.0, "On compute alone the laptop wins", size=9.8,
+          color=MAGENTA, weight="bold", ha="left")
+    _text(ax, 52.0, 53.6, "~29 s on 12 threads against ~64 s on 4 slots is ~2.2\u00d7 \u2014 which is what",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 49.8, "12 against 4 predicts. Same 6-core laptop both times: the cluster is",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 46.0, "Docker Desktop on the same silicon. The variable is spawn vs fork.",
+          size=8.6, color=INK, ha="left")
+
+    _text(ax, 52.0, 37.0, "The data ceiling", size=9.8,
+          color=MAGENTA, weight="bold", ha="left")
+    _text(ax, 52.0, 32.6, "The raw cache is 3.7 GB, but 90% of it is markup. Feeding raw HTML",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 28.8, "through the job crashes the Python worker \u2014 one record is one whole",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 25.0, "multi-megabyte filing. Total compute over everything this project owns",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 21.2, "is roughly 65 core-seconds: less than Windows spends starting workers.",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 12.0, "a compute-dominated comparison is not reachable with this dataset",
+          size=9.0, color=MAGENTA, weight="bold", ha="left")
+    _text(ax, 52.0, 7.0, "\u2014 and no re-partitioning changes that.",
+          size=9.0, color=MAGENTA, weight="bold", ha="left")
+
+    return _save(fig, out_dir / "slide11_load_experiment.png")
+
+
+# --------------------------------------------------------------- slide 12 --
+def build_site_effect(out_dir: Path) -> Path:
+    """The honest before/after for the artifact the website actually serves.
+
+    Numbers: docs/BIG_DATA_INFRASTRUCTURE.md section 7.1, and the recorded
+    manifest data/exports/bigdata/search_index/finportfolio_search_spark.manifest.json
+    (map_seconds 24.804, sqlite_seconds 47.797).
+    """
+
+    fig, ax = _canvas(13.6, 6.1)
+
+    _table(
+        ax, 2.0, 44.0, 90.0,
+        "1 \u00b7 Building the SQLite FTS index the site serves",
+        ("builder", "wall", "recorded in"),
+        [("single machine", "~25 s", "stopwatch"),
+         ("Docker cluster", "72.6 s", "manifest"),
+         ("     \u21b3 distributed map", "24.8 s", ""),
+         ("     \u21b3 SQLite write", "47.8 s", "")],
+        (0.0, 30.0, 44.0),
+        highlight=(1,),
+    )
+    _text(ax, 2.0, 57.5, "The map parallelises. The rows are then written by a single writer, and",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 2.0, 53.7, "that phase dominates. The cluster also wrote through a Docker bind",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 2.0, 49.9, "mount; that penalty sits inside the 47.8 s and was not isolated.",
+          size=8.6, color=INK, ha="left")
+
+    _box(ax, 2.0, 27.5, 44.0, 17.0, fill=FILL_B, edge=MAGENTA, lw=1.6)
+    _text(ax, 24.0, 40.0, "For this artifact, distribution", size=10.0,
+          color=MAGENTA, weight="bold")
+    _text(ax, 24.0, 35.6, "buys the site no speed at all", size=10.0,
+          color=MAGENTA, weight="bold")
+    _text(ax, 24.0, 31.0, "\u2248 3\u00d7 slower, and a stopwatch checks it", size=8.8,
+          color=INK, family=MONO)
+
+    _box(ax, 2.0, 4.5, 44.0, 18.5, fill=WHITE, edge=VIOLET, lw=1.6)
+    _text(ax, 24.0, 18.6, "It is in the product", size=9.8,
+          color=VIOLET, weight="bold")
+    _text(ax, 5.5, 13.8, "built_by       = bigdata.run_build_search_index", size=7.6,
+          color=INK, family=MONO, ha="left")
+    _text(ax, 5.5, 10.2, "builder_engine = spark", size=7.6, color=INK, family=MONO,
+          ha="left")
+    _text(ax, 5.5, 6.6, "\u2014 the manifest of the index served today", size=8.4,
+          color=GREY, ha="left")
+
+    _table(
+        ax, 52.0, 46.0, 90.0,
+        "2 \u00b7 What the parity requirement bought",
+        ("defect found by running two implementations", "scale"),
+        [("repeated tag counted per occurrence", "37.2% of docs"),
+         ("streaming re-read appended rows", "fixed by offsets"),
+         ("shipped index silently rejected by the app", "in-memory scan"),
+         ("point-in-time dates too early", "up to 87 days"),
+         ("Big Data tests, where there was one script", "42")],
+        (0.0, 46.0),
+        highlight=(2,),
+    )
+    _text(ax, 52.0, 51.0, "36.6% of the point-in-time macro corpus \u2014 6,382 of 17,456 documents,",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 47.2, "median 4 days early. All three defects were live in the product before",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 43.4, "the two implementations were made to agree.",
+          size=8.6, color=INK, ha="left")
+
+    _text(ax, 52.0, 34.0, "What it bought is correctness", size=9.8,
+          color=MAGENTA, weight="bold", ha="left")
+    _text(ax, 52.0, 29.6, "The cost is paid once: ~48 s more at build time, zero at query time.",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 25.8, "Two implementations of the same job now check each other on every",
+          size=8.6, color=INK, ha="left")
+    _text(ax, 52.0, 22.0, "build, and the index can be rebuilt on a machine with no Java.",
+          size=8.6, color=INK, ha="left")
+
+    _text(ax, 52.0, 13.0, "Scale is real, but forward-looking: the same job runs",
+          size=9.0, color=MAGENTA, weight="bold", ha="left")
+    _text(ax, 52.0, 8.0, "unchanged on N machines. At 352 MB that is headroom,",
+          size=9.0, color=MAGENTA, weight="bold", ha="left")
+    _text(ax, 52.0, 3.0, "not a benefit already collected.",
+          size=9.0, color=MAGENTA, weight="bold", ha="left")
+
+    return _save(fig, out_dir / "slide12_site_effect.png")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out-dir", default=str(DEFAULT_OUT))
@@ -566,6 +743,8 @@ def main(argv: list[str] | None = None) -> int:
         "architecture": build_architecture,
         "performance": build_performance,
         "data": build_data,
+        "load": build_load_experiment,
+        "site": build_site_effect,
     }
     selected = {args.only: builders[args.only]} if args.only else builders
     print(f"Writing to {out_dir}")

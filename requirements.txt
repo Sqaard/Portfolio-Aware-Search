@@ -1,2 +1,22 @@
+# Core IR pipeline + the test suite. Everything else the repo imports is either
+# standard library or imported lazily by an optional tool.
 pyyaml>=6.0
 pytest>=7.0
+
+# HTTP + HTML parsing for the source-archive crawler
+# (crawler/company_source_archive_discovery.py:30-31,
+#  crawler/company_source_adapter_backfill.py:27-28). Both are module-level
+# imports, so tests/test_company_source_archive_discovery.py and
+# tests/test_live_ir_incremental.py fail at collection without them.
+# Only bs4's bundled "html.parser" is used -- lxml is deliberately not required.
+requests>=2.31
+beautifulsoup4>=4.12
+
+# zoneinfo ships no time-zone database of its own, and
+# finportfolio_ir/event_ledger.py:29 evaluates ZoneInfo("America/New_York") at
+# import time (also finportfolio_ir/time_utils.py:7,
+# features/build_daily_retrieval_contexts.py:14). Windows never has a system
+# database and slim/Alpine Linux images often do not either, so this is
+# unconditional rather than marked win32-only; where the OS does have a tzdb,
+# Python prefers it and this wheel is inert.
+tzdata>=2024.1

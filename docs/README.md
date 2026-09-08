@@ -36,6 +36,18 @@ files.
 - `PUBLIC_DEMO_CLOUDFLARE.md`: temporary public bug-bash launch via
   Cloudflare Tunnel.
 
+## Big Data Course Project
+
+- `../REPRODUCE.md`: clone-to-verified walkthrough on a clean machine. Start
+  here if you are reproducing the project rather than changing it.
+- `BIG_DATA_INFRASTRUCTURE.md`: the Spark/MapReduce layer under `bigdata/` —
+  architecture, the jobs, measured timings, verification, and the honest analysis
+  of when distribution actually pays off.
+- `DEFENCE_RUNBOOK.md`: copy-paste sequences for running the three PySpark paths
+  live — the local wrapper, the Docker cluster, and the DataFrame/SQL path.
+- `PROFESSOR_DEMO.md`: one-command public demo of the search site over a
+  Cloudflare quick tunnel, for a reviewer with nothing installed.
+
 ## Doc Hygiene
 
 - Do not add new status notes unless they will stay useful for more than one

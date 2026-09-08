@@ -250,7 +250,7 @@
     "limit": 0,
     "started_epoch": 1788672944.8027148,
     "engine_used": "local",
-    "corpus_path": "C:\\Users\\ivanp\\OneDrive\\Рабочий стол\\доки+черчи\\ITMO\\2_sem\\FinRL_Tsinghua\\FinPortfolio_IR\\data\\processed_documents\\official_macro_2010_2023_documents.jsonl",
+    "corpus_path": "data/processed_documents/official_macro_2010_2023_documents.jsonl",
     "analytics_seconds": 1.269,
     "index_seconds": 1.443
   }
