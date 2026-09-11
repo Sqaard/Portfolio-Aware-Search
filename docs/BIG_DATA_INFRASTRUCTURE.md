@@ -429,8 +429,51 @@ corpus incrementally as fresh evidence arrives:
   **append** 14 docs to the same file → 24 (no double-count); streamed report ==
   batch report.
 - **[`spark_structured_streaming.py`](../bigdata/streaming/spark_structured_streaming.py)**
-  — a genuine Spark Structured Streaming job (file source → windowed aggregation
-  → `foreachBatch`). Its file source uses Hadoop **native IO**
+  — a genuine Spark Structured Streaming job (file source → `foreachBatch`) with
+  three modes. `--analytics light` (default) counts documents by source family ×
+  year in Spark SQL from nine raw fields: cheap, but only an approximation of the
+  batch report. `--analytics full` runs the batch pipeline itself
+  (`corpus_analytics.raw_metrics`) on the executors for every micro-batch and
+  merges into the same `state.json` / `analytics.json` layout as the incremental
+  updater, so its report is byte-identical to the batch job
+  (`tests/test_structured_streaming_full.py`, run inside a container).
+  `--analytics sql` is the real-time mode: the same report without Python
+  workers. The per-document work — JSON parsing, field defaults, source family,
+  token count — is compiled by Catalyst into one whole-stage-codegen scan
+  ([`sql_analytics.py`](../bigdata/streaming/sql_analytics.py)), and the driver
+  sums one small row per document with the reference `emit_metrics`: one Spark
+  job per micro-batch instead of four, no JVM↔Python hand-off. Two measured
+  details make it real-time. The extraction is built into the streaming query
+  itself (`readStream.text → extract → foreachBatch(collect)`), so its large
+  expression tree is constructed and analysed once per query — built inside
+  `foreachBatch` it cost ~0.7 s per micro-batch. And the checkpoint's three
+  metadata writes per trigger go through Hadoop's raw local file system with the
+  file-system checkpoint manager: ~5 ms each instead of ~38 ms through the
+  checksummed `FileContext` (the image has no native Hadoop library). Records the SQL
+  cannot reproduce exactly (nulls, non-string JSON values, non-canonical
+  timestamps, trailing JSON content, huge integers, surrogate escapes) are handed
+  to the reference Python on the driver, so exactness holds by construction. On
+  the 26,368-document PPO corpus every document takes the SQL path and every
+  field of every document matches the Python reference
+  (`deploy/spark_cluster/sql_analytics_parity.py`); the routing rules are pinned by
+  hand-made edge cases in `tests/test_sql_analytics.py`. The BM25 statistics
+  have the same exact Catalyst port (`run_inverted_index --api sql`,
+  [`jobs/sql_inverted_index.py`](../bigdata/jobs/sql_inverted_index.py)); the
+  re-run of the cluster-shape, baseline and live-arrival benchmarks on it is in
+  [`SPARK_SQL_CATALYST_RESULTS.md`](SPARK_SQL_CATALYST_RESULTS.md). Unlike the
+  incremental updater, it builds one Spark session for the whole stream rather
+  than one per tick. A replayed batch (`foreachBatch` is at-least-once) is skipped
+  by `batch_id`, and restarting with a checkpoint and a state that belong to
+  different streams is refused rather than silently skipping or dropping batches.
+  A `StreamingQueryListener` appends Spark's own per-trigger timing to
+  `progress.jsonl` beside the report — `triggerExecution` also covers listing the
+  inbox, planning and the offset / commit logs, which the sink cannot see.
+  **Delivery contract:** the file source never re-reads a path it has consumed, so
+  it cannot follow the live JSONL that `live_incremental_fetch.py` rewrites on
+  every run. Run the fetcher with `--streaming-inbox DIR` to also drop each run's
+  new documents into `DIR` as one new, atomically published file
+  ([`crawler/streaming_delivery.py`](../crawler/streaming_delivery.py)).
+  Its file source uses Hadoop **native IO**
   (`NativeIO$Windows.access0`), so on Windows it needs `winutils.exe` /
   `HADOOP_HOME` and otherwise raises `UnsatisfiedLinkError` (confirmed on the
   reference box); it runs cleanly on the Docker cluster / Linux. The batch RDD

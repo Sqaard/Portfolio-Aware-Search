@@ -37,18 +37,42 @@ def main(argv: list | None = None) -> int:
     parser.add_argument("--with-postings", action="store_true", help="Also write the full (term -> postings) index as JSONL.")
     parser.add_argument("--query", default=None, help="Optional BM25 query to score distributed as a demo.")
     parser.add_argument("--query-top-k", type=int, default=10)
+    parser.add_argument(
+        "--api", choices=["rdd", "sql"], default="rdd",
+        help="rdd: map/reduce through Python workers. sql: the same statistics as one Catalyst "
+             "job (bigdata.jobs.sql_inverted_index), no Python worker; Spark only.",
+    )
     args = parser.parse_args(argv)
+    if args.api == "sql" and (args.with_postings or args.query):
+        parser.error("--api sql builds the statistics only (no --with-postings / --query)")
 
     output_dir = resolve_output_dir(args, "inverted_index")
     context = run_context(args, "inverted_index")
+    context["api"] = args.api
 
     engine = build_engine(args)
     context["engine_used"] = engine.name
-    print(f"[bigdata] inverted index | engine={engine.name} corpus={args.corpus}", flush=True)
+    print(f"[bigdata] inverted index | engine={engine.name} api={args.api} corpus={args.corpus}", flush=True)
     try:
-        dataset, corpus_path = load_dataset(engine, args)
-        with Timer() as timer:
-            artifact = inverted_index.build_bm25_index(dataset, top_terms=args.top_terms)
+        if args.api == "sql":
+            from bigdata.config import resolve_corpus
+            from bigdata.jobs import sql_inverted_index
+
+            if engine.name != "spark":
+                parser.error("--api sql needs the Spark engine")
+            corpus_path = resolve_corpus(args.corpus)
+            # Outside the timer, like the RDD path's load_dataset: the --limit
+            # skeleton is staged here; the full corpus is only read (lazily) below.
+            lines = sql_inverted_index.read_lines(engine.spark, corpus_path, partitions=args.partitions,
+                                                  limit=args.limit)
+            context["scan_tasks"] = lines.rdd.getNumPartitions()
+            with Timer() as timer:
+                artifact = sql_inverted_index.build_bm25_index(lines, top_terms=args.top_terms)
+            context["sql"] = artifact.pop("sql")
+        else:
+            dataset, corpus_path = load_dataset(engine, args)
+            with Timer() as timer:
+                artifact = inverted_index.build_bm25_index(dataset, top_terms=args.top_terms)
         context["corpus_path"] = str(corpus_path)
         context["seconds"] = round(timer.seconds, 3)
 

@@ -22,7 +22,7 @@ class IncrementalUpdateTests(unittest.TestCase):
         self.inbox = base / "inbox"
         self.state_dir = base / "state"
         self.inbox.mkdir(parents=True, exist_ok=True)
-        self.lines = [l for l in SAMPLE.read_text(encoding="utf-8").splitlines() if l.strip()]
+        self.lines = [l for l in SAMPLE.read_text(encoding="utf-8").split("\n") if l.strip()]
         self.half = len(self.lines) // 2
 
     def tearDown(self):

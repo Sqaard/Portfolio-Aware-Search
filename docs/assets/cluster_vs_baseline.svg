@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" width="960" height="300" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="960" height="300" fill="#FFFFFF"/>
+  <text x="40" y="38" font-size="21" font-weight="700" fill="#101114">Spark cluster vs. the pre-Big-Data implementation</text>
+  <text x="40" y="60" font-size="13" fill="#5A5F66">Identical corpus and identical output — 3,029 documents, 82,700 terms, 57,185,743 tokens</text>
+  <rect x="700" y="30" width="11" height="11" rx="2" fill="#6E747C"/>
+  <text x="718" y="40" font-size="12" fill="#5A5F66">Overhead</text>
+  <rect x="800" y="30" width="11" height="11" rx="2" fill="#16181D"/>
+  <text x="818" y="40" font-size="12" fill="#5A5F66">Compute</text>
+  <line x1="330" y1="76" x2="330" y2="232" stroke="#E4E7EB" stroke-width="1"/>
+  <line x1="446" y1="76" x2="446" y2="232" stroke="#E4E7EB" stroke-width="1"/>
+  <line x1="561" y1="76" x2="561" y2="232" stroke="#E4E7EB" stroke-width="1"/>
+  <line x1="677" y1="76" x2="677" y2="232" stroke="#E4E7EB" stroke-width="1"/>
+  <line x1="792" y1="76" x2="792" y2="232" stroke="#E4E7EB" stroke-width="1"/>
+  <line x1="215" y1="76" x2="215" y2="232" stroke="#C4C9D0" stroke-width="1"/>
+  <text x="178" y="116" font-size="15" font-weight="600" text-anchor="end" fill="#101114">Spark cluster</text>
+  <text x="178" y="133" font-size="11" text-anchor="end" fill="#8A9099">12 threads / 3 executors</text>
+  <circle cx="197" cy="118" r="4" fill="#1F5FE0"/>
+  <rect x="215" y="96" width="99" height="44" rx="3" fill="#6E747C"/>
+  <rect x="316" y="96" width="183" height="44" rx="3" fill="#16181D"/>
+  <text x="513" y="124" font-size="15" font-weight="700" fill="#101114" font-family="Consolas, Menlo, monospace">24.6 s</text>
+  <text x="178" y="188" font-size="15" font-weight="600" text-anchor="end" fill="#101114">No Big Data</text>
+  <text x="178" y="205" font-size="11" text-anchor="end" fill="#8A9099">1 thread / single process</text>
+  <rect x="215" y="168" width="2" height="44" rx="3" fill="#6E747C"/>
+  <rect x="219" y="168" width="558" height="44" rx="3" fill="#16181D"/>
+  <text x="791" y="196" font-size="15" font-weight="700" fill="#101114" font-family="Consolas, Menlo, monospace">48.5 s</text>
+  <text x="807" y="238" font-size="12" text-anchor="end" fill="#8A9099">The cluster is 1.98x faster in wall clock — and spends 4.0x the thread-seconds</text>
+  <text x="215" y="252" font-size="11" text-anchor="middle" fill="#8A9099">0</text>
+  <text x="330" y="252" font-size="11" text-anchor="middle" fill="#8A9099">10</text>
+  <text x="446" y="252" font-size="11" text-anchor="middle" fill="#8A9099">20</text>
+  <text x="561" y="252" font-size="11" text-anchor="middle" fill="#8A9099">30</text>
+  <text x="677" y="252" font-size="11" text-anchor="middle" fill="#8A9099">40</text>
+  <text x="792" y="252" font-size="11" text-anchor="middle" fill="#8A9099">50</text>
+  <text x="867" y="252" font-size="11" text-anchor="middle" fill="#8A9099">seconds</text>
+</svg>

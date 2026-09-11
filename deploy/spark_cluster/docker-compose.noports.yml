@@ -1,0 +1,30 @@
+# Override: publish NO host ports. Layer it over any cluster file:
+#
+#   docker compose -f deploy/spark_cluster/docker-compose.arch-D-3x4.yml \
+#                  -f deploy/spark_cluster/docker-compose.noports.yml up -d
+#
+# Why: after a WSL / Hyper-V restart Windows (WinNAT) may reserve dynamic port
+# ranges that swallow 8080, 7077 or 4040, and `up` then fails with
+# "bind: An attempt was made to access a socket in a way forbidden by its access
+# permissions". Releasing them needs an admin `net stop winnat`. Nothing in the
+# benchmarks needs host ports -- jobs are submitted with `docker compose exec`
+# and the cluster talks to itself on the compose network (spark-master:7077) --
+# so the cheaper fix is not to publish any. The web UIs stay reachable from
+# inside the network, e.g.:
+#
+#   docker exec finportfolio-spark-master curl -s http://spark-master:8080
+#
+# `!reset` needs Docker Compose >= 2.24.
+name: spark_cluster
+
+services:
+  spark-master:
+    ports: !reset []
+  spark-worker-1:
+    ports: !reset []
+  spark-worker-2:
+    ports: !reset []
+  spark-worker-3:
+    ports: !reset []
+  spark-history:
+    ports: !reset []

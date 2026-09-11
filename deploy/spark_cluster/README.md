@@ -52,6 +52,31 @@ docker compose -f deploy/spark_cluster/docker-compose.yml down
   masters, so executors on the worker containers can reach the driver.
 - Structured Streaming (`bigdata.streaming.spark_structured_streaming`) runs
   cleanly here — the cluster provides the Hadoop environment that Windows lacks.
+  `--analytics full` produces the complete corpus-analytics report per
+  micro-batch through Python workers; `--analytics sql` produces the same report
+  with the per-document work compiled by Catalyst (one Spark job per micro-batch,
+  the real-time mode). The parity tests need Hadoop native IO, so they run in a
+  container:
+  `docker compose -f deploy/spark_cluster/docker-compose.yml exec -T spark-master python3 -m unittest tests.test_structured_streaming_full tests.test_sql_analytics`.
+  The whole-corpus, field-by-field check of the SQL port:
+  `docker compose -f deploy/spark_cluster/docker-compose.yml exec -T spark-master python3 deploy/spark_cluster/sql_analytics_parity.py`.
+- Live-arrival benchmark (how long the site is busy per fetch):
+  `python deploy/spark_cluster/bench_live_arrival.py --consumer ss --ss-analytics sql --ss-master "local[4]"`
+  (add `--ss-storage native` to keep inbox and state on the container's own disk),
+  then `python deploy/spark_cluster/analyze_live_arrival.py --csv <the CSV>`.
+- The BM25 build runs either way on the cluster: `--api rdd` (Python workers) or
+  `--api sql` (one Catalyst job, byte-identical output). Cluster-shape experiment on
+  either: `powershell -File deploy/spark_cluster/run_arch_experiment.ps1 -Api sql`
+  (it generates a no-ports overlay per shape and refuses a shape whose workers did
+  not all come up), then `python deploy/spark_cluster/analyze_arch_experiment.py`.
+  Back-to-back baseline: `python deploy/spark_cluster/bench_baseline_vs_sql.py`.
+  Results: [`docs/SPARK_SQL_CATALYST_RESULTS.md`](../../docs/SPARK_SQL_CATALYST_RESULTS.md).
+- If `up` fails with *"bind: An attempt was made to access a socket in a way
+  forbidden by its access permissions"*, Windows has reserved that host port
+  (`netsh interface ipv4 show excludedportrange protocol=tcp` — after a WSL
+  restart 8080–8083 often fall inside it). Layer
+  [`docker-compose.noports.yml`](docker-compose.noports.yml) over the cluster file
+  to publish no host ports; jobs are submitted through `docker compose exec` anyway.
 - The production search index can be built distributed on this cluster:
 
   ```bash

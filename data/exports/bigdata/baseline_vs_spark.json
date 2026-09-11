@@ -1,0 +1,74 @@
+{
+  "rows": [
+    {
+      "architecture": "No Big Data",
+      "parallelism": "1 thread",
+      "threads": 1,
+      "wall_clock": 44.28,
+      "overhead": 0.05,
+      "compute": 44.23,
+      "thread_seconds": 44.2,
+      "full_runs": [
+        43.798,
+        44.428,
+        44.279
+      ],
+      "skeleton_runs": [
+        0.048,
+        0.048,
+        0.047
+      ],
+      "python": "3.13.5",
+      "peak_rss_mb": 1182.7,
+      "efficiency": 100.0
+    },
+    {
+      "architecture": "Spark SQL + Catalyst — 4+4+4",
+      "parallelism": "12 threads",
+      "threads": 12,
+      "wall_clock": 30.37,
+      "overhead": 14.62,
+      "compute": 15.75,
+      "thread_seconds": 189.0,
+      "full_runs": [
+        28.769,
+        30.37,
+        30.557
+      ],
+      "skeleton_runs": [
+        14.772,
+        14.622,
+        14.046
+      ],
+      "efficiency": 23.4
+    },
+    {
+      "architecture": "Spark RDD (Python workers) — 4+4+4",
+      "parallelism": "12 threads",
+      "threads": 12,
+      "wall_clock": 21.7,
+      "overhead": 8.87,
+      "compute": 12.83,
+      "thread_seconds": 154.0,
+      "full_runs": [
+        21.705,
+        21.922,
+        21.387
+      ],
+      "skeleton_runs": [
+        8.871,
+        9.128,
+        8.682
+      ],
+      "efficiency": 28.7
+    }
+  ],
+  "identical_output": true,
+  "output": [
+    [
+      3029,
+      82700,
+      57185743
+    ]
+  ]
+}

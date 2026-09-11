@@ -69,12 +69,24 @@ def _load_state(state_path: Path) -> dict:
 
 
 def _save_state(state_path: Path, state: dict) -> None:
-    """Write state atomically (temp file + replace) so a crash cannot truncate it."""
+    """Write state atomically (temp file + replace) so a crash cannot truncate it.
+
+    On Windows, a reader holding ``state.json`` open (the web app, a monitoring
+    poll) makes the replace fail with ``PermissionError`` for as long as it holds
+    the handle. Retry briefly rather than let one colliding read kill the loop.
+    """
 
     state_path.parent.mkdir(parents=True, exist_ok=True)
     tmp = state_path.with_suffix(state_path.suffix + ".tmp")
     tmp.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(state_path)
+    for attempt in range(50):
+        try:
+            tmp.replace(state_path)
+            return
+        except PermissionError:
+            if attempt == 49:
+                raise
+            time.sleep(0.02)
 
 
 def _discover_new_data(inbox: Path, glob: str, processed: dict) -> list:
@@ -116,7 +128,12 @@ def _read_new_lines(work: list) -> list:
             # Reading them now would process them twice, because the offset
             # recorded for this tick is the probed size.
             chunk = handle.read(size - start)
-        for line in chunk.decode("utf-8", errors="replace").splitlines():
+        # Frame on b"\n" only, as Spark's LineRecordReader and read_jsonl do.
+        # str.splitlines() also breaks on U+2028 / U+2029 / U+0085, which
+        # json.dumps(ensure_ascii=False) writes raw inside strings: the record
+        # would shatter into fragments that parse_json_line silently drops.
+        for raw in chunk.split(b"\n"):
+            line = raw.rstrip(b"\r").decode("utf-8", errors="replace")
             if line.strip():
                 lines.append(line)
     return lines
@@ -144,6 +161,7 @@ def run_tick(
 ) -> dict:
     """Process one micro-batch of newly-arrived files and refresh the report."""
 
+    started = time.perf_counter()
     state_path = state_dir / "state.json"
     state = _load_state(state_path)
     inbox.mkdir(parents=True, exist_ok=True)
@@ -169,11 +187,19 @@ def run_tick(
     for path, _start, size in work:
         state["processed_files"][str(path)] = {"offset": size, "mtime_ns": path.stat().st_mtime_ns}
     state["total_documents"] = state.get("total_documents", 0) + new_docs
+    # Busy time of this tick, measured over the same span as the Structured
+    # Streaming sink records (load state -> read -> compute -> merge, before the
+    # writes). It includes building and stopping the engine: this updater creates
+    # one per tick, so that cost is part of what the site pays per batch.
+    seconds = round(time.perf_counter() - started, 3)
+    # The log below keeps the last 100 entries, so its length cannot be the count.
+    state["batches_processed"] = int(state.get("batches_processed", len(state["batches"]))) + 1
     state["batches"].append({
         "epoch": time.time(),
         "engine": engine.name,
         "files": [p.name for p, _s, _e in work],
         "new_documents": new_docs,
+        "seconds": seconds,
     })
     state["batches"] = state["batches"][-100:]  # keep the log bounded
     _save_state(state_path, state)
@@ -182,7 +208,7 @@ def run_tick(
         state["metrics"], state["min_available_at"], state["max_available_at"], top_n=top_n
     )
     report["streaming"] = {
-        "batches_processed": len(state["batches"]),
+        "batches_processed": state["batches_processed"],
         "last_batch_files": [p.name for p, _s, _e in work],
         "last_batch_new_documents": new_docs,
     }
@@ -194,6 +220,7 @@ def run_tick(
         "new_documents": new_docs,
         "total_documents": report.get("total_documents", 0),
         "engine": engine.name,
+        "seconds": seconds,
     }
 
 

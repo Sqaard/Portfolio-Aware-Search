@@ -1,0 +1,234 @@
+{
+  "ss-sql": {
+    "12": {
+      "n": 5,
+      "latency_median": 1.265,
+      "latency_min": 0.858,
+      "latency_max": 1.42,
+      "busy_median": 0.567,
+      "busy_min": 0.503,
+      "busy_max": 0.756,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 0.284,
+      "wait_median": 0.698,
+      "docs_per_busy_second": 21.2,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 1.167,
+      "latency_min": 1.069,
+      "latency_max": 1.635,
+      "busy_median": 0.979,
+      "busy_min": 0.907,
+      "busy_max": 1.599,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 0.701,
+      "wait_median": 0.188,
+      "docs_per_busy_second": 204.3,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    }
+  },
+  "ss-sql-local": {
+    "12": {
+      "n": 5,
+      "latency_median": 0.551,
+      "latency_min": 0.499,
+      "latency_max": 1.264,
+      "busy_median": 0.44,
+      "busy_min": 0.4,
+      "busy_max": 0.471,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 0.158,
+      "wait_median": 0.111,
+      "docs_per_busy_second": 27.3,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 1.015,
+      "latency_min": 0.859,
+      "latency_max": 1.269,
+      "busy_median": 0.744,
+      "busy_min": 0.582,
+      "busy_max": 0.835,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 0.459,
+      "wait_median": 0.271,
+      "docs_per_busy_second": 268.8,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    }
+  },
+  "ss-sql-local-native": {
+    "12": {
+      "n": 5,
+      "latency_median": 0.769,
+      "latency_min": 0.572,
+      "latency_max": 1.386,
+      "busy_median": 0.34,
+      "busy_min": 0.306,
+      "busy_max": 0.539,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 0.143,
+      "wait_median": 0.429,
+      "docs_per_busy_second": 35.3,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux-native-fs"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 1.085,
+      "latency_min": 0.876,
+      "latency_max": 1.234,
+      "busy_median": 0.58,
+      "busy_min": 0.435,
+      "busy_max": 0.749,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 0.418,
+      "wait_median": 0.505,
+      "docs_per_busy_second": 344.8,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux-native-fs"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    }
+  },
+  "inc-local": {
+    "12": {
+      "n": 5,
+      "latency_median": 1.436,
+      "latency_min": 0.624,
+      "latency_max": 1.555,
+      "busy_median": 0.563,
+      "busy_min": 0.519,
+      "busy_max": 0.589,
+      "busy_source": "tick seconds",
+      "sink_median": null,
+      "wait_median": 0.873,
+      "docs_per_busy_second": 21.3,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.9.18"
+      ],
+      "host": [
+        "windows"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 1.566,
+      "latency_min": 1.394,
+      "latency_max": 1.755,
+      "busy_median": 0.617,
+      "busy_min": 0.551,
+      "busy_max": 0.779,
+      "busy_source": "tick seconds",
+      "sink_median": null,
+      "wait_median": 0.949,
+      "docs_per_busy_second": 324.1,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.9.18"
+      ],
+      "host": [
+        "windows"
+      ],
+      "gap_s": [
+        "15.0"
+      ],
+      "interval_s": [
+        "1.0"
+      ]
+    }
+  }
+}

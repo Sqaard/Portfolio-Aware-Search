@@ -43,9 +43,11 @@ bigdata/
     mapping.py            JSONL → validated, causal-safe document (reuses schema/tokenizer)
     inverted_index.py     distributed BM25 stats + postings + distributed query
     corpus_analytics.py   single-pass corpus aggregates (family/type/year/ticker/event/risk)
+    sql_inverted_index.py the BM25 statistics as one Catalyst job, exact (run_inverted_index --api sql)
   streaming/
     incremental_update.py        poll-based micro-batch auto-updater (Windows-safe)
-    spark_structured_streaming.py Spark Structured Streaming file-source job
+    spark_structured_streaming.py Structured Streaming file source (--analytics full|sql: batch report per micro-batch)
+    sql_analytics.py             the report's per-document work as Catalyst SQL, exact (atypical records → Python)
   run_inverted_index.py   run_corpus_analytics.py   run_all.py   CLIs
   config.py               corpus registry + BM25 constants
 ```

@@ -37,6 +37,9 @@ x-spark-common: &spark-common
     # Cyrillic directory. Harmless when FINPORTFOLIO_EXTRA_DIR is unset: it then
     # mounts the repo's own exports directory, which is already visible.
     - ${FINPORTFOLIO_EXTRA_DIR:-../../data/exports}:/extra
+    # Native ext4 volume inside the WSL VM -- used to separate bind-mount
+    # I/O cost from real compute in the heavy-load benchmark.
+    - fastdata:/fast
   working_dir: /workspace
 
 services:
@@ -125,3 +128,6 @@ services:
         -Dspark.history.fs.update.interval=5s
     ports:
       - "18080:18080"   # History Server: finished jobs stay inspectable here
+
+volumes:
+  fastdata:

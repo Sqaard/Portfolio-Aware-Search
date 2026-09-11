@@ -251,6 +251,13 @@ class SparkDataset(Dataset):
     def cache(self) -> "SparkDataset":
         return SparkDataset(self._engine, self._rdd.cache())
 
+    def unpersist(self) -> "SparkDataset":
+        """Release cached blocks. A long-lived session (Structured Streaming reuses
+        one context for every micro-batch) would otherwise keep one per batch."""
+
+        self._rdd.unpersist()
+        return self
+
     def collect(self) -> list:
         return self._rdd.collect()
 

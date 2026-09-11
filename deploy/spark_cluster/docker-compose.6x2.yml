@@ -1,0 +1,209 @@
+# Standalone Apache Spark cluster, WIDE variant: 1 master + **6 workers x 2 cores
+# = 12 executor cores** (the 2-worker/4-core sibling lives in docker-compose.yml).
+#
+# Purpose: run the heavy-load benchmark with the same core count as the
+# "Windows, 12 threads" row, so wall clock is compared at equal parallelism
+# instead of 12 cores against 4.
+#
+# Bring up:   docker compose -f deploy/spark_cluster/docker-compose.6x2.yml up -d
+# Master UI:  http://localhost:8080
+# Worker UIs: http://localhost:8081 .. 8086
+# Tear down:  docker compose -f deploy/spark_cluster/docker-compose.6x2.yml down
+#
+# Memory note: the host has 15.3 GB and WSL2 is capped by ~/.wslconfig. Six
+# workers therefore advertise 1g each (not the 2g of the 4-core file) so six
+# executor JVMs plus twelve concurrent Python workers still fit.
+#
+# FINPORTFOLIO_EXTRA_DIR is mounted at /extra: the benchmark corpus lives on an
+# ASCII path because Hadoop's local reader mishandles the project's Cyrillic
+# directory.
+
+x-spark-env: &spark-env
+  PYTHONPATH: /workspace:/opt/spark/python:/opt/spark/python/lib/py4j-0.10.9.7-src.zip
+  PYSPARK_PYTHON: /usr/bin/python3
+  PYSPARK_DRIVER_PYTHON: /usr/bin/python3
+  FINPORTFOLIO_SPARK_EVENTLOG_DIR: /workspace/data/spark-events
+  # Cap the daemon (master/worker) heaps: six worker daemons at the 1g default
+  # would reserve 6 GB before a single executor starts.
+  SPARK_DAEMON_MEMORY: 512m
+
+x-spark-common: &spark-common
+  image: spark:3.5.3-scala2.12-java17-python3-ubuntu
+  volumes:
+    - ../../:/workspace
+    - ${FINPORTFOLIO_EXTRA_DIR:-../../data/exports}:/extra
+    # Native ext4 volume inside the WSL VM -- used to separate bind-mount
+    # I/O cost from real compute in the heavy-load benchmark.
+    - fastdata:/fast
+  working_dir: /workspace
+
+services:
+  spark-master:
+    <<: *spark-common
+    container_name: finportfolio-spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.master.Master
+      - --host
+      - spark-master
+      - --port
+      - "7077"
+      - --webui-port
+      - "8080"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "4040:4040"
+
+  spark-worker-1:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-1
+    depends_on:
+      - spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --cores
+      - "2"
+      - --memory
+      - 1g
+      - --webui-port
+      - "8081"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-worker-1
+    ports:
+      - "8081:8081"
+
+  spark-worker-2:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-2
+    depends_on:
+      - spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --cores
+      - "2"
+      - --memory
+      - 1g
+      - --webui-port
+      - "8081"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-worker-2
+    ports:
+      - "8082:8081"
+
+  spark-worker-3:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-3
+    depends_on:
+      - spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --cores
+      - "2"
+      - --memory
+      - 1g
+      - --webui-port
+      - "8081"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-worker-3
+    ports:
+      - "8083:8081"
+
+  spark-worker-4:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-4
+    depends_on:
+      - spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --cores
+      - "2"
+      - --memory
+      - 1g
+      - --webui-port
+      - "8081"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-worker-4
+    ports:
+      - "8084:8081"
+
+  spark-worker-5:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-5
+    depends_on:
+      - spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --cores
+      - "2"
+      - --memory
+      - 1g
+      - --webui-port
+      - "8081"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-worker-5
+    ports:
+      - "8085:8081"
+
+  spark-worker-6:
+    <<: *spark-common
+    container_name: finportfolio-spark-worker-6
+    depends_on:
+      - spark-master
+    command:
+      - /opt/spark/bin/spark-class
+      - org.apache.spark.deploy.worker.Worker
+      - spark://spark-master:7077
+      - --cores
+      - "2"
+      - --memory
+      - 1g
+      - --webui-port
+      - "8081"
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-worker-6
+    ports:
+      - "8086:8081"
+
+  spark-history:
+    <<: *spark-common
+    container_name: finportfolio-spark-history
+    depends_on:
+      - spark-master
+    command:
+      - /bin/sh
+      - -c
+      - >-
+        mkdir -p /workspace/data/spark-events &&
+        exec /opt/spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    environment:
+      <<: *spark-env
+      SPARK_LOCAL_IP: spark-history
+      SPARK_HISTORY_OPTS: >-
+        -Dspark.history.fs.logDirectory=file:/workspace/data/spark-events
+        -Dspark.history.ui.port=18080
+        -Dspark.history.fs.update.interval=5s
+    ports:
+      - "18080:18080"
+
+volumes:
+  fastdata:

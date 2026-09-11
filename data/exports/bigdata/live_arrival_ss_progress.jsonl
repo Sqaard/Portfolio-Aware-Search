@@ -1,0 +1,12 @@
+{"batch_id": 0, "input_rows": 12, "trigger_ms": 8629, "add_batch_ms": 7570, "timestamp": "2026-09-11T01:34:59.193Z"}
+{"batch_id": 1, "input_rows": 200, "trigger_ms": 3499, "add_batch_ms": 3276, "timestamp": "2026-09-11T01:35:41.001Z"}
+{"batch_id": 2, "input_rows": 12, "trigger_ms": 3464, "add_batch_ms": 3225, "timestamp": "2026-09-11T01:36:17.000Z"}
+{"batch_id": 3, "input_rows": 200, "trigger_ms": 5884, "add_batch_ms": 5678, "timestamp": "2026-09-11T01:36:53.000Z"}
+{"batch_id": 4, "input_rows": 12, "trigger_ms": 3156, "add_batch_ms": 2933, "timestamp": "2026-09-11T01:37:32.001Z"}
+{"batch_id": 5, "input_rows": 200, "trigger_ms": 6479, "add_batch_ms": 6209, "timestamp": "2026-09-11T01:38:08.001Z"}
+{"batch_id": 6, "input_rows": 12, "trigger_ms": 3118, "add_batch_ms": 2886, "timestamp": "2026-09-11T01:38:47.000Z"}
+{"batch_id": 7, "input_rows": 200, "trigger_ms": 3362, "add_batch_ms": 3111, "timestamp": "2026-09-11T01:39:23.001Z"}
+{"batch_id": 8, "input_rows": 12, "trigger_ms": 3184, "add_batch_ms": 2928, "timestamp": "2026-09-11T01:39:59.001Z"}
+{"batch_id": 9, "input_rows": 200, "trigger_ms": 3446, "add_batch_ms": 3168, "timestamp": "2026-09-11T01:40:35.000Z"}
+{"batch_id": 10, "input_rows": 12, "trigger_ms": 3166, "add_batch_ms": 2923, "timestamp": "2026-09-11T01:41:11.000Z"}
+{"batch_id": 11, "input_rows": 200, "trigger_ms": 3179, "add_batch_ms": 2908, "timestamp": "2026-09-11T01:41:47.000Z"}

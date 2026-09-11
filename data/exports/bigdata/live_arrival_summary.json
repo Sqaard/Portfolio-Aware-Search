@@ -1,0 +1,146 @@
+{
+  "ss": {
+    "12": {
+      "n": 5,
+      "latency_median": 3.564,
+      "latency_min": 3.303,
+      "latency_max": 3.869,
+      "busy_median": 3.166,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 2.865,
+      "wait_median": 0.398,
+      "docs_per_busy_second": 3.8,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux"
+      ],
+      "gap_s": [
+        "30.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 3.925,
+      "latency_min": 3.569,
+      "latency_max": 6.99,
+      "busy_median": 3.446,
+      "busy_source": "spark triggerExecution",
+      "sink_median": 3.108,
+      "wait_median": 0.479,
+      "docs_per_busy_second": 58.0,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.10.12"
+      ],
+      "host": [
+        "docker-linux"
+      ],
+      "gap_s": [
+        "30.0"
+      ]
+    }
+  },
+  "inc-local": {
+    "12": {
+      "n": 5,
+      "latency_median": 0.717,
+      "latency_min": 0.615,
+      "latency_max": 0.768,
+      "busy_median": 0.496,
+      "busy_source": "tick seconds",
+      "sink_median": null,
+      "wait_median": 0.221,
+      "docs_per_busy_second": 24.2,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.9.18"
+      ],
+      "host": [
+        "windows"
+      ],
+      "gap_s": [
+        "30.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 0.676,
+      "latency_min": 0.614,
+      "latency_max": 1.592,
+      "busy_median": 0.539,
+      "busy_source": "tick seconds",
+      "sink_median": null,
+      "wait_median": 0.137,
+      "docs_per_busy_second": 371.1,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.9.18"
+      ],
+      "host": [
+        "windows"
+      ],
+      "gap_s": [
+        "30.0"
+      ]
+    }
+  },
+  "inc-spark": {
+    "12": {
+      "n": 5,
+      "latency_median": 62.007,
+      "latency_min": 60.164,
+      "latency_max": 62.026,
+      "busy_median": 61.864,
+      "busy_source": "tick seconds",
+      "sink_median": null,
+      "wait_median": 0.143,
+      "docs_per_busy_second": 0.2,
+      "documents_verified": [
+        12
+      ],
+      "python": [
+        "3.9.18"
+      ],
+      "host": [
+        "windows"
+      ],
+      "gap_s": [
+        "30.0"
+      ]
+    },
+    "200": {
+      "n": 5,
+      "latency_median": 61.85,
+      "latency_min": 61.689,
+      "latency_max": 62.138,
+      "busy_median": 61.786,
+      "busy_source": "tick seconds",
+      "sink_median": null,
+      "wait_median": 0.064,
+      "docs_per_busy_second": 3.2,
+      "documents_verified": [
+        200
+      ],
+      "python": [
+        "3.9.18"
+      ],
+      "host": [
+        "windows"
+      ],
+      "gap_s": [
+        "30.0"
+      ]
+    }
+  }
+}

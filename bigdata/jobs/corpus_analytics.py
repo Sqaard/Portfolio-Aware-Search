@@ -120,17 +120,25 @@ def raw_metrics(dataset: Dataset) -> tuple:
     """
 
     base = dataset.map(analytics_doc).filter(not_none).cache()
-    total_docs = base.count()
-    if total_docs == 0:
-        return {}, "", "", 0
-    metrics = base.flat_map(emit_metrics).reduce_by_key(add_numbers).collect_as_map()
-    dates = base.map(get_available_at).filter(bool)
     try:
-        min_available = dates.reduce(_nonempty_min)
-        max_available = dates.reduce(_nonempty_max)
-    except ValueError:  # no dated documents
-        min_available = max_available = ""
-    return metrics, min_available, max_available, total_docs
+        total_docs = base.count()
+        if total_docs == 0:
+            return {}, "", "", 0
+        metrics = base.flat_map(emit_metrics).reduce_by_key(add_numbers).collect_as_map()
+        dates = base.map(get_available_at).filter(bool)
+        try:
+            min_available = dates.reduce(_nonempty_min)
+            max_available = dates.reduce(_nonempty_max)
+        except ValueError:  # no dated documents
+            min_available = max_available = ""
+        return metrics, min_available, max_available, total_docs
+    finally:
+        # Batch jobs stop the engine right after, so the cache dies with it. A
+        # streaming session lives across every micro-batch and would accumulate
+        # one cached base per batch. Engines without unpersist() have nothing to free.
+        release = getattr(base, "unpersist", None)
+        if callable(release):
+            release()
 
 
 def merge_metrics(left: dict, right: dict) -> dict:

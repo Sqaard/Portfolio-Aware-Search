@@ -5,6 +5,13 @@ be run repeatedly: already seen document ids are skipped, new raw records are
 normalized, and the new normalized documents are appended to a live JSONL file.
 LLM extraction is left as a queued/background step so search can become fresh
 quickly without waiting for expensive model calls.
+
+``--streaming-inbox DIR`` additionally drops each run's new documents into DIR
+as one NEW JSONL file (see :mod:`crawler.streaming_delivery`) -- the only form
+Spark Structured Streaming can see, since its file source never re-reads the
+live JSONL this module rewrites. ``--simulate-from CORPUS`` replaces the network
+collectors with a reproducible random sample of an existing corpus, for
+benchmarking the downstream consumers.
 """
 
 from __future__ import annotations
@@ -49,6 +56,12 @@ from features.build_official_macro_documents import (  # noqa: E402
     build_macro_record,
 )
 from finportfolio_ir.io_utils import read_jsonl, write_jsonl  # noqa: E402
+from crawler.streaming_delivery import (  # noqa: E402
+    append_unique_records,
+    assert_outside_inbox,
+    emit_streaming_batch,
+    simulate_live_fetch,
+)
 
 
 DEFAULT_METADATA = ROOT / "data" / "processed_documents" / "dow30_ticker_metadata.csv"
@@ -401,27 +414,7 @@ def restore_live_extra_fields(raw_records: list[dict[str, Any]], normalized_reco
 
 
 def append_unique_jsonl(path: Path, new_records: list[dict[str, Any]]) -> int:
-    existing = read_jsonl(path) if path.exists() else []
-    seen_doc_ids = {str(row.get("doc_id", "")) for row in existing if str(row.get("doc_id", ""))}
-    seen_hashes = {str(row.get("document_hash", "")) for row in existing if str(row.get("document_hash", ""))}
-    appended: list[dict[str, Any]] = []
-    for record in new_records:
-        doc_id = str(record.get("doc_id", "") or "")
-        document_hash = str(record.get("document_hash", "") or "")
-        if doc_id and doc_id in seen_doc_ids:
-            continue
-        if document_hash and document_hash in seen_hashes:
-            continue
-        appended.append(record)
-        if doc_id:
-            seen_doc_ids.add(doc_id)
-        if document_hash:
-            seen_hashes.add(document_hash)
-    if appended:
-        write_jsonl(path, [*existing, *appended])
-    elif not path.exists():
-        write_jsonl(path, [])
-    return len(appended)
+    return len(append_unique_records(path, new_records))
 
 
 def queue_priority(record: dict[str, Any]) -> tuple[int, str]:
@@ -496,6 +489,7 @@ def fetch_live_incremental(
     user_agent: str,
     sleep_seconds: float,
     body_chars: int,
+    streaming_inbox: Path | None = None,
 ) -> dict[str, Any]:
     for path in [raw_output, processed_output, queue_output, state_output]:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -548,7 +542,11 @@ def fetch_live_incremental(
         if str(row.get("document_hash", "") or "") not in seen_hashes
         or str(row.get("doc_id", "") or "") not in state.get("seen_doc_ids", [])
     ]
-    processed_appended = append_unique_jsonl(processed_output, normalized)
+    processed_records = append_unique_records(processed_output, normalized)
+    processed_appended = len(processed_records)
+    # Hand the genuinely new documents to the streaming consumers as a NEW file:
+    # Spark's file source never re-reads the live JSONL rewritten above.
+    streaming_batch = emit_streaming_batch(streaming_inbox, processed_records) if streaming_inbox else None
     queued = append_llm_queue(queue_output, normalized)
 
     for row in normalized:
@@ -582,6 +580,7 @@ def fetch_live_incremental(
         "processed_output": str(processed_output),
         "llm_queue": str(queue_output),
         "state": str(state_output),
+        "streaming_batch": str(streaming_batch) if streaming_batch else None,
         "source_type_counts": dict(source_counts),
         "errors": [*sec_errors, *macro_errors, *company_errors][:20],
     }
@@ -614,7 +613,27 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--user-agent", default=DEFAULT_USER_AGENT)
     parser.add_argument("--sleep-seconds", type=float, default=0.15)
     parser.add_argument("--body-chars", type=int, default=16000)
+    parser.add_argument("--streaming-inbox", default="",
+                        help="Also drop each run's new documents here as a NEW JSONL file (Spark Structured Streaming).")
+    parser.add_argument("--simulate-from", default="",
+                        help="Skip the network: sample --simulate-count random documents from this corpus instead.")
+    parser.add_argument("--simulate-count", type=int, default=12)
+    parser.add_argument("--simulate-seed", type=int, default=0)
     args = parser.parse_args(argv)
+    streaming_inbox = Path(args.streaming_inbox) if args.streaming_inbox else None
+    if streaming_inbox is not None:
+        assert_outside_inbox(streaming_inbox, Path(args.processed_output), Path(args.raw_output))
+
+    if args.simulate_from:
+        summary = simulate_live_fetch(
+            corpus=Path(args.simulate_from),
+            count=args.simulate_count,
+            seed=args.simulate_seed,
+            processed_output=Path(args.processed_output),
+            streaming_inbox=streaming_inbox,
+        )
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
+        return 0
 
     summary = fetch_live_incremental(
         metadata_path=Path(args.metadata),
@@ -642,6 +661,7 @@ def main(argv: list[str] | None = None) -> int:
         user_agent=args.user_agent,
         sleep_seconds=args.sleep_seconds,
         body_chars=args.body_chars,
+        streaming_inbox=streaming_inbox,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
